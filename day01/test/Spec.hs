@@ -1,4 +1,4 @@
--- file Spec.hs
+-- file Spec.hs From Eric!
 import Test.Hspec
 import Test.QuickCheck
 import Control.Exception (evaluate)
