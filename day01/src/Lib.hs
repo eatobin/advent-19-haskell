@@ -1,7 +1,9 @@
 module Lib (someFunc, gas) where
 
-someFunc :: Int
-someFunc = 101
+import Numeric.Natural (Natural)
 
-gas :: Int -> Int
+someFunc :: Natural -> Natural
+someFunc x = (+) x 1
+
+gas :: Natural -> Natural
 gas myModule = (-) (div myModule 3) 2
