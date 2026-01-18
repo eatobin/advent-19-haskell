@@ -48,6 +48,9 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - day01
+    when:
+      - condition: false
+        other-modules: Paths_day01
 
 tests:
   day01-test:
