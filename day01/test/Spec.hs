@@ -1,7 +1,7 @@
 -- file Spec.hs From Eric! Yes!
 
 import Control.Exception (evaluate)
-import Lib (gas, someFunc)
+import Lib (gas, mySomeFunc)
 import Numeric.Natural (Natural)
 import Test.Hspec (anyException, hspec, it, shouldBe, shouldThrow)
 
@@ -10,7 +10,7 @@ main = hspec $ do
   it "all by itself" $ do
     (78 :: Natural) `shouldBe` (78 :: Natural)
   it "Natural works with zero" $ do
-    someFunc 0 `shouldBe` 1
+    mySomeFunc 0 `shouldBe` 1
   it "gas at 12" $ do
     gas 12 `shouldBe` 2
   it "gas at 14" $ do
