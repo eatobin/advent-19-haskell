@@ -1,4 +1,4 @@
--- file Spec.hs From Eric!
+-- file Spec.hs From Eric! Yes!
 
 import Control.Exception (evaluate)
 import Lib (gas, someFunc)
