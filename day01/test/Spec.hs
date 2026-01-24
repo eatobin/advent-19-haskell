@@ -1,5 +1,3 @@
--- file Spec.hs
-
 import Control.Exception (evaluate)
 import Lib (gas)
 import Numeric.Natural (Natural)
