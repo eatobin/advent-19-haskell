@@ -1,0 +1,24 @@
+Correct way to run ghcid
+
+[eric@eric-minisforum ~]$ cd haskell-projects/advent-2019/day01
+
+Build/install:
+[eric@eric-minisforum day01](master)$ stack build --copy-compiler-tool ghcid
+[eric@eric-minisforum day01](master)$ stack exec -- which ghcid
+
+Run:
+[eric@eric-minisforum day01](master)$ stack exec -- ghcid -c "stack ghci day01"
+[eric@eric-minisforum day01](master)$ stack exec -- ghcid -c "stack ghci test/Spec.hs"
+
+ghcid             > [6 of 6] Compiling Paths_ghcid
+ghcid             > copy/register
+ghcid             > Installing executable ghcid in /home/eric/.stack/snapshots/x86_64-linux/755c779960acc838daea0e46012edc313305abc04b66dcb816178d12fa26df10/9.6.7/bin
+ghcid             > Installing library in /home/eric/.stack/snapshots/x86_64-linux/755c779960acc838daea0e46012edc313305abc04b66dcb816178d12fa26df10/9.6.7/lib/x86_64-linux-ghc-9.6.7/ghcid-0.8.9-39Wv6Nq5H0sACqLEw57eCi
+ghcid             > Registering library for ghcid-0.8.9..
+Completed 52 action(s).
+Copying from
+/home/eric/.stack/snapshots/x86_64-linux/755c779960acc838daea0e46012edc313305abc04b66dcb816178d12fa26df10/9.6.7/bin/ghcid
+to /home/eric/.stack/compiler-tools/x86_64-linux/ghc-9.6.7/bin/ghcid.
+Copied executables to /home/eric/.stack/compiler-tools/x86_64-linux/ghc-9.6.7/bin/:
+* ghcid
+[eric@eric-minisforum day01](master)$
