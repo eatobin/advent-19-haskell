@@ -1,4 +1,4 @@
-module Lib (mySomeFunc, someFunc, gas) where
+module Lib (someFunc, mySomeFunc, gas) where
 
 import Numeric.Natural (Natural)
 
