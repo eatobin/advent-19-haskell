@@ -13,6 +13,8 @@ main = hspec $ do
     evaluate (gas 3) `shouldThrow` anyException
   it "gas at 6 should pass with zero" $ do
     gas 6 `shouldBe` 0
+  it "gas at 9" $ do
+    gas 9 `shouldBe` 1
   it "gas at 12" $ do
     gas 12 `shouldBe` 2
   it "gas at 14" $ do
