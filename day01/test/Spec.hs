@@ -1,25 +1,36 @@
-import Control.Exception (evaluate)
-import Lib (gasA)
-import Numeric.Natural (Natural)
-import Test.Hspec (anyException, hspec, it, shouldBe, shouldThrow)
+import Lib (gas, gasPlus)
+import Test.Hspec (describe, hspec, it, shouldBe)
 
 main :: IO ()
 main = hspec $ do
-  it "all by itself" $ do
-    (78 :: Natural) `shouldBe` (78 :: Natural)
-  it "gasA at 0 should fail" $ do
-    evaluate (gasA 0) `shouldThrow` anyException
-  it "gasA at 3 should fail" $ do
-    evaluate (gasA 3) `shouldThrow` anyException
-  it "gasA at 6 should pass with zero" $ do
-    gasA 6 `shouldBe` 0
-  it "gasA at 9" $ do
-    gasA 9 `shouldBe` 1
-  it "gasA at 12" $ do
-    gasA 12 `shouldBe` 2
-  it "gasA at 14" $ do
-    gasA 14 `shouldBe` 2
-  it "gasA at 1969" $ do
-    gasA 1969 `shouldBe` 654
-  it "gasA at 100756" $ do
-    gasA 100756 `shouldBe` 33583
+  describe "\nStand alone test" $ do
+    it "all by itself" $ do
+      (78 :: Int) `shouldBe` (78 :: Int)
+
+  describe "\nPart A" $ do
+    it "gas at 6 should pass with zero" $ do
+      gas 6 `shouldBe` 0
+    it "gas at 9" $ do
+      gas 9 `shouldBe` 1
+    it "gas at 12" $ do
+      gas 12 `shouldBe` 2
+    it "gas at 14" $ do
+      gas 14 `shouldBe` 2
+    it "gas at 1969" $ do
+      gas 1969 `shouldBe` 654
+    it "gas at 100756" $ do
+      gas 100756 `shouldBe` 33583
+
+  describe "\nPart B" $ do
+    it "gasPlus at 6 should pass with zero" $ do
+      gasPlus 6 `shouldBe` 0
+    it "gasPlus at 9" $ do
+      gasPlus 9 `shouldBe` 1
+    it "gasPlus at 12" $ do
+      gasPlus 12 `shouldBe` 2
+    it "gasPlus at 14" $ do
+      gasPlus 14 `shouldBe` 2
+    it "gasPlus at 1969" $ do
+      gasPlus 1969 `shouldBe` 966
+    it "gasPlus at 100756" $ do
+      gasPlus 100756 `shouldBe` 50346
