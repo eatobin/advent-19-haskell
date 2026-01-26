@@ -42,8 +42,11 @@ holeScore strokes par
 
 
 gasPlus :: Int -> Int
-gasPlus outerModule = loop outerModule 0
-    loop innerModule acc
-    | newGas <= 0 = acc
-    | otherwise = loop newGas (acc + newGas)
-    where newGas = gasA innerModule
+gasPlus outerModule =
+  loop outerModule 0
+    where
+      loop :: Int -> Int -> Int
+      loop innerModule acc
+        | newGas <= 0 = acc
+        | otherwise = loop newGas (acc + newGas)
+        where newGas = gasA innerModule
