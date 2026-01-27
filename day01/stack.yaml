@@ -17,9 +17,9 @@
 #
 # snapshot: ./custom-snapshot.yaml
 # snapshot: https://example.com/snapshots/2024-01-01.yaml
-resolver: lts-22.44
+snapshot: lts-22.44
 # LTS Haskell 22.44 (ghc-9.6.7) - https://www.stackage.org/lts-22.44
-# HLS version 2.12.0.0 (latest) - https://haskell-language-server.readthedocs.io/en/latest/support/ghc-version-support.html
+# HLS version 2.13.0.0 (latest) - https://haskell-language-server.readthedocs.io/en/latest/support/ghc-version-support.html
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
