@@ -1,0 +1,2 @@
+[eric@eric-ibm day01](master)$ ormolu --mode check $(git ls-files '*.hs')
+[eric@eric-ibm day01](master)$ ormolu --mode inplace $(git ls-files '*.hs')
