@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://www.schemastore.org/any.json
+
 name:                day02
 version:             0.1.0.0
 github:              "eatobin/day02"
@@ -21,6 +23,7 @@ description:         Please see the README on GitHub at <https://github.com/eato
 
 dependencies:
 - base >= 4.7 && < 5
+- containers
 - hspec
 
 ghc-options:
