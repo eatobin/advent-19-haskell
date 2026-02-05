@@ -8,7 +8,7 @@ hasRedHat = M.fromList [(0, 0), (1, 11), (2, 22)]
 
 -- Look up an existing key
 lookupResult1 :: Maybe Int
-lookupResult1 = M.lookup 0 hasRedHat -- Just True
+lookupResult1 = M.lookup 0 hasRedHat -- Just 0
 
 -- Look up a non-existing key
 lookupResult2 :: Maybe Int
@@ -19,7 +19,7 @@ updatedMap = M.insert 19 99 hasRedHat
 
 -- Look up a non-existing key
 lookupResult3 :: Int
-lookupResult3 = DM.fromJust (M.lookup 19 updatedMap) -- Nothing
+lookupResult3 = DM.fromJust (M.lookup 19 updatedMap) -- 99
 
 data Case
   = Case
