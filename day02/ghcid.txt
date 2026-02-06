@@ -1,6 +1,6 @@
 Correct way to run ghcid
 
-[eric@eric-minisforum ~]$ cd haskell-projects/advent-2019/day02
+[eric@eric-minisforum ~]$ cd haskell-projects/advent-19-haskell/day02
 
 Build/install:
 [eric@eric-minisforum day01](master)$ stack build --copy-compiler-tool ghcid
