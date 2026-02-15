@@ -1,7 +1,13 @@
-module Lib (values, memoryAsList, intCode, lookupResult3, lookupResult4) where
+module Lib (bb, values, memoryAsList, intCode, lookupResult3, lookupResult4) where
 
+import qualified Data.List.Split as S
 import qualified Data.Map as M
 import qualified Data.Maybe as DM
+
+bb :: [[Char]]
+bb = S.splitOn "," "apple,banana,cherry"
+
+-- ["apple", "banana", "cherry"]
 
 type Memory = M.Map Int Int
 

@@ -25,6 +25,7 @@ dependencies:
 - base >= 4.7 && < 5
 - containers
 - hspec
+- split
 
 ghc-options:
 - -Wall
@@ -49,7 +50,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - day02
+      - day02
+    when:
+      - condition: false
+        other-modules: Paths_day02
 
 tests:
   day02-test:
