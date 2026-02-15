@@ -1,13 +1,8 @@
-module Lib (bb, values, memoryAsList, intCode, lookupResult3, lookupResult4) where
+module Lib (values, memoryAsList, intCode, lookupResult3, lookupResult4) where
 
 import qualified Data.List.Split as S
 import qualified Data.Map as M
 import qualified Data.Maybe as DM
-
-bb :: [[Char]]
-bb = S.splitOn "," "apple,banana,cherry"
-
--- ["apple", "banana", "cherry"]
 
 type Memory = M.Map Int Int
 
@@ -18,8 +13,17 @@ data IntCode
   }
   deriving (Show)
 
+memoryAsCSVString :: [Char]
+memoryAsCSVString = "10,11,12,13,14"
+
+memoryAsListOfSrings :: [[Char]]
+memoryAsListOfSrings = S.splitOn "," memoryAsCSVString
+
+myReadToInt :: String -> Int
+myReadToInt = read
+
 values :: [Int]
-values = [10, 11, 12, 13, 14]
+values = map myReadToInt memoryAsListOfSrings
 
 memoryAsList :: [(Int, Int)]
 memoryAsList = zip [0 ..] values
