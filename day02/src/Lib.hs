@@ -1,38 +1,56 @@
-module Lib (values, memoryAsList, intCode, lookupResult3, lookupResult4) where
+module Lib (IntCode (..), makeIntcode) where
 
+-- import Data.Function ((&))
 import qualified Data.List.Split as S
 import qualified Data.Map as M
-import qualified Data.Maybe as DM
+
+-- import qualified Data.Maybe as DM
+
+-- import qualified Data.Maybe as DM
+type MemoryAsCSVString = [Char]
+
+type MemoryAsList = [(Int, Int)]
 
 type Memory = M.Map Int Int
 
+type Pointer = Int
+
 data IntCode
   = IntCode
-  { pointer :: Int,
+  { pointer :: Pointer,
     memory :: Memory
   }
   deriving (Show)
 
-memoryAsCSVString :: [Char]
-memoryAsCSVString = "10,11,12,13,14"
-
-memoryAsListOfSrings :: [[Char]]
-memoryAsListOfSrings = S.splitOn "," memoryAsCSVString
-
 myReadToInt :: String -> Int
 myReadToInt = read
 
-values :: [Int]
-values = map myReadToInt memoryAsListOfSrings
+makeMemoryAsList :: MemoryAsCSVString -> MemoryAsList
+makeMemoryAsList memoryAsCSVString =
+  zip [0 ..] (map myReadToInt (S.splitOn "," memoryAsCSVString))
 
-memoryAsList :: [(Int, Int)]
-memoryAsList = zip [0 ..] values
+makeIntcode :: Pointer -> MemoryAsCSVString -> IntCode
+makeIntcode pointerParam memoryAsCSVString =
+  IntCode {pointer = pointerParam, memory = M.fromList (makeMemoryAsList memoryAsCSVString)}
 
-intCode :: IntCode
-intCode = IntCode {pointer = 20, memory = M.fromList memoryAsList}
+-- lookUpFromMemory :: IntCode -> Int
+-- lookUpFromMemory intCode =
+--   DM.fromJust (M.lookup (pointer intCode) (memory intCode))
 
-lookupResult3 :: Int
-lookupResult3 = DM.fromJust (M.lookup 10 (memory intCode))
+-- memoryAsCSVString :: [Char]
+-- memoryAsCSVString = "10,11,12,13,14"
 
-lookupResult4 :: Int
-lookupResult4 = DM.fromJust (M.lookup 1 (memory intCode))
+-- values :: [Int]
+-- values = S.splitOn "," memoryAsCSVString & map myReadToInt
+
+-- memoryAsList :: [(Int, Int)]
+-- memoryAsList = zip [0 ..] values
+
+-- intCode :: IntCode
+-- intCode = IntCode {pointer = 20, memory = M.fromList memoryAsList}
+
+-- lookupResult3 :: Int
+-- lookupResult3 = DM.fromJust (M.lookup 10 (memory intCode))
+
+-- lookupResult4 :: Int
+-- lookupResult4 = DM.fromJust (M.lookup 1 (memory intCode))
