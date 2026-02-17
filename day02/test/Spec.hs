@@ -1,5 +1,5 @@
 import qualified Data.Map as M
-import Lib (IntCodeStruct (..), Memory, MemoryAsCSVString, MemoryAsList, Pointer, makeIntcode, makeMemoryAsList, myReadToInt)
+import Lib (IntCodeStruct (..), makeIntcode)
 import Test.Hspec (describe, hspec, it, shouldBe)
 
 main :: IO ()

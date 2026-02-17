@@ -1,6 +1,5 @@
-module Lib (Pointer, Memory, MemoryAsCSVString, MemoryAsList, IntCodeStruct (..), myReadToInt, makeMemoryAsList, makeIntcode) where
+module Lib (IntCodeStruct (..), makeIntcode) where
 
--- import Data.Function ((&))
 import qualified Data.List.Split as S
 import qualified Data.Map as M
 
