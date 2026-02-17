@@ -1,4 +1,4 @@
-module Lib (IntCode (..), makeIntcode) where
+module Lib (Pointer, Memory, IntCodeStruct (..), myReadToInt, makeMemoryAsList) where
 
 -- import Data.Function ((&))
 import qualified Data.List.Split as S
@@ -7,15 +7,16 @@ import qualified Data.Map as M
 -- import qualified Data.Maybe as DM
 
 -- import qualified Data.Maybe as DM
+
+type Pointer = Int
+
+type Memory = M.Map Int Int
+
 type MemoryAsCSVString = [Char]
 
 type MemoryAsList = [(Int, Int)]
 
-type Memory = M.Map Int Int
-
-type Pointer = Int
-
-data IntCode
+data IntCodeStruct
   = IntCode
   { pointer :: Pointer,
     memory :: Memory
@@ -29,9 +30,9 @@ makeMemoryAsList :: MemoryAsCSVString -> MemoryAsList
 makeMemoryAsList memoryAsCSVString =
   zip [0 ..] (map myReadToInt (S.splitOn "," memoryAsCSVString))
 
-makeIntcode :: Pointer -> MemoryAsCSVString -> IntCode
-makeIntcode pointerParam memoryAsCSVString =
-  IntCode {pointer = pointerParam, memory = M.fromList (makeMemoryAsList memoryAsCSVString)}
+-- makeIntcode :: Pointer -> MemoryAsCSVString -> IntCode
+-- makeIntcode pointerParam memoryAsCSVString =
+--   IntCode {pointer = pointerParam, memory = M.fromList (makeMemoryAsList memoryAsCSVString)}
 
 -- lookUpFromMemory :: IntCode -> Int
 -- lookUpFromMemory intCode =
