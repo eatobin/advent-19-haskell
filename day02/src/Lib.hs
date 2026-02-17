@@ -1,10 +1,8 @@
-module Lib (Pointer, Memory, IntCodeStruct (..), myReadToInt, makeMemoryAsList) where
+module Lib (Pointer, Memory, MemoryAsCSVString, MemoryAsList, IntCodeStruct (..), myReadToInt, makeMemoryAsList, makeIntcode) where
 
 -- import Data.Function ((&))
 import qualified Data.List.Split as S
 import qualified Data.Map as M
-
--- import qualified Data.Maybe as DM
 
 -- import qualified Data.Maybe as DM
 
@@ -21,7 +19,7 @@ data IntCodeStruct
   { pointer :: Pointer,
     memory :: Memory
   }
-  deriving (Show)
+  deriving (Eq, Show)
 
 myReadToInt :: String -> Int
 myReadToInt = read
@@ -30,9 +28,9 @@ makeMemoryAsList :: MemoryAsCSVString -> MemoryAsList
 makeMemoryAsList memoryAsCSVString =
   zip [0 ..] (map myReadToInt (S.splitOn "," memoryAsCSVString))
 
--- makeIntcode :: Pointer -> MemoryAsCSVString -> IntCode
--- makeIntcode pointerParam memoryAsCSVString =
---   IntCode {pointer = pointerParam, memory = M.fromList (makeMemoryAsList memoryAsCSVString)}
+makeIntcode :: Pointer -> MemoryAsCSVString -> IntCodeStruct
+makeIntcode pointerParam memoryAsCSVString =
+  IntCode {pointer = pointerParam, memory = M.fromList (makeMemoryAsList memoryAsCSVString)}
 
 -- lookUpFromMemory :: IntCode -> Int
 -- lookUpFromMemory intCode =

@@ -1,4 +1,5 @@
-import Lib (IntCodeStruct (..), Memory, Pointer, makeMemoryAsList, myReadToInt)
+import qualified Data.Map as M
+import Lib (IntCodeStruct (..), Memory, MemoryAsCSVString, MemoryAsList, Pointer, makeIntcode, makeMemoryAsList, myReadToInt)
 import Test.Hspec (describe, hspec, it, shouldBe)
 
 main :: IO ()
@@ -8,6 +9,6 @@ main = hspec $ do
       (78 :: Int) `shouldBe` (78 :: Int)
 
   describe "\nMake an IntCodeStruct" $ do
-    it "make a MemoryAsList" $ do
-      let memoryAsCSVString = "10,11,12,13,14"
-      makeMemoryAsList memoryAsCSVString `shouldBe` [(0, 10), (1, 11), (2, 12), (3, 13), (4, 14)]
+    it "make an IntCodeStruct" $ do
+      let memoryAsCSVString = "20,21,22,23,24"
+      makeIntcode 20 memoryAsCSVString `shouldBe` IntCode {pointer = 20, memory = M.fromList [(0, 20), (1, 21), (2, 22), (3, 23), (4, 24)]}
