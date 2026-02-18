@@ -1,4 +1,4 @@
-import qualified Data.Map as M
+import qualified Data.IntMap as IntMap
 import Lib (IntCodeStruct (..), lookUpFromMemory, makeIntcode)
 import Test.Hspec (describe, hspec, it, shouldBe)
 
@@ -10,7 +10,7 @@ main = hspec $ do
 
   describe "\nIntCodeStruct Tests" $ do
     let memoryAsCSVString = "20,21,22,23,24"
-    let intCode = IntCode {pointer = 2, memory = M.fromList [(0, 20), (1, 21), (2, 22), (3, 23), (4, 24)]}
+    let intCode = IntCode {pointer = 2, memory = IntMap.fromList [(0, 20), (1, 21), (2, 22), (3, 23), (4, 24)]}
     it "make an IntCodeStruct" $ do
       makeIntcode 2 memoryAsCSVString `shouldBe` intCode
     it "lookup a Memory value" $ do
