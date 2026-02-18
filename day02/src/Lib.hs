@@ -1,11 +1,11 @@
 module Lib (IntCodeStruct (..), makeIntcode, lookUpFromMemory) where
 
-import qualified Data.IntMap.Strict as IntMap
+import qualified Data.IntMap.Strict as IM
 import qualified Data.List.Split as S
 
 type Pointer = Int
 
-type Memory = IntMap.IntMap Int
+type Memory = IM.IntMap Int
 
 type MemoryAsCSVString = [Char]
 
@@ -27,8 +27,8 @@ makeMemoryAsList memoryAsCSVString =
 
 makeIntcode :: Pointer -> MemoryAsCSVString -> IntCodeStruct
 makeIntcode pointerParam memoryAsCSVString =
-  IntCode {pointer = pointerParam, memory = IntMap.fromList (makeMemoryAsList memoryAsCSVString)}
+  IntCode {pointer = pointerParam, memory = IM.fromList (makeMemoryAsList memoryAsCSVString)}
 
 lookUpFromMemory :: IntCodeStruct -> Pointer -> Int
 lookUpFromMemory intCode pointerParam =
-  (memory intCode) IntMap.! pointerParam
+  (memory intCode) IM.! pointerParam
