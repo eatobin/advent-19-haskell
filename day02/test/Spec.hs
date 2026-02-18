@@ -1,4 +1,4 @@
-import qualified Data.IntMap as IntMap
+import qualified Data.IntMap.Strict as IntMap
 import Lib (IntCodeStruct (..), lookUpFromMemory, makeIntcode)
 import Test.Hspec (describe, hspec, it, shouldBe)
 
@@ -14,4 +14,4 @@ main = hspec $ do
     it "make an IntCodeStruct" $ do
       makeIntcode 2 memoryAsCSVString `shouldBe` intCode
     it "lookup a Memory value" $ do
-      lookUpFromMemory 3 intCode `shouldBe` 23
+      lookUpFromMemory intCode 3 `shouldBe` 23
