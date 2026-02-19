@@ -1,11 +1,11 @@
 module Lib (IntCodeStruct (..), makeIntcode, lookUpFromMemory) where
 
-import qualified Data.IntMap.Strict as IM
+import qualified Data.IntMap.Strict as IntMap
 import qualified Data.List.Split as S
 
 type Pointer = Int
 
-type Memory = IM.IntMap Int
+type Memory = IntMap.IntMap Int
 
 type MemoryAsCSVString = [Char]
 
@@ -27,22 +27,22 @@ makeMemoryAsList memoryAsCSVString =
 
 makeIntcode :: Pointer -> MemoryAsCSVString -> IntCodeStruct
 makeIntcode pointerParam memoryAsCSVString =
-  IntCode {pointer = pointerParam, memory = IM.fromList (makeMemoryAsList memoryAsCSVString)}
+  IntCode {pointer = pointerParam, memory = IntMap.fromList (makeMemoryAsList memoryAsCSVString)}
 
 lookUpFromMemory :: IntCodeStruct -> Pointer -> Int
 lookUpFromMemory intCode pointerParam =
-  (memory intCode) IM.! pointerParam
+  (memory intCode) IntMap.! pointerParam
 
 opCode :: IntCodeStruct -> IntCodeStruct
 opCode intCode = case action of
-  1 -> IM.adjust succ 0 (memory intCode)
+  1 -> IntMap.adjust succ 0 (memory intCode)
   _ -> intCode
   where
-    action = memory intCode IM.! pointer intCode
+    action = memory intCode IntMap.! pointer intCode
 
--- address1 = memory intCode IM.! pointer intCode + 1
--- address2 = memory intCode IM.! pointer intCode + 2
--- address3 = memory intCode IM.! pointer intCode + 3
+-- address1 = memory intCode IntMap.! pointer intCode + 1
+-- address2 = memory intCode IntMap.! pointer intCode + 2
+-- address3 = memory intCode IntMap.! pointer intCode + 3
 
 -- adjust :: (a -> a) -> Key -> IntMap a -> IntMap a
 
