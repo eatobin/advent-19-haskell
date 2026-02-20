@@ -5,6 +5,10 @@ import qualified Data.List.Split as S
 
 type Pointer = Int
 
+type Key = Int
+
+type Value = Int
+
 type Memory = IntMap.IntMap Int
 
 type MemoryAsCSVString = [Char]
@@ -12,10 +16,6 @@ type MemoryAsCSVString = [Char]
 type MemoryAsList = [(Int, Int)]
 
 type PointerOffset = Int
-
-type Index = Int
-
-type Value = Int
 
 data IntCodeStruct
   = IntCode
@@ -29,13 +29,13 @@ data IntCodeStruct
 -- 01234
 -- 01002
 -- 34(DE) - two-digit opcode,      02 == opcode 2
---  2(C) - mode of 1st parameter,  0 == position mode
---  1(B) - mode of 2nd parameter,  1 == immediate mode
---  0(A) - mode of 3rd parameter,  0 == position mode,
---                                   omitted due to being a leading zero
--- 0 1 or 2 = left-to-right position after 2 digit opcode
--- p i or r = position, immediate or relative mode
--- r or w = read or write
+-- 2(C) - mode of 1st parameter,  0 == position mode
+-- 1(B) - mode of 2nd parameter,  1 == immediate mode
+-- 0(A) - mode of 3rd parameter,  0 == position mode, omitted due to being a leading zero
+
+-- 0 1 or 2 - left-to-right position after 2 digit opcode
+-- p i or r - position, immediate or relative mode
+-- r or w - read or write
 
 pointerOffsetC :: PointerOffset
 pointerOffsetC = 1
@@ -57,15 +57,15 @@ makeIntcode :: Pointer -> MemoryAsCSVString -> IntCodeStruct
 makeIntcode pointerParam memoryAsCSVString =
   IntCode {pointer = pointerParam, memory = IntMap.fromList (makeMemoryAsList memoryAsCSVString)}
 
-lookUpFromMemory :: IntCodeStruct -> Index -> Value
+lookUpFromMemory :: IntCodeStruct -> Key -> Value
 lookUpFromMemory intCode index =
   memory intCode IntMap.! index
 
-writeToReadFromIndex :: IntCodeStruct -> PointerOffset -> Index
+writeToReadFromIndex :: IntCodeStruct -> PointerOffset -> Key
 writeToReadFromIndex intCode pointerOffsetParam =
   memory intCode IntMap.! (pointer intCode + pointerOffsetParam)
 
-pw :: IntCodeStruct -> PointerOffset -> Index
+pw :: IntCodeStruct -> PointerOffset -> Key
 pw = writeToReadFromIndex
 
 pr :: IntCodeStruct -> PointerOffset -> Value
