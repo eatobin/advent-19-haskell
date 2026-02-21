@@ -10,6 +10,8 @@ Run:
 [eric@eric-minisforum day01](master)$ stack exec -- ghcid -c "stack ghci day02"
 [eric@eric-minisforum day01](master)$ stack exec -- ghcid -c "stack ghci test/Spec.hs"
 
+stack exec -- hlint src/Lib.hs
+
 ghcid             > [6 of 6] Compiling Paths_ghcid
 ghcid             > copy/register
 ghcid             > Installing executable ghcid in /home/eric/.stack/snapshots/x86_64-linux/755c779960acc838daea0e46012edc313305abc04b66dcb816178d12fa26df10/9.6.7/bin
