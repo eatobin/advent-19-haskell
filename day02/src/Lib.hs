@@ -13,7 +13,7 @@ type Memory = IntMap.IntMap Int
 
 type MemoryAsCSVString = [Char]
 
-type MemoryAsList = [(Int, Int)]
+type MemoryAsList = [(Key, Value)]
 
 type PointerOffset = Int
 
@@ -61,16 +61,16 @@ lookUpFromMemory :: IntCodeStruct -> Key -> Value
 lookUpFromMemory intCode index =
   memory intCode IntMap.! index
 
-writeToReadFromIndex :: IntCodeStruct -> PointerOffset -> Key
-writeToReadFromIndex intCode pointerOffsetParam =
+keyToKey :: IntCodeStruct -> PointerOffset -> Key
+keyToKey intCode pointerOffsetParam =
   memory intCode IntMap.! (pointer intCode + pointerOffsetParam)
 
 pw :: IntCodeStruct -> PointerOffset -> Key
-pw = writeToReadFromIndex
+pw = keyToKey
 
 pr :: IntCodeStruct -> PointerOffset -> Value
 pr intCode pointerOffsetParam =
-  memory intCode IntMap.! writeToReadFromIndex intCode pointerOffsetParam
+  memory intCode IntMap.! keyToKey intCode pointerOffsetParam
 
 -- opCode :: IntCodeStruct -> IntCodeStruct
 -- opCode intCode = case action of
