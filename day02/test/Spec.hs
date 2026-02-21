@@ -1,6 +1,6 @@
 import Control.Exception (evaluate)
 import qualified Data.IntMap.Strict as IM
-import Lib (IntCodeStruct (..), lookUpFromMemory, makeIntcode)
+import Lib (IntCodeStruct (..), keyToKey, makeIntcode)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -11,10 +11,10 @@ main = hspec $ do
 
   describe "\nIntCodeStruct Tests" $ do
     let memoryAsCSVString = "20,21,22,23,24"
-    let intCode = IntCode {pointer = 2, memory = IM.fromList [(0, 20), (1, 21), (2, 22), (3, 23), (4, 24)]}
+    let intCode = IntCode {pointer = 0, memory = IM.fromList [(0, 20), (1, 21), (2, 22), (3, 23), (4, 24)]}
     it "make an IntCodeStruct" $ do
-      makeIntcode 2 memoryAsCSVString `shouldBe` intCode
+      makeIntcode 0 memoryAsCSVString `shouldBe` intCode
     it "lookup a valid Memory index" $ do
-      lookUpFromMemory intCode 3 `shouldBe` 23
+      keyToKey intCode 3 `shouldBe` 23
     it "lookup an invalid Memory index" $ do
-      evaluate (lookUpFromMemory intCode 33) `shouldThrow` anyErrorCall
+      evaluate (keyToKey intCode 33) `shouldThrow` anyErrorCall

@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), makeIntcode, lookUpFromMemory) where
+module Lib (IntCodeStruct (..), makeIntcode, keyToKey) where
 
 import qualified Data.IntMap.Strict as IntMap
 import qualified Data.List.Split as S
@@ -37,14 +37,14 @@ data IntCodeStruct
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
-pointerOffsetC :: PointerOffset
-pointerOffsetC = 1
+-- pointerOffsetC :: PointerOffset
+-- pointerOffsetC = 1
 
-pointerOffsetB :: PointerOffset
-pointerOffsetB = 2
+-- pointerOffsetB :: PointerOffset
+-- pointerOffsetB = 2
 
-pointerOffsetA :: PointerOffset
-pointerOffsetA = 3
+-- pointerOffsetA :: PointerOffset
+-- pointerOffsetA = 3
 
 myReadToInt :: String -> Int
 myReadToInt = read
@@ -57,20 +57,21 @@ makeIntcode :: Pointer -> MemoryAsCSVString -> IntCodeStruct
 makeIntcode pointerParam memoryAsCSVString =
   IntCode {pointer = pointerParam, memory = IntMap.fromList (makeMemoryAsList memoryAsCSVString)}
 
-lookUpFromMemory :: IntCodeStruct -> Key -> Value
-lookUpFromMemory intCode index =
-  memory intCode IntMap.! index
+-- lookUpFromMemory :: IntCodeStruct -> Key -> Value
+-- lookUpFromMemory intCode index =
+--   memory intCode IntMap.! index
 
 keyToKey :: IntCodeStruct -> PointerOffset -> Key
 keyToKey intCode pointerOffsetParam =
   memory intCode IntMap.! (pointer intCode + pointerOffsetParam)
 
-pw :: IntCodeStruct -> PointerOffset -> Key
-pw = keyToKey
+-- pw :: IntCodeStruct -> PointerOffset -> Key
+-- pw intCode pointerOffsetParam =
+--   keyToKey intCode pointerOffsetParam
 
-pr :: IntCodeStruct -> PointerOffset -> Value
-pr intCode pointerOffsetParam =
-  memory intCode IntMap.! keyToKey intCode pointerOffsetParam
+-- pr :: IntCodeStruct -> PointerOffset -> Value
+-- pr intCode pointerOffsetParam =
+--   memory intCode IntMap.! keyToKey intCode pointerOffsetParam
 
 -- opCode :: IntCodeStruct -> IntCodeStruct
 -- opCode intCode = case action of
