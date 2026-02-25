@@ -13,7 +13,7 @@ type Memory = IntMap.IntMap Int
 
 type MemoryAsCSVString = [Char]
 
-type MemoryAsList = [(Key, Value)]
+type MemoryAsKVTupleList = [(Key, Value)]
 
 type PointerOffset = Int
 
@@ -49,20 +49,24 @@ data IntCodeStruct
 myReadToInt :: String -> Int
 myReadToInt = read
 
-makeMemoryAsList :: MemoryAsCSVString -> MemoryAsList
-makeMemoryAsList memoryAsCSVString =
-  zip [0 ..] (map myReadToInt (S.splitOn "," memoryAsCSVString))
+makeMemoryAsKVTupleList :: MemoryAsCSVString -> MemoryAsKVTupleList
+makeMemoryAsKVTupleList memoryAsCSVStringParam =
+  zip [0 ..] (map myReadToInt (S.splitOn "," memoryAsCSVStringParam))
+
+makeMemory :: MemoryAsCSVString -> Memory
+makeMemory memoryAsCSVStringParam =
+  IntMap.fromList (makeMemoryAsKVTupleList memoryAsCSVStringParam)
 
 makeIntcode :: Pointer -> MemoryAsCSVString -> IntCodeStruct
-makeIntcode pointerParam memoryAsCSVString =
-  IntCode {pointer = pointerParam, memory = IntMap.fromList (makeMemoryAsList memoryAsCSVString)}
+makeIntcode pointerParam memoryAsCSVStringParam =
+  IntCode {pointer = pointerParam, memory = makeMemory memoryAsCSVStringParam}
 
 keyToKey :: IntCodeStruct -> PointerOffset -> Key
 keyToKey intCode pointerOffsetParam =
   memory intCode IntMap.! (pointer intCode + pointerOffsetParam)
 
 pw :: IntCodeStruct -> PointerOffset -> Key
-pw  =
+pw =
   keyToKey
 
 pr :: IntCodeStruct -> PointerOffset -> Value
