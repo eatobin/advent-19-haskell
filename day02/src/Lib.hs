@@ -1,4 +1,17 @@
-module Lib (IntCodeStruct (..), makeIntcode, pw, pr) where
+module Lib (IntCodeStruct (..), makeMemory, makeIntcode, pw, pr) where
+
+-- Instruction:
+-- ABCDE
+-- 01234
+-- 01002
+-- 34(DE) - two-digit opcode,      02 == opcode 2
+-- 2(C) - mode of 1st parameter,  0 == position mode
+-- 1(B) - mode of 2nd parameter,  1 == immediate mode
+-- 0(A) - mode of 3rd parameter,  0 == position mode, omitted due to being a leading zero
+
+-- 0 1 or 2 - left-to-right position after 2 digit opcode
+-- p i or r - position, immediate or relative mode
+-- r or w - read or write
 
 import qualified Data.IntMap.Strict as IntMap
 import qualified Data.List.Split as S
@@ -21,19 +34,6 @@ data IntCodeStruct
     memory :: Memory
   }
   deriving (Eq, Show)
-
--- Instruction:
--- ABCDE
--- 01234
--- 01002
--- 34(DE) - two-digit opcode,      02 == opcode 2
--- 2(C) - mode of 1st parameter,  0 == position mode
--- 1(B) - mode of 2nd parameter,  1 == immediate mode
--- 0(A) - mode of 3rd parameter,  0 == position mode, omitted due to being a leading zero
-
--- 0 1 or 2 - left-to-right position after 2 digit opcode
--- p i or r - position, immediate or relative mode
--- r or w - read or write
 
 -- pointerOffsetC :: PointerOffset
 -- pointerOffsetC = 1

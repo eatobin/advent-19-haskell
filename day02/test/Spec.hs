@@ -13,7 +13,7 @@ main = hspec $ do
     let memoryAsCSVString = "10,11,1"
     let intCode = IntCode {pointer = 0, memory = IntMap.fromList [(0, 10), (1, 11), (2, 1)]}
 
-    it "make an IntCodeStruct" $ do
+    it "make an IntCode" $ do
       makeIntcode 0 memoryAsCSVString `shouldBe` intCode
     it "lookup a valid Memory index - pw" $ do
       pw intCode 2 `shouldBe` 1
