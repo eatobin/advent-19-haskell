@@ -9,7 +9,7 @@ type Key = Int
 
 type Value = Int
 
-type Memory = IntMap.IntMap Int
+type Memory = IntMap.IntMap Value
 
 type MemoryAsCSVString = [Char]
 
