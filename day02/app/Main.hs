@@ -5,4 +5,6 @@ import Lib ()
 main :: IO ()
 main =
   do
-    print "hi eric"
+    let n = 42 :: Int
+    let s = show n
+    putStrLn s
