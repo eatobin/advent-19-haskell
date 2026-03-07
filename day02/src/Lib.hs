@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), makeMemory, makeIntcode, pw, pr) where
+module Lib (IntCodeStruct (..), makeInstruction, makeMemory, pw, pr) where
 
 -- Instruction:
 -- ABCDE
@@ -13,8 +13,12 @@ module Lib (IntCodeStruct (..), makeMemory, makeIntcode, pw, pr) where
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
+import qualified Data.Char as DC
 import qualified Data.IntMap.Strict as IntMap
 import qualified Data.List.Split as S
+import qualified Data.Map as Map
+
+type Instruction = Map.Map Char Int
 
 type Pointer = Int
 
@@ -44,15 +48,20 @@ data IntCodeStruct
 -- pointerOffsetA :: PointerOffset
 -- pointerOffsetA = 3
 
+makeInstruction :: Int -> Instruction
+makeInstruction op =
+  Map.fromList instructionAsKVTupleList
+  where
+    keys = ['a', 'b', 'c', 'd', 'e']
+    opAsString = show op
+    paddedOp = replicate (5 - length opAsString) '0' ++ opAsString
+    values = map DC.digitToInt paddedOp
+    instructionAsKVTupleList = zip keys values
+
 makeMemory :: MemoryAsCSVString -> Memory
 makeMemory memoryAsCSVStringParam =
   let memoryAsKVTupleList = zip [0 ..] (map read (S.splitOn "," memoryAsCSVStringParam))
    in IntMap.fromList memoryAsKVTupleList
-
-makeIntcode :: Pointer -> MemoryAsCSVString -> IntCodeStruct
-makeIntcode pointerParam memoryAsCSVStringParam =
-  let newMemory = makeMemory memoryAsCSVStringParam
-   in IntCode {pointer = pointerParam, memory = newMemory}
 
 keyToKey :: IntCodeStruct -> PointerOffset -> Key
 keyToKey intCode pointerOffsetParam =
