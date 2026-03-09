@@ -1,6 +1,7 @@
 import Control.Exception (evaluate)
 import qualified Data.IntMap.Strict as IntMap
-import Lib (IntCodeStruct (..), makeMemory, pr, pw)
+import qualified Data.Map as Map
+import Lib (IntCodeStruct (..), makeInstruction, makeMemory, pr, pw)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -8,6 +9,10 @@ main = hspec $ do
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
       (78 :: Int) `shouldBe` (78 :: Int)
+
+  describe "\nInstruction Tests" $ do
+    it "make an Instruction" $ do
+      makeInstruction 9 `shouldBe` Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 9)]
 
   describe "\nIntCodeStruct Tests" $ do
     let memoryAsCSVString = "10,11,1"
