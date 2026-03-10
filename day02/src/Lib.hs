@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), makeInstruction, makeMemory, pw, pr) where
+module Lib (IntCodeStruct (..), makeInstruction, makeMemory, pw, pr, aParam, bParam, cParam) where
 
 -- Instruction:
 -- ABCDE
@@ -39,14 +39,14 @@ data IntCodeStruct
   }
   deriving (Eq, Show)
 
--- pointerOffsetC :: PointerOffset
--- pointerOffsetC = 1
+pointerOffsetC :: PointerOffset
+pointerOffsetC = 1
 
--- pointerOffsetB :: PointerOffset
--- pointerOffsetB = 2
+pointerOffsetB :: PointerOffset
+pointerOffsetB = 2
 
--- pointerOffsetA :: PointerOffset
--- pointerOffsetA = 3
+pointerOffsetA :: PointerOffset
+pointerOffsetA = 3
 
 makeInstruction :: Int -> Instruction
 makeInstruction op =
@@ -74,6 +74,21 @@ pw =
 pr :: IntCodeStruct -> PointerOffset -> Value
 pr intCode pointerOffsetParam =
   memory intCode IntMap.! keyToKey intCode pointerOffsetParam
+
+aParam :: Instruction -> IntCodeStruct -> Int
+aParam instruction intcode = case instruction Map.! 'a' of
+  0 -> pw intcode pointerOffsetA -- a-p-w
+  _ -> error "Instruction is not valid"
+
+bParam :: Instruction -> IntCodeStruct -> Int
+bParam instruction intcode = case instruction Map.! 'b' of
+  0 -> pr intcode pointerOffsetB -- b-p-r
+  _ -> error "Instruction is not valid"
+
+cParam :: Instruction -> IntCodeStruct -> Int
+cParam instruction intcode = case instruction Map.! 'c' of
+  0 -> pr intcode pointerOffsetC -- c-p-r
+  _ -> error "Instruction is not valid"
 
 -- opCode :: IntCodeStruct -> IntCodeStruct
 -- opCode intCode = case action of
