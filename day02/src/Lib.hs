@@ -76,9 +76,10 @@ pr intCode pointerOffsetParam =
   memory intCode IntMap.! keyToKey intCode pointerOffsetParam
 
 aParam :: Instruction -> IntCodeStruct -> Int
-aParam instruction intcode = case instruction Map.! 'a' of
-  0 -> pw intcode pointerOffsetA -- a-p-w
-  _ -> error "Instruction is not valid"
+aParam instruction intcode =
+  case instruction Map.! 'a' of
+    0 -> pw intcode pointerOffsetA -- a-p-w
+    _ -> error "Instruction is not valid"
 
 bParam :: Instruction -> IntCodeStruct -> Int
 bParam instruction intcode = case instruction Map.! 'b' of
