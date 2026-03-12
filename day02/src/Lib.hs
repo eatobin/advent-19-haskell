@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), makeInstruction, makeMemory, pw, pr, aParam, bParam, cParam) where
+module Lib (IntCodeStruct (..), makeInstruction, makeMemory, pw, pr, aParam, bParam, cParam, add, multiply) where
 
 -- Instruction:
 -- ABCDE
