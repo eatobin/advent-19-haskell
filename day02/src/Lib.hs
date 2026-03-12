@@ -82,14 +82,16 @@ aParam instruction intcode =
     _ -> error "Instruction is not valid"
 
 bParam :: Instruction -> IntCodeStruct -> Int
-bParam instruction intcode = case instruction Map.! 'b' of
-  0 -> pr intcode pointerOffsetB -- b-p-r
-  _ -> error "Instruction is not valid"
+bParam instruction intcode =
+  case instruction Map.! 'b' of
+    0 -> pr intcode pointerOffsetB -- b-p-r
+    _ -> error "Instruction is not valid"
 
 cParam :: Instruction -> IntCodeStruct -> Int
-cParam instruction intcode = case instruction Map.! 'c' of
-  0 -> pr intcode pointerOffsetC -- c-p-r
-  _ -> error "Instruction is not valid"
+cParam instruction intcode =
+  case instruction Map.! 'c' of
+    0 -> pr intcode pointerOffsetC -- c-p-r
+    _ -> error "Instruction is not valid"
 
 -- opCode :: IntCodeStruct -> IntCodeStruct
 -- opCode intCode = case action of
