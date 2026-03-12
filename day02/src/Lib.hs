@@ -93,6 +93,28 @@ cParam instruction intcode =
     0 -> pr intcode pointerOffsetC -- c-p-r
     _ -> error "Instruction is not valid"
 
+add :: Instruction -> IntCodeStruct -> IntCodeStruct
+add instruction intcode =
+  IntCode
+    { pointer = pointer intcode + 4,
+      memory =
+        IntMap.insert
+          (aParam instruction intcode)
+          (cParam instruction intcode + bParam instruction intcode)
+          (memory intcode)
+    }
+
+multiply :: Instruction -> IntCodeStruct -> IntCodeStruct
+multiply instruction intcode =
+  IntCode
+    { pointer = pointer intcode + 4,
+      memory =
+        IntMap.insert
+          (aParam instruction intcode)
+          (cParam instruction intcode * bParam instruction intcode)
+          (memory intcode)
+    }
+
 -- opCode :: IntCodeStruct -> IntCodeStruct
 -- opCode intCode = case action of
 --   1 -> IntMap.adjust succ 0 (memory intCode)
