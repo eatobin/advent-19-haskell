@@ -1,7 +1,7 @@
 import Control.Exception (evaluate)
 import qualified Data.IntMap.Strict as IntMap
 import qualified Data.Map as Map
-import Lib (IntCodeStruct (..), aParam, bParam, cParam, makeInstruction, makeMemory, pr, pw)
+import Lib (IntCodeStruct (..), aParam, bParam, cParam, makeInstruction, makeMemory, pr, pw, add, multiply)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -43,3 +43,13 @@ main = hspec $ do
       bParam instruction intCodeX `shouldBe` 2
     it "lookup a valid cParam" $ do
       cParam instruction intCodeX `shouldBe` 1
+
+  describe "\nAdd/Mult Tests" $ do
+    let instruction = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 0 :: Int)]
+    let thisMemoryX = IntMap.fromList [(0, 0), (1, 2), (2, 1), (3, 0 :: Int)]
+    let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
+
+    it "1 plus 2 should be set at 0" $ do
+      add instruction intCodeX `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0,3),(1,2),(2,1),(3,0)]}
+    it "1 times 2 should be set at 0" $ do
+      multiply instruction intCodeX `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0,2),(1,2),(2,1),(3,0)]}
