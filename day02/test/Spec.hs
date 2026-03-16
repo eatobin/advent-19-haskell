@@ -49,7 +49,7 @@ main = hspec $ do
     let thisMemoryX = IntMap.fromList [(0, 0), (1, 2), (2, 1), (3, 0 :: Int)]
     let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
 
-    it "1 plus 2 should be set at 0" $ do
+    it "1 plus 2 should be set at 0 and pointer should be 4" $ do
       add instruction intCodeX `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0,3),(1,2),(2,1),(3,0)]}
-    it "1 times 2 should be set at 0" $ do
+    it "1 times 2 should be set at 0 and pointer should be 4" $ do
       multiply instruction intCodeX `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0,2),(1,2),(2,1),(3,0)]}
