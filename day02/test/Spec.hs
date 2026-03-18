@@ -9,8 +9,13 @@ main = hspec $ do
   let instruction1 = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)]
   let instruction3 = Map.fromList [('a', 0), ('b', 0), ('c', 4), ('d', 5), ('e', 6 :: Int)]
   let instruction5 = Map.fromList [('a', 2), ('b', 3), ('c', 4), ('d', 5), ('e', 6 :: Int)]
-  
-
+  let memoryAsCSVString = "10,11,1"
+  let thisMemory = IntMap.fromList [(0, 10), (1, 11), (2, 1 :: Int)]
+  let intCode = IntCode {pointer = 0, memory = thisMemory}
+  let thisMemoryX = IntMap.fromList [(0, 0), (1, 1), (2, 2), (3, 3 :: Int)]
+  let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
+  let thisMemoryR = IntMap.fromList [(0, 0), (1, 2), (2, 1), (3, 0 :: Int)]
+  let intCodeR = IntCode {pointer = 0, memory = thisMemoryR}
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
@@ -25,10 +30,6 @@ main = hspec $ do
       makeInstruction 23456 `shouldBe` instruction5
 
   describe "\nIntCodeStruct Tests" $ do
-    let memoryAsCSVString = "10,11,1"
-    let thisMemory = IntMap.fromList [(0, 10), (1, 11), (2, 1 :: Int)]
-    let intCode = IntCode {pointer = 0, memory = thisMemory}
-
     it "make a Memory" $ do
       makeMemory memoryAsCSVString `shouldBe` thisMemory
     it "lookup a valid Memory index - pw" $ do
@@ -39,23 +40,15 @@ main = hspec $ do
       evaluate (pw intCode 33) `shouldThrow` anyErrorCall
 
   describe "\nxParam Tests" $ do
-    let instruction = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)]
-    let thisMemoryX = IntMap.fromList [(0, 0), (1, 1), (2, 2), (3, 3 :: Int)]
-    let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
-
     it "lookup a valid aParam" $ do
-      aParam instruction intCodeX `shouldBe` 3
+      aParam instruction1 intCodeX `shouldBe` 3
     it "lookup a valid bParam" $ do
-      bParam instruction intCodeX `shouldBe` 2
+      bParam instruction1 intCodeX `shouldBe` 2
     it "lookup a valid cParam" $ do
-      cParam instruction intCodeX `shouldBe` 1
+      cParam instruction1 intCodeX `shouldBe` 1
 
   describe "\nAdd/Mult Tests" $ do
-    let instruction = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 0 :: Int)]
-    let thisMemoryX = IntMap.fromList [(0, 0), (1, 2), (2, 1), (3, 0 :: Int)]
-    let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
-
     it "1 plus 2 should be set at 0 and pointer should be 4" $ do
-      add instruction intCodeX `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0,3),(1,2),(2,1),(3,0)]}
+      add instruction1 intCodeR `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0,3),(1,2),(2,1),(3,0)]}
     it "1 times 2 should be set at 0 and pointer should be 4" $ do
-      multiply instruction intCodeX `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0,2),(1,2),(2,1),(3,0)]}
+      multiply instruction1 intCodeR `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0,2),(1,2),(2,1),(3,0)]}
