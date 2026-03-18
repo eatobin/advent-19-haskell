@@ -14,8 +14,10 @@ main = hspec $ do
   let intCode = IntCode {pointer = 0, memory = thisMemory}
   let thisMemoryX = IntMap.fromList [(0, 0), (1, 1), (2, 2), (3, 3 :: Int)]
   let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
-  let thisMemoryR = IntMap.fromList [(0, 0), (1, 2), (2, 1), (3, 0 :: Int)]
-  let intCodeR = IntCode {pointer = 0, memory = thisMemoryR}
+  let thisMemoryAddMult = IntMap.fromList [(0, 0), (1, 2), (2, 1), (3, 0 :: Int)]
+  let intCodeAddMult = IntCode {pointer = 0, memory = thisMemoryAddMult}
+  let intCodeAdd = IntCode {pointer = 4, memory = IntMap.fromList [(0,3),(1,2),(2,1),(3,0)]}
+  let intCodeMult = IntCode {pointer = 4, memory = IntMap.fromList [(0,2),(1,2),(2,1),(3,0)]}
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
@@ -49,6 +51,6 @@ main = hspec $ do
 
   describe "\nAdd/Mult Tests" $ do
     it "1 plus 2 should be set at 0 and pointer should be 4" $ do
-      add instruction1 intCodeR `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0,3),(1,2),(2,1),(3,0)]}
+      add instruction1 intCodeAddMult `shouldBe` intCodeAdd
     it "1 times 2 should be set at 0 and pointer should be 4" $ do
-      multiply instruction1 intCodeR `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0,2),(1,2),(2,1),(3,0)]}
+      multiply instruction1 intCodeAddMult `shouldBe` intCodeMult
