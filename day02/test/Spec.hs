@@ -1,7 +1,7 @@
 import Control.Exception (evaluate)
 import qualified Data.IntMap.Strict as IntMap
 import qualified Data.Map as Map
-import Lib (IntCodeStruct (..), aParam, bParam, cParam, makeInstruction, makeMemory, pr, pw, add, multiply)
+import Lib (IntCodeStruct (..), aParam, add, bParam, cParam, makeInstruction, makeMemory, multiply, pr, pw)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -10,14 +10,17 @@ main = hspec $ do
   let instruction3 = Map.fromList [('a', 0), ('b', 0), ('c', 4), ('d', 5), ('e', 6 :: Int)]
   let instruction5 = Map.fromList [('a', 2), ('b', 3), ('c', 4), ('d', 5), ('e', 6 :: Int)]
   let memoryAsCSVString = "10,11,1"
+  let aocMemory = "1,9,10,3,2,3,11,0,99,30,40,50"
   let thisMemory = IntMap.fromList [(0, 10), (1, 11), (2, 1 :: Int)]
   let intCode = IntCode {pointer = 0, memory = thisMemory}
   let thisMemoryX = IntMap.fromList [(0, 0), (1, 1), (2, 2), (3, 3 :: Int)]
   let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
   let thisMemoryAddMult = IntMap.fromList [(0, 0), (1, 2), (2, 1), (3, 0 :: Int)]
+  let thisMemoryAddMultTest = IntMap.fromList [(0, 1), (1, 2), (2, 1), (3, 0 :: Int)]
   let intCodeAddMult = IntCode {pointer = 0, memory = thisMemoryAddMult}
-  let intCodeAdd = IntCode {pointer = 4, memory = IntMap.fromList [(0,3),(1,2),(2,1),(3,0)]}
-  let intCodeMult = IntCode {pointer = 4, memory = IntMap.fromList [(0,2),(1,2),(2,1),(3,0)]}
+  let intCodeAddMultTest = IntCode {pointer = 0, memory = thisMemoryAddMultTest}
+  let intCodeAdd = IntCode {pointer = 4, memory = IntMap.fromList [(0, 3), (1, 2), (2, 1), (3, 0)]}
+  let intCodeMult = IntCode {pointer = 4, memory = IntMap.fromList [(0, 2), (1, 2), (2, 1), (3, 0)]}
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do

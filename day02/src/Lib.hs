@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), makeInstruction, makeMemory, pw, pr, aParam, bParam, cParam, add, multiply) where
+module Lib (IntCodeStruct (..), makeInstruction, makeMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
 
 -- Instruction:
 -- ABCDE
@@ -115,29 +115,12 @@ multiply instruction intcode =
           (memory intcode)
     }
 
--- opCode :: IntCodeStruct -> IntCodeStruct
--- opCode intCode = case action of
---   1 -> IntMap.adjust succ 0 (memory intCode)
---   _ -> intCode
---   where
---     action = memory intCode IntMap.! pointer intCode
-
--- address1 = memory intCode IntMap.! pointer intCode + 1
--- address2 = memory intCode IntMap.! pointer intCode + 2
--- address3 = memory intCode IntMap.! pointer intCode + 3
-
--- adjust :: (a -> a) -> Key -> IntMap a -> IntMap a
-
--- cylinder :: (RealFloat a) => a -> a -> a
--- cylinder r h =
---   sideArea + 2 * topArea
---   where
---     sideArea = 2 * pi * r * h
---     topArea = pi * r ^ 2
-
--- describeNumber :: Int -> String
--- describeNumber x = case x of
---   0 -> "The number is zero."
---   1 -> "The number is one."
---   n | n < 0 -> "The number is negative." -- Guards can be used within case alternatives
---   _ -> "The number is some other positive integer."
+runOpCode :: IntCodeStruct -> IntCodeStruct
+runOpCode intCode =
+  case instruction Map.! 'e' of
+    1 -> runOpCode (add instruction intCode)
+    2 -> runOpCode (multiply instruction intCode)
+    9 -> intCode
+    _ -> error "Instruction is not valid"
+  where
+    instruction = makeInstruction (memory intCode IntMap.! pointer intCode)
