@@ -1,7 +1,7 @@
 import Control.Exception (evaluate)
 import qualified Data.IntMap.Strict as IntMap
 import qualified Data.Map as Map
-import Lib (IntCodeStruct (..), aParam, add, bParam, cParam, makeInstruction, makeMemory, multiply, pr, pw)
+import Lib (IntCodeStruct (..), aParam, add, bParam, cParam, makeInstruction, makeMemory, multiply, pr, pw, runOpCode)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -10,15 +10,18 @@ main = hspec $ do
   let instruction3 = Map.fromList [('a', 0), ('b', 0), ('c', 4), ('d', 5), ('e', 6 :: Int)]
   let instruction5 = Map.fromList [('a', 2), ('b', 3), ('c', 4), ('d', 5), ('e', 6 :: Int)]
   let memoryAsCSVString = "10,11,1"
-  let aocMemory = "1,9,10,3,2,3,11,0,99,30,40,50"
+  let aocMemory1 = "1,0,0,3,99"
+  let aocMemory2 = "1,9,10,3,2,3,11,0,99,30,40,50"
+  let aocMemory3 = "1,0,0,0,99"
+  let aocMemory4 = "2,3,0,3,99"
+  let aocMemory5 = "2,4,4,5,99,0"
+  let aocMemory6 = "1,1,1,4,99,5,6,0,99"
   let thisMemory = IntMap.fromList [(0, 10), (1, 11), (2, 1 :: Int)]
   let intCode = IntCode {pointer = 0, memory = thisMemory}
   let thisMemoryX = IntMap.fromList [(0, 0), (1, 1), (2, 2), (3, 3 :: Int)]
   let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
   let thisMemoryAddMult = IntMap.fromList [(0, 0), (1, 2), (2, 1), (3, 0 :: Int)]
-  let thisMemoryAddMultTest = IntMap.fromList [(0, 1), (1, 2), (2, 1), (3, 0 :: Int)]
   let intCodeAddMult = IntCode {pointer = 0, memory = thisMemoryAddMult}
-  let intCodeAddMultTest = IntCode {pointer = 0, memory = thisMemoryAddMultTest}
   let intCodeAdd = IntCode {pointer = 4, memory = IntMap.fromList [(0, 3), (1, 2), (2, 1), (3, 0)]}
   let intCodeMult = IntCode {pointer = 4, memory = IntMap.fromList [(0, 2), (1, 2), (2, 1), (3, 0)]}
 
@@ -57,3 +60,29 @@ main = hspec $ do
       add instruction1 intCodeAddMult `shouldBe` intCodeAdd
     it "1 times 2 should be set at 0 and pointer should be 4" $ do
       multiply instruction1 intCodeAddMult `shouldBe` intCodeMult
+
+  describe "\nrunOpCode Tests" $ do
+    it "aocMemory1" $
+      do
+        runOpCode (IntCode {pointer = 0, memory = makeMemory aocMemory1})
+        `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0, 1), (1, 0), (2, 0), (3, 2), (4, 99)]}
+    it "aocMemory2" $
+      do
+        runOpCode (IntCode {pointer = 0, memory = makeMemory aocMemory2})
+        `shouldBe` IntCode {pointer = 8, memory = IntMap.fromList [(0, 3500), (1, 9), (2, 10), (3, 70), (4, 2), (5, 3), (6, 11), (7, 0), (8, 99), (9, 30), (10, 40), (11, 50)]}
+    it "aocMemory3" $
+      do
+        runOpCode (IntCode {pointer = 0, memory = makeMemory aocMemory3})
+        `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0, 2), (1, 0), (2, 0), (3, 0), (4, 99)]}
+    it "aocMemory4" $
+      do
+        runOpCode (IntCode {pointer = 0, memory = makeMemory aocMemory4})
+        `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0, 2), (1, 3), (2, 0), (3, 6), (4, 99)]}
+    it "aocMemory5" $
+      do
+        runOpCode (IntCode {pointer = 0, memory = makeMemory aocMemory5})
+        `shouldBe` IntCode {pointer = 4, memory = IntMap.fromList [(0, 2), (1, 4), (2, 4), (3, 5), (4, 99), (5, 9801)]}
+    it "aocMemory6" $
+      do
+        runOpCode (IntCode {pointer = 0, memory = makeMemory aocMemory6})
+        `shouldBe` IntCode {pointer = 8, memory = IntMap.fromList [(0, 30), (1, 1), (2, 1), (3, 4), (4, 2), (5, 5), (6, 6), (7, 0), (8, 99)]}
