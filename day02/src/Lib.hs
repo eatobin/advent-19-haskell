@@ -14,9 +14,8 @@ module Lib (IntCodeStruct (..), makeInstruction, makeMemory, pw, pr, aParam, bPa
 -- r or w - read or write
 
 import qualified Data.Char as DC
-import qualified Data.IntMap.Strict as IntMap
 import qualified Data.List.Split as S
-import qualified Data.Map as Map
+import qualified Data.Map.Strict as Map
 
 type Instruction = Map.Map Char Int
 
@@ -26,7 +25,7 @@ type Key = Int
 
 type Value = Int
 
-type Memory = IntMap.IntMap Value
+type Memory = Map.Map Key Value
 
 type MemoryAsCSVString = [Char]
 
@@ -61,11 +60,11 @@ makeInstruction op =
 makeMemory :: MemoryAsCSVString -> Memory
 makeMemory memoryAsCSVStringParam =
   let memoryAsKVTupleList = zip [0 ..] (map read (S.splitOn "," memoryAsCSVStringParam))
-   in IntMap.fromList memoryAsKVTupleList
+   in Map.fromList memoryAsKVTupleList
 
 keyToKey :: IntCodeStruct -> PointerOffset -> Key
 keyToKey intCode pointerOffsetParam =
-  memory intCode IntMap.! (pointer intCode + pointerOffsetParam)
+  memory intCode Map.! (pointer intCode + pointerOffsetParam)
 
 pw :: IntCodeStruct -> PointerOffset -> Key
 pw =
@@ -73,7 +72,7 @@ pw =
 
 pr :: IntCodeStruct -> PointerOffset -> Value
 pr intCode pointerOffsetParam =
-  memory intCode IntMap.! keyToKey intCode pointerOffsetParam
+  memory intCode Map.! keyToKey intCode pointerOffsetParam
 
 aParam :: Instruction -> IntCodeStruct -> Int
 aParam instruction intcode =
@@ -98,7 +97,7 @@ add instruction intcode =
   IntCode
     { pointer = pointer intcode + 4,
       memory =
-        IntMap.insert
+        Map.insert
           (aParam instruction intcode)
           (cParam instruction intcode + bParam instruction intcode)
           (memory intcode)
@@ -109,7 +108,7 @@ multiply instruction intcode =
   IntCode
     { pointer = pointer intcode + 4,
       memory =
-        IntMap.insert
+        Map.insert
           (aParam instruction intcode)
           (cParam instruction intcode * bParam instruction intcode)
           (memory intcode)
@@ -123,4 +122,4 @@ runOpCode intCode =
     9 -> intCode
     _ -> error "Instruction is not valid"
   where
-    instruction = makeInstruction (memory intCode IntMap.! pointer intCode)
+    instruction = makeInstruction (memory intCode Map.! pointer intCode)
