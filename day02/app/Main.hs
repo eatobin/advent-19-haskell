@@ -23,7 +23,5 @@ main =
                 memory = updatedMemory 12 2 firstMemory
               }
 
-    let answerA = memory ic Map.! 0
-
-    printf "\nPart A answer = %u. Correct = 2890696." (answerA :: Int)
-    printf "\nPart B answer = %u. Correct = 5003788.\n\n" (answerA :: Int)
+    printf "\nPart A answer = %u. Correct = 2890696." (memory ic Map.! 0 :: Int)
+    printf "\nPart B answer = %u. Correct = 5003788.\n\n" (memory ic Map.! 0 :: Int)
