@@ -16,7 +16,11 @@ main =
 
     let answer2 =
           head
-            [ (100 * noun) + verb | noun <- [0 .. (99 :: Int)], verb <- [0 .. (99 :: Int)], let candidate = memory (runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory}) Map.! 0, candidate == 19690720
+            [ (100 * noun) + verb
+              | noun <- [0 .. (99 :: Int)],
+                verb <- [0 .. (99 :: Int)],
+                let candidate = memory (runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory}) Map.! 0,
+                candidate == 19690720
             ]
 
     printf "Part B answer = %u. Correct = 8226.\n\n" (answer2 :: Int)
