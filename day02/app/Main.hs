@@ -1,14 +1,8 @@
 module Main (main) where
 
 import qualified Data.Map.Strict as Map
-import Lib (IntCodeStruct (..), Memory, makeMemory, runOpCode)
+import Lib (IntCodeStruct (..), makeMemory, runOpCode, updatedMemory)
 import Text.Printf (printf)
-
-updatedMemory :: Int -> Int -> Memory -> Memory
-updatedMemory noun verb mem =
-  Map.insert 2 verb nounish
-  where
-    nounish = Map.insert 1 noun mem
 
 main :: IO ()
 main =
@@ -23,5 +17,11 @@ main =
                 memory = updatedMemory 12 2 firstMemory
               }
 
-    printf "\nPart A answer = %u. Correct = 2890696." (memory ic Map.! 0 :: Int)
-    printf "\nPart B answer = %u. Correct = 5003788.\n\n" (memory ic Map.! 0 :: Int)
+    printf "\nPart A answer = %u. Correct = 2890696.\n" (memory ic Map.! 0 :: Int)
+
+    let answer2 =
+          head
+            [ (100 * noun) + verb | noun <- [0 .. (99 :: Int)], verb <- [0 .. (99 :: Int)], let candidate = memory (runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory}) Map.! 0, candidate == 19690720
+            ]
+
+    printf "Part B answer = %u. Correct = 8226.\n\n" (answer2 :: Int)

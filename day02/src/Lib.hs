@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
+module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
 
 -- Instruction:
 -- ABCDE
@@ -61,6 +61,12 @@ makeMemory :: MemoryAsCSVString -> Memory
 makeMemory memoryAsCSVStringParam =
   let memoryAsKVTupleList = zip [0 ..] (map read (S.splitOn "," memoryAsCSVStringParam))
    in Map.fromList memoryAsKVTupleList
+
+updatedMemory :: Int -> Int -> Memory -> Memory
+updatedMemory noun verb mem =
+  Map.insert 2 verb nounish
+  where
+    nounish = Map.insert 1 noun mem
 
 keyToKey :: IntCodeStruct -> PointerOffset -> Key
 keyToKey intCode pointerOffsetParam =
