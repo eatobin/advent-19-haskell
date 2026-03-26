@@ -33,9 +33,12 @@ type PointerOffset = Int
 
 type Input = Int
 
+type Output = Int
+
 data IntCodeStruct
   = IntCode
   { input :: Input,
+    output :: Output,
     pointer :: Pointer,
     memory :: Memory
   }
@@ -105,6 +108,7 @@ add :: Instruction -> IntCodeStruct -> IntCodeStruct
 add instruction intcode =
   IntCode
     { input = input intcode,
+      output = output intcode,
       pointer = pointer intcode + 4,
       memory =
         Map.insert
@@ -117,6 +121,7 @@ multiply :: Instruction -> IntCodeStruct -> IntCodeStruct
 multiply instruction intcode =
   IntCode
     { input = input intcode,
+      output = output intcode,
       pointer = pointer intcode + 4,
       memory =
         Map.insert
