@@ -31,9 +31,12 @@ type MemoryAsCSVString = [Char]
 
 type PointerOffset = Int
 
+type Input = Int
+
 data IntCodeStruct
   = IntCode
-  { pointer :: Pointer,
+  { input :: Input,
+    pointer :: Pointer,
     memory :: Memory
   }
   deriving (Eq, Show)
@@ -101,7 +104,8 @@ cParam instruction intcode =
 add :: Instruction -> IntCodeStruct -> IntCodeStruct
 add instruction intcode =
   IntCode
-    { pointer = pointer intcode + 4,
+    { input = input intcode,
+      pointer = pointer intcode + 4,
       memory =
         Map.insert
           (aParam instruction intcode)
@@ -112,7 +116,8 @@ add instruction intcode =
 multiply :: Instruction -> IntCodeStruct -> IntCodeStruct
 multiply instruction intcode =
   IntCode
-    { pointer = pointer intcode + 4,
+    { input = input intcode,
+      pointer = pointer intcode + 4,
       memory =
         Map.insert
           (aParam instruction intcode)
