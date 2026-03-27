@@ -89,7 +89,7 @@ main = hspec $ do
         `shouldBe` IntCode {input = 0, output = 0, pointer = 8, memory = Map.fromList [(0, 30), (1, 1), (2, 1), (3, 4), (4, 2), (5, 5), (6, 6), (7, 0), (8, 99)]}
 
   describe "\ninput/output Tests" $ do
-    it "inputTest" $
+    it "input/outputTest" $
       do
         runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory inputOutput, input = 7})
         `shouldBe` IntCode {input = 7, output = 7, pointer = 4, memory = Map.fromList [(0, 7), (1, 0), (2, 4), (3, 0), (4, 99)]}
