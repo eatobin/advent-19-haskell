@@ -23,6 +23,8 @@ main = hspec $ do
   let intCodeAddMult = IntCode {input = 0, output = 0, pointer = 0, memory = thisMemoryAddMult}
   let intCodeAdd = IntCode {input = 0, output = 0, pointer = 4, memory = Map.fromList [(0, 3), (1, 2), (2, 1), (3, 0)]}
   let intCodeMult = IntCode {input = 0, output = 0, pointer = 4, memory = Map.fromList [(0, 2), (1, 2), (2, 1), (3, 0)]}
+  let inputOutput :: String
+      inputOutput = "3,0,4,0,99"
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
@@ -85,3 +87,9 @@ main = hspec $ do
       do
         runOpCode (IntCode {input = 0, output = 0, pointer = 0, memory = makeMemory aocMemory6})
         `shouldBe` IntCode {input = 0, output = 0, pointer = 8, memory = Map.fromList [(0, 30), (1, 1), (2, 1), (3, 4), (4, 2), (5, 5), (6, 6), (7, 0), (8, 99)]}
+
+  describe "\ninput/output Tests" $ do
+    it "inputTest" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory inputOutput, input = 7})
+        `shouldBe` IntCode {input = 7, output = 7, pointer = 4, memory = Map.fromList [(0, 7), (1, 0), (2, 4), (3, 0), (4, 99)]}

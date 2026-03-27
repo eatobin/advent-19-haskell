@@ -75,16 +75,20 @@ updatedMemory noun verb mem =
     nounish = Map.insert 1 noun mem
 
 keyToKey :: IntCodeStruct -> PointerOffset -> Key
-keyToKey intCode pointerOffsetParam =
-  memory intCode Map.! (pointer intCode + pointerOffsetParam)
+keyToKey intcode pointerOffsetParam =
+  memory intcode Map.! (pointer intcode + pointerOffsetParam)
 
 pw :: IntCodeStruct -> PointerOffset -> Key
 pw =
   keyToKey
 
 pr :: IntCodeStruct -> PointerOffset -> Value
-pr intCode pointerOffsetParam =
-  memory intCode Map.! keyToKey intCode pointerOffsetParam
+pr intcode pointerOffsetParam =
+  memory intcode Map.! keyToKey intcode pointerOffsetParam
+
+ir :: IntCodeStruct -> PointerOffset -> Key
+ir =
+  keyToKey
 
 aParam :: Instruction -> IntCodeStruct -> Int
 aParam instruction intcode =
@@ -96,13 +100,19 @@ bParam :: Instruction -> IntCodeStruct -> Int
 bParam instruction intcode =
   case instruction Map.! 'b' of
     0 -> pr intcode pointerOffsetB -- b-p-r
+    1 -> ir intcode pointerOffsetB -- b-i-r
     _ -> error "Instruction is not valid"
 
 cParam :: Instruction -> IntCodeStruct -> Int
 cParam instruction intcode =
-  case instruction Map.! 'c' of
-    0 -> pr intcode pointerOffsetC -- c-p-r
-    _ -> error "Instruction is not valid"
+  if instruction Map.! 'e' == 3
+    then case instruction Map.! 'c' of
+      0 -> pw intcode pointerOffsetC -- c-p-w
+      _ -> error "Instruction is not valid"
+    else case instruction Map.! 'c' of
+      0 -> pr intcode pointerOffsetC -- c-p-r
+      1 -> ir intcode pointerOffsetC -- c-i-r
+      _ -> error "Instruction is not valid"
 
 add :: Instruction -> IntCodeStruct -> IntCodeStruct
 add instruction intcode =
@@ -130,12 +140,36 @@ multiply instruction intcode =
           (memory intcode)
     }
 
+takeInput :: Instruction -> IntCodeStruct -> IntCodeStruct
+takeInput instruction intcode =
+  IntCode
+    { input = input intcode,
+      output = output intcode,
+      pointer = pointer intcode + 2,
+      memory =
+        Map.insert
+          (cParam instruction intcode)
+          (input intcode)
+          (memory intcode)
+    }
+
+giveOutput :: Instruction -> IntCodeStruct -> IntCodeStruct
+giveOutput instruction intcode =
+  IntCode
+    { input = input intcode,
+      output = cParam instruction intcode,
+      pointer = pointer intcode + 2,
+      memory = memory intcode
+    }
+
 runOpCode :: IntCodeStruct -> IntCodeStruct
-runOpCode intCode =
+runOpCode intcode =
   case instruction Map.! 'e' of
-    1 -> runOpCode (add instruction intCode)
-    2 -> runOpCode (multiply instruction intCode)
-    9 -> intCode
+    1 -> runOpCode (add instruction intcode)
+    2 -> runOpCode (multiply instruction intcode)
+    3 -> runOpCode (takeInput instruction intcode)
+    4 -> runOpCode (giveOutput instruction intcode)
+    9 -> intcode
     _ -> error "Instruction is not valid"
   where
-    instruction = makeInstruction (memory intCode Map.! pointer intCode)
+    instruction = makeInstruction (memory intcode Map.! pointer intcode)
