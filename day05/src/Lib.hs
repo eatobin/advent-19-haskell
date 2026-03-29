@@ -175,3 +175,69 @@ runOpCode intcode =
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
+
+
+-- Opcode 5 is jump-if-true: if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+-- Opcode 6 is jump-if-false: if the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+-- Opcode 7 is less than: if the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+-- Opcode 8 is equals: if the first parameter is equal to the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+
+
+  -- 5 (recur
+  --          {:input         input
+  --           :output        output
+  --           :phase         phase
+  --           :pointer       (if (= 0 (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
+  --                            (+ 3 pointer)
+  --                            (b-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
+  --           :relative-base relative-base
+  --           :memory        memory
+  --           :stopped?      stopped?
+  --           :recur?        recur?})
+  --       6 (recur
+  --          {:input         input
+  --           :output        output
+  --           :phase         phase
+  --           :pointer       (if (not= 0 (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
+  --                            (+ 3 pointer)
+  --                            (b-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
+  --           :relative-base relative-base
+  --           :memory        memory
+  --           :stopped?      stopped?
+  --           :recur?        recur?})
+  --       7 (recur
+  --          {:input         input
+  --           :output        output
+  --           :phase         phase
+  --           :pointer       (+ 4 pointer)
+  --           :relative-base relative-base
+  --           :memory        (if (< (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
+  --                                 (b-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
+  --                            (assoc
+  --                             memory
+  --                             (a-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
+  --                             1)
+  --                            (assoc
+  --                             memory
+  --                             (a-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
+  --                             0))
+  --           :stopped?      stopped?
+  --           :recur?        recur?})
+  --       8 (recur
+  --          {:input         input
+  --           :output        output
+  --           :phase         phase
+  --           :pointer       (+ 4 pointer)
+  --           :relative-base relative-base
+  --           :memory        (if (= (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
+  --                                 (b-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
+  --                            (assoc
+  --                             memory
+  --                             (a-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
+  --                             1)
+  --                            (assoc
+  --                             memory
+  --                             (a-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
+  --                             0))
+  --           :stopped?      stopped?
+  --           :recur?        recur?})
