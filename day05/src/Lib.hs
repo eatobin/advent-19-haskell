@@ -70,12 +70,6 @@ makeMemory memoryAsCSVStringParam =
   let memoryAsKVTupleList = zip [0 ..] (map read (S.splitOn "," memoryAsCSVStringParam))
    in Map.fromList memoryAsKVTupleList
 
--- updatedMemory :: Int -> Int -> Memory -> Memory
--- updatedMemory noun verb mem =
---   Map.insert 2 verb nounish
---   where
---     nounish = Map.insert 1 noun mem
-
 readABC :: IntCodeStruct -> PointerOffset -> KeyOrValue
 readABC intcode pointerOffsetParam =
   memory intcode Map.! (pointer intcode + pointerOffsetParam)
@@ -164,6 +158,70 @@ giveOutput instruction intcode =
       memory = memory intcode
     }
 
+jumpIfTrue :: Instruction -> IntCodeStruct -> IntCodeStruct
+jumpIfTrue instruction intcode =
+  IntCode
+    { input = input intcode,
+      output = output intcode,
+      pointer =
+        if cParam instruction intcode /= 0
+          then bParam instruction intcode
+          else pointer intcode + 3,
+      memory = memory intcode
+    }
+
+jumpIfFalse :: Instruction -> IntCodeStruct -> IntCodeStruct
+jumpIfFalse instruction intcode =
+  IntCode
+    { input = input intcode,
+      output = output intcode,
+      pointer =
+        if cParam instruction intcode == 0
+          then bParam instruction intcode
+          else pointer intcode + 3,
+      memory = memory intcode
+    }
+
+lessThan :: Instruction -> IntCodeStruct -> IntCodeStruct
+lessThan instruction intcode =
+  IntCode
+    { input = input intcode,
+      output = output intcode,
+      pointer = pointer intcode + 4,
+      memory =
+        if cParam instruction intcode < bParam instruction intcode
+          then
+            Map.insert
+              (aParam instruction intcode)
+              1
+              (memory intcode)
+          else
+            Map.insert
+              (aParam instruction intcode)
+              0
+              (memory intcode)
+    }
+
+equals :: Instruction -> IntCodeStruct -> IntCodeStruct
+equals instruction intcode =
+  IntCode
+    { input = input intcode,
+      output = output intcode,
+      pointer = pointer intcode + 4,
+      memory =
+        if cParam instruction intcode == bParam instruction intcode
+          then
+            Map.insert
+              (aParam instruction intcode)
+              1
+              (memory intcode)
+          else
+            Map.insert
+              (aParam instruction intcode)
+              0
+              (memory intcode)
+    }
+
 runOpCode :: IntCodeStruct -> IntCodeStruct
 runOpCode intcode =
   case instruction Map.! 'e' of
@@ -171,73 +229,11 @@ runOpCode intcode =
     2 -> runOpCode (multiply instruction intcode)
     3 -> runOpCode (takeInput instruction intcode)
     4 -> runOpCode (giveOutput instruction intcode)
+    5 -> runOpCode (jumpIfTrue instruction intcode)
+    6 -> runOpCode (jumpIfFalse instruction intcode)
+    7 -> runOpCode (lessThan instruction intcode)
+    8 -> runOpCode (equals instruction intcode)
     9 -> intcode
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
-
-
--- Opcode 5 is jump-if-true: if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
--- Opcode 6 is jump-if-false: if the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
--- Opcode 7 is less than: if the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
--- Opcode 8 is equals: if the first parameter is equal to the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
-
-
-  -- 5 (recur
-  --          {:input         input
-  --           :output        output
-  --           :phase         phase
-  --           :pointer       (if (= 0 (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
-  --                            (+ 3 pointer)
-  --                            (b-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
-  --           :relative-base relative-base
-  --           :memory        memory
-  --           :stopped?      stopped?
-  --           :recur?        recur?})
-  --       6 (recur
-  --          {:input         input
-  --           :output        output
-  --           :phase         phase
-  --           :pointer       (if (not= 0 (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
-  --                            (+ 3 pointer)
-  --                            (b-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
-  --           :relative-base relative-base
-  --           :memory        memory
-  --           :stopped?      stopped?
-  --           :recur?        recur?})
-  --       7 (recur
-  --          {:input         input
-  --           :output        output
-  --           :phase         phase
-  --           :pointer       (+ 4 pointer)
-  --           :relative-base relative-base
-  --           :memory        (if (< (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
-  --                                 (b-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
-  --                            (assoc
-  --                             memory
-  --                             (a-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
-  --                             1)
-  --                            (assoc
-  --                             memory
-  --                             (a-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
-  --                             0))
-  --           :stopped?      stopped?
-  --           :recur?        recur?})
-  --       8 (recur
-  --          {:input         input
-  --           :output        output
-  --           :phase         phase
-  --           :pointer       (+ 4 pointer)
-  --           :relative-base relative-base
-  --           :memory        (if (= (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
-  --                                 (b-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
-  --                            (assoc
-  --                             memory
-  --                             (a-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
-  --                             1)
-  --                            (assoc
-  --                             memory
-  --                             (a-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
-  --                             0))
-  --           :stopped?      stopped?
-  --           :recur?        recur?})
