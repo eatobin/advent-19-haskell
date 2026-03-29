@@ -26,6 +26,7 @@ main = hspec $ do
   let inputOutput :: String
       inputOutput = "3,0,4,0,99"
   let modesString = "1002,4,3,4,33"
+  let equalEight = "3,9,8,9,10,9,4,9,99,-1,8"
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
@@ -100,3 +101,13 @@ main = hspec $ do
       do
         runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory modesString, input = 0})
         `shouldBe` IntCode {input = 0, output = 0, pointer = 4, memory = Map.fromList [(0, 1002), (1, 4), (2, 3), (3, 4), (4, 99)]}
+
+  describe "\neights Tests" $ do
+    it "equalEightTrue" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEight, input = 8})
+        `shouldBe` IntCode {input = 8, output = 1, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 8), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 1), (10, 8)]}
+    it "equalEightFalse" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEight, input = 88})
+        `shouldBe` IntCode {input = 88, output = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 8), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 0), (10, 8)]}
