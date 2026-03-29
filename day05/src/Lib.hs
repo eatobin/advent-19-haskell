@@ -25,6 +25,8 @@ type Key = Int
 
 type Value = Int
 
+type ABCvalue = Int
+
 type Memory = Map.Map Key Value
 
 type MemoryAsCSVString = [Char]
@@ -74,21 +76,21 @@ updatedMemory noun verb mem =
   where
     nounish = Map.insert 1 noun mem
 
-keyToKey :: IntCodeStruct -> PointerOffset -> Key
-keyToKey intcode pointerOffsetParam =
+readABC :: IntCodeStruct -> PointerOffset -> ABCvalue
+readABC intcode pointerOffsetParam =
   memory intcode Map.! (pointer intcode + pointerOffsetParam)
 
 pw :: IntCodeStruct -> PointerOffset -> Key
 pw =
-  keyToKey
+  readABC
 
 pr :: IntCodeStruct -> PointerOffset -> Value
 pr intcode pointerOffsetParam =
-  memory intcode Map.! keyToKey intcode pointerOffsetParam
+  memory intcode Map.! readABC intcode pointerOffsetParam
 
 ir :: IntCodeStruct -> PointerOffset -> Key
 ir =
-  keyToKey
+  readABC
 
 aParam :: Instruction -> IntCodeStruct -> Int
 aParam instruction intcode =
