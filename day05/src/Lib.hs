@@ -25,7 +25,7 @@ type Key = Int
 
 type Value = Int
 
-type ABCvalue = Int
+type KeyOrValue = Int
 
 type Memory = Map.Map Key Value
 
@@ -76,7 +76,7 @@ updatedMemory noun verb mem =
   where
     nounish = Map.insert 1 noun mem
 
-readABC :: IntCodeStruct -> PointerOffset -> ABCvalue
+readABC :: IntCodeStruct -> PointerOffset -> KeyOrValue
 readABC intcode pointerOffsetParam =
   memory intcode Map.! (pointer intcode + pointerOffsetParam)
 
@@ -92,20 +92,20 @@ ir :: IntCodeStruct -> PointerOffset -> Key
 ir =
   readABC
 
-aParam :: Instruction -> IntCodeStruct -> Int
+aParam :: Instruction -> IntCodeStruct -> Key
 aParam instruction intcode =
   case instruction Map.! 'a' of
     0 -> pw intcode pointerOffsetA -- a-p-w
     _ -> error "Instruction is not valid"
 
-bParam :: Instruction -> IntCodeStruct -> Int
+bParam :: Instruction -> IntCodeStruct -> KeyOrValue
 bParam instruction intcode =
   case instruction Map.! 'b' of
     0 -> pr intcode pointerOffsetB -- b-p-r
     1 -> ir intcode pointerOffsetB -- b-i-r
     _ -> error "Instruction is not valid"
 
-cParam :: Instruction -> IntCodeStruct -> Int
+cParam :: Instruction -> IntCodeStruct -> KeyOrValue
 cParam instruction intcode =
   if instruction Map.! 'e' == 3
     then case instruction Map.! 'c' of
