@@ -13,13 +13,6 @@ main =
 
     printf "\nPart A answer = %u. Correct = 9025675.\n" (answer1 :: Int)
 
--- let answer2 =
---       head
---         [ (100 * noun) + verb
---           | noun <- [0 .. (99 :: Int)],
---             verb <- [0 .. (99 :: Int)],
---             let candidate = memory (runOpCode IntCode {input = 0, output = 0, pointer = 0, memory = updatedMemory noun verb firstMemory}) Map.! 0,
---             candidate == 19690720
---         ]
+    let answer2 = output (runOpCode IntCode {input = 5, output = 0, pointer = 0, memory = theMemory})
 
--- printf "Part B answer = %u. Correct = 8226.\n\n" (answer2 :: Int)
+    printf "Part B answer = %u. Correct = 11981754.\n\n" (answer2 :: Int)
