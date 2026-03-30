@@ -147,10 +147,11 @@ main = hspec $ do
         runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory jumpIfZeroPos, input = 0})
         `shouldBe` IntCode {input = 0, output = 0, pointer = 11, memory = Map.fromList [(0, 3), (1, 12), (2, 6), (3, 12), (4, 15), (5, 1), (6, 13), (7, 14), (8, 13), (9, 4), (10, 13), (11, 99), (12, 0), (13, 0), (14, 1), (15, 9)]}
 
--- it "jumpIfZeroFalsePos" $
---   do
---     runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory lessThanEightPos, input = 9})
---     `shouldBe` IntCode {input = 9, output = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 7), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 0), (10, 8)]}
+    it "jumpIfZeroFalsePos" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory jumpIfZeroPos, input = 1})
+        `shouldBe` IntCode {input = 1, output = 1, pointer = 11, memory = Map.fromList [(0, 3), (1, 12), (2, 6), (3, 12), (4, 15), (5, 1), (6, 13), (7, 14), (8, 13), (9, 4), (10, 13), (11, 99), (12, 1), (13, 1), (14, 1), (15, 9)]}
+
 -- it "equalEightTrueImm" $
 --   do
 --     runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEightImm, input = 8})
