@@ -26,7 +26,12 @@ main = hspec $ do
   let inputOutput :: String
       inputOutput = "3,0,4,0,99"
   let modesString = "1002,4,3,4,33"
-  let equalEight = "3,9,8,9,10,9,4,9,99,-1,8"
+  let equalEightPos = "3,9,8,9,10,9,4,9,99,-1,8"
+  let lessThanEightPos = "3,9,7,9,10,9,4,9,99,-1,8"
+  let equalEightImm = "3,3,1108,-1,8,3,4,3,99"
+  let lessThanEightImm = "3,3,1107,-1,8,3,4,3,99"
+  let jumpIfZeroPos = "3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9"
+  let jumpIfZeroImm = "3,3,1105,-1,9,1101,0,0,12,4,12,99,1"
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
@@ -103,11 +108,54 @@ main = hspec $ do
         `shouldBe` IntCode {input = 0, output = 0, pointer = 4, memory = Map.fromList [(0, 1002), (1, 4), (2, 3), (3, 4), (4, 99)]}
 
   describe "\neights Tests" $ do
-    it "equalEightTrue" $
+    it "equalEightTruePos" $
       do
-        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEight, input = 8})
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEightPos, input = 8})
         `shouldBe` IntCode {input = 8, output = 1, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 8), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 1), (10, 8)]}
-    it "equalEightFalse" $
+    it "equalEightFalsePos" $
       do
-        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEight, input = 88})
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEightPos, input = 88})
         `shouldBe` IntCode {input = 88, output = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 8), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 0), (10, 8)]}
+    it "lessThanEightTruePos" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory lessThanEightPos, input = 5})
+        `shouldBe` IntCode {input = 5, output = 1, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 7), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 1), (10, 8)]}
+    it "lessThanEightFalsePos" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory lessThanEightPos, input = 9})
+        `shouldBe` IntCode {input = 9, output = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 7), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 0), (10, 8)]}
+    it "equalEightTrueImm" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEightImm, input = 8})
+        `shouldBe` IntCode {input = 8, output = 1, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1108), (3, 1), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)]}
+    it "equalEightFalseImm" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEightImm, input = 88})
+        `shouldBe` IntCode {input = 88, output = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1108), (3, 0), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)]}
+    it "lessThanEightTrueImm" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory lessThanEightImm, input = 5})
+        `shouldBe` IntCode {input = 5, output = 1, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1107), (3, 1), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)]}
+    it "lessThanEightFalseImm" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory lessThanEightImm, input = 9})
+        `shouldBe` IntCode {input = 9, output = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1107), (3, 0), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)]}
+
+  describe "\njump Tests" $ do
+    it "jumpIfZeroTruePos" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory jumpIfZeroPos, input = 0})
+        `shouldBe` IntCode {input = 0, output = 0, pointer = 11, memory = Map.fromList [(0, 3), (1, 12), (2, 6), (3, 12), (4, 15), (5, 1), (6, 13), (7, 14), (8, 13), (9, 4), (10, 13), (11, 99), (12, 0), (13, 0), (14, 1), (15, 9)]}
+
+-- it "jumpIfZeroFalsePos" $
+--   do
+--     runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory lessThanEightPos, input = 9})
+--     `shouldBe` IntCode {input = 9, output = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 7), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 0), (10, 8)]}
+-- it "equalEightTrueImm" $
+--   do
+--     runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEightImm, input = 8})
+--     `shouldBe` IntCode {input = 8, output = 1, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1108), (3, 1), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)]}
+-- it "equalEightFalseImm" $
+--   do
+--     runOpCode (IntCode {pointer = 0, output = 0, memory = makeMemory equalEightImm, input = 88})
+--     `shouldBe` IntCode {input = 88, output = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1108), (3, 0), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)]}
