@@ -70,6 +70,9 @@ makeMemory memoryAsCSVStringParam =
   let memoryAsKVTupleList = zip [0 ..] (map read (S.splitOn "," memoryAsCSVStringParam))
    in Map.fromList memoryAsKVTupleList
 
+lookupResult :: IntCodeStruct -> PointerOffset -> Maybe KeyOrValue
+lookupResult intcode pointerOffsetParam = Map.lookup (pointer intcode + pointerOffsetParam) (memory intcode)
+
 readABC :: IntCodeStruct -> PointerOffset -> KeyOrValue
 readABC intcode pointerOffsetParam =
   case result of
