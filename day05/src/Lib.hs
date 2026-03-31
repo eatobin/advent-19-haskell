@@ -74,7 +74,7 @@ readABC :: IntCodeStruct -> PointerOffset -> KeyOrValue
 readABC intcode pointerOffsetParam =
   case result of
     Just value -> value
-    Nothing -> error "Instruction is not valid"
+    Nothing -> error "Key is not valid"
   where
     result = Map.lookup (pointer intcode + pointerOffsetParam) (memory intcode)
 
