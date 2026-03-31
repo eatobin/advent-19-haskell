@@ -72,7 +72,11 @@ makeMemory memoryAsCSVStringParam =
 
 readABC :: IntCodeStruct -> PointerOffset -> KeyOrValue
 readABC intcode pointerOffsetParam =
-  memory intcode Map.! (pointer intcode + pointerOffsetParam)
+  case result of
+    Just value -> value
+    Nothing -> error "Instruction is not valid"
+  where
+    result = Map.lookup (pointer intcode + pointerOffsetParam) (memory intcode)
 
 pw :: IntCodeStruct -> PointerOffset -> Key
 pw =
