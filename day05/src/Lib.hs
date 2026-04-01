@@ -65,21 +65,28 @@ makeInstruction op =
     values = map DC.digitToInt paddedOp
     instructionAsKVTupleList = zip keys values
 
+lookupInstruction :: Char -> Instruction -> Value
+lookupInstruction key instruction =
+  case Map.lookup key instruction of
+    Just value -> value
+    Nothing -> error "Key is not valid"
+
 makeMemory :: MemoryAsCSVString -> Memory
 makeMemory memoryAsCSVStringParam =
   let memoryAsKVTupleList = zip [0 ..] (map read (S.splitOn "," memoryAsCSVStringParam))
    in Map.fromList memoryAsKVTupleList
 
-lookupResult :: IntCodeStruct -> PointerOffset -> Maybe KeyOrValue
-lookupResult intcode pointerOffsetParam = Map.lookup (pointer intcode + pointerOffsetParam) (memory intcode)
+lookupABC :: IntCodeStruct -> PointerOffset -> Maybe KeyOrValue
+lookupABC intcode pointerOffsetParam =
+  Map.lookup
+    (pointer intcode + pointerOffsetParam)
+    (memory intcode)
 
 readABC :: IntCodeStruct -> PointerOffset -> KeyOrValue
 readABC intcode pointerOffsetParam =
-  case result of
+  case lookupABC intcode pointerOffsetParam of
     Just value -> value
     Nothing -> error "Key is not valid"
-  where
-    result = Map.lookup (pointer intcode + pointerOffsetParam) (memory intcode)
 
 pw :: IntCodeStruct -> PointerOffset -> Key
 pw =
@@ -95,24 +102,24 @@ ir =
 
 aParam :: Instruction -> IntCodeStruct -> Key
 aParam instruction intcode =
-  case instruction Map.! 'a' of
+  case lookupInstruction 'a' instruction of
     0 -> pw intcode pointerOffsetA -- a-p-w
     _ -> error "Instruction is not valid"
 
 bParam :: Instruction -> IntCodeStruct -> KeyOrValue
 bParam instruction intcode =
-  case instruction Map.! 'b' of
+  case lookupInstruction 'b' instruction of
     0 -> pr intcode pointerOffsetB -- b-p-r
     1 -> ir intcode pointerOffsetB -- b-i-r
     _ -> error "Instruction is not valid"
 
 cParam :: Instruction -> IntCodeStruct -> KeyOrValue
 cParam instruction intcode =
-  if instruction Map.! 'e' == 3
-    then case instruction Map.! 'c' of
+  if lookupInstruction 'e' instruction == 3
+    then case lookupInstruction 'c' instruction of
       0 -> pw intcode pointerOffsetC -- c-p-w
       _ -> error "Instruction is not valid"
-    else case instruction Map.! 'c' of
+    else case lookupInstruction 'c' instruction of
       0 -> pr intcode pointerOffsetC -- c-p-r
       1 -> ir intcode pointerOffsetC -- c-i-r
       _ -> error "Instruction is not valid"
@@ -231,7 +238,7 @@ equals instruction intcode =
 
 runOpCode :: IntCodeStruct -> IntCodeStruct
 runOpCode intcode =
-  case instruction Map.! 'e' of
+  case lookupInstruction 'e' instruction of
     1 -> runOpCode (add instruction intcode)
     2 -> runOpCode (multiply instruction intcode)
     3 -> runOpCode (takeInput instruction intcode)
@@ -243,4 +250,4 @@ runOpCode intcode =
     9 -> intcode
     _ -> error "Instruction is not valid"
   where
-    instruction = makeInstruction (memory intcode Map.! pointer intcode)
+    instruction = makeInstruction (readABC intcode (pointer intcode)) -- (memory intcode Map.! pointer intcode)
