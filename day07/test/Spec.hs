@@ -149,31 +149,29 @@ main = hspec $ do
       do
         runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory jumpIfZeroPos, input = 0, stopped = False, recur = True})
         `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 11, memory = Map.fromList [(0, 3), (1, 12), (2, 6), (3, 12), (4, 15), (5, 1), (6, 13), (7, 14), (8, 13), (9, 4), (10, 13), (11, 99), (12, 0), (13, 0), (14, 1), (15, 9)], stopped = False, recur = True}
+    it "jumpIfZeroFalsePos" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory jumpIfZeroPos, input = 1, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 1, output = 1, phase = 0, pointer = 11, memory = Map.fromList [(0, 3), (1, 12), (2, 6), (3, 12), (4, 15), (5, 1), (6, 13), (7, 14), (8, 13), (9, 4), (10, 13), (11, 99), (12, 1), (13, 1), (14, 1), (15, 9)], stopped = False, recur = True}
+    it "jumpIfZeroTrueImm" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory jumpIfZeroImm, input = 0, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 11, memory = Map.fromList [(0, 3), (1, 3), (2, 1105), (3, 0), (4, 9), (5, 1101), (6, 0), (7, 0), (8, 12), (9, 4), (10, 12), (11, 99), (12, 0)], stopped = False, recur = True}
+    it "jumpIfZeroFalseImm" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory jumpIfZeroImm, input = 1, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 1, output = 1, phase = 0, pointer = 11, memory = Map.fromList [(0, 3), (1, 3), (2, 1105), (3, 1), (4, 9), (5, 1101), (6, 0), (7, 0), (8, 12), (9, 4), (10, 12), (11, 99), (12, 1)], stopped = False, recur = True}
 
---   it "jumpIfZeroFalsePos" $
---     do
---       runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory jumpIfZeroPos, input = 1})
---       `shouldBe` IntCode {input = 1, output = 1, pointer = 11, memory = Map.fromList [(0, 3), (1, 12), (2, 6), (3, 12), (4, 15), (5, 1), (6, 13), (7, 14), (8, 13), (9, 4), (10, 13), (11, 99), (12, 1), (13, 1), (14, 1), (15, 9)], stopped = False, recur = True}
---   it "jumpIfZeroTrueImm" $
---     do
---       runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory jumpIfZeroImm, input = 0})
---       `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 11, memory = Map.fromList [(0, 3), (1, 3), (2, 1105), (3, 0), (4, 9), (5, 1101), (6, 0), (7, 0), (8, 12), (9, 4), (10, 12), (11, 99), (12, 0)], stopped = False, recur = True}
-
---   it "jumpIfZeroFalseImm" $
---     do
---       runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory jumpIfZeroImm, input = 1})
---       `shouldBe` IntCode {input = 1, output = 1, pointer = 11, memory = Map.fromList [(0, 3), (1, 3), (2, 1105), (3, 1), (4, 9), (5, 1101), (6, 0), (7, 0), (8, 12), (9, 4), (10, 12), (11, 99), (12, 1)], stopped = False, recur = True}
-
---   describe "\nlargeEights Tests" $ do
---     it "lessThanEight" $
---       do
---         runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory largeEight, input = 7})
---         `shouldBe` IntCode {input = 7, output = 999, pointer = 46, memory = Map.fromList [(0, 3), (1, 21), (2, 1008), (3, 21), (4, 8), (5, 20), (6, 1005), (7, 20), (8, 22), (9, 107), (10, 8), (11, 21), (12, 20), (13, 1006), (14, 20), (15, 31), (16, 1106), (17, 0), (18, 36), (19, 98), (20, 0), (21, 7), (22, 1002), (23, 21), (24, 125), (25, 20), (26, 4), (27, 20), (28, 1105), (29, 1), (30, 46), (31, 104), (32, 999), (33, 1105), (34, 1), (35, 46), (36, 1101), (37, 1000), (38, 1), (39, 20), (40, 4), (41, 20), (42, 1105), (43, 1), (44, 46), (45, 98), (46, 99)], stopped = False, recur = True}
---     it "equalEight" $
---       do
---         runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory largeEight, input = 8})
---         `shouldBe` IntCode {input = 8, output = 1000, pointer = 46, memory = Map.fromList [(0, 3), (1, 21), (2, 1008), (3, 21), (4, 8), (5, 20), (6, 1005), (7, 20), (8, 22), (9, 107), (10, 8), (11, 21), (12, 20), (13, 1006), (14, 20), (15, 31), (16, 1106), (17, 0), (18, 36), (19, 98), (20, 1000), (21, 8), (22, 1002), (23, 21), (24, 125), (25, 20), (26, 4), (27, 20), (28, 1105), (29, 1), (30, 46), (31, 104), (32, 999), (33, 1105), (34, 1), (35, 46), (36, 1101), (37, 1000), (38, 1), (39, 20), (40, 4), (41, 20), (42, 1105), (43, 1), (44, 46), (45, 98), (46, 99)], stopped = False, recur = True}
---     it "greaterThanEight" $
---       do
---         runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory largeEight, input = 9})
---         `shouldBe` IntCode {input = 9, output = 1001, pointer = 46, memory = Map.fromList [(0, 3), (1, 21), (2, 1008), (3, 21), (4, 8), (5, 20), (6, 1005), (7, 20), (8, 22), (9, 107), (10, 8), (11, 21), (12, 20), (13, 1006), (14, 20), (15, 31), (16, 1106), (17, 0), (18, 36), (19, 98), (20, 1001), (21, 9), (22, 1002), (23, 21), (24, 125), (25, 20), (26, 4), (27, 20), (28, 1105), (29, 1), (30, 46), (31, 104), (32, 999), (33, 1105), (34, 1), (35, 46), (36, 1101), (37, 1000), (38, 1), (39, 20), (40, 4), (41, 20), (42, 1105), (43, 1), (44, 46), (45, 98), (46, 99)]}
+    describe "\nlargeEights Tests" $ do
+      it "lessThanEight" $
+        do
+          runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory largeEight, input = 7, stopped = False, recur = True})
+          `shouldBe` IntCode {input = 7, output = 999, phase = 0, pointer = 46, memory = Map.fromList [(0, 3), (1, 21), (2, 1008), (3, 21), (4, 8), (5, 20), (6, 1005), (7, 20), (8, 22), (9, 107), (10, 8), (11, 21), (12, 20), (13, 1006), (14, 20), (15, 31), (16, 1106), (17, 0), (18, 36), (19, 98), (20, 0), (21, 7), (22, 1002), (23, 21), (24, 125), (25, 20), (26, 4), (27, 20), (28, 1105), (29, 1), (30, 46), (31, 104), (32, 999), (33, 1105), (34, 1), (35, 46), (36, 1101), (37, 1000), (38, 1), (39, 20), (40, 4), (41, 20), (42, 1105), (43, 1), (44, 46), (45, 98), (46, 99)], stopped = False, recur = True}
+      it "equalEight" $
+        do
+          runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory largeEight, input = 8, stopped = False, recur = True})
+          `shouldBe` IntCode {input = 8, output = 1000, phase = 0, pointer = 46, memory = Map.fromList [(0, 3), (1, 21), (2, 1008), (3, 21), (4, 8), (5, 20), (6, 1005), (7, 20), (8, 22), (9, 107), (10, 8), (11, 21), (12, 20), (13, 1006), (14, 20), (15, 31), (16, 1106), (17, 0), (18, 36), (19, 98), (20, 1000), (21, 8), (22, 1002), (23, 21), (24, 125), (25, 20), (26, 4), (27, 20), (28, 1105), (29, 1), (30, 46), (31, 104), (32, 999), (33, 1105), (34, 1), (35, 46), (36, 1101), (37, 1000), (38, 1), (39, 20), (40, 4), (41, 20), (42, 1105), (43, 1), (44, 46), (45, 98), (46, 99)], stopped = False, recur = True}
+      it "greaterThanEight" $
+        do
+          runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory largeEight, input = 9, stopped = False, recur = True})
+          `shouldBe` IntCode {input = 9, output = 1001, phase = 0, pointer = 46, memory = Map.fromList [(0, 3), (1, 21), (2, 1008), (3, 21), (4, 8), (5, 20), (6, 1005), (7, 20), (8, 22), (9, 107), (10, 8), (11, 21), (12, 20), (13, 1006), (14, 20), (15, 31), (16, 1106), (17, 0), (18, 36), (19, 98), (20, 1001), (21, 9), (22, 1002), (23, 21), (24, 125), (25, 20), (26, 4), (27, 20), (28, 1105), (29, 1), (30, 46), (31, 104), (32, 999), (33, 1105), (34, 1), (35, 46), (36, 1101), (37, 1000), (38, 1), (39, 20), (40, 4), (41, 20), (42, 1105), (43, 1), (44, 46), (45, 98), (46, 99)], stopped = False, recur = True}
