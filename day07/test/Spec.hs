@@ -144,11 +144,11 @@ main = hspec $ do
         runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory lessThanEightImm, input = 9, stopped = False, recur = True})
         `shouldBe` IntCode {input = 9, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1107), (3, 0), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)], stopped = False, recur = True}
 
--- describe "\njump Tests" $ do
---   it "jumpIfZeroTruePos" $
---     do
---       runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory jumpIfZeroPos, input = 0, stopped = False, recur = True})
---       `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 11, memory = Map.fromList [(0, 3), (1, 12), (2, 6), (3, 12), (4, 15), (5, 1), (6, 13), (7, 14), (8, 13), (9, 4), (10, 13), (11, 99), (12, 0), (13, 0), (14, 1), (15, 9)], stopped = False, recur = True}
+  describe "\njump Tests" $ do
+    it "jumpIfZeroTruePos" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory jumpIfZeroPos, input = 0, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 11, memory = Map.fromList [(0, 3), (1, 12), (2, 6), (3, 12), (4, 15), (5, 1), (6, 13), (7, 14), (8, 13), (9, 4), (10, 13), (11, 99), (12, 0), (13, 0), (14, 1), (15, 9)], stopped = False, recur = True}
 
 --   it "jumpIfZeroFalsePos" $
 --     do
