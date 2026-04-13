@@ -119,15 +119,15 @@ main = hspec $ do
       do
         runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory equalEightPos, input = 88, stopped = False, recur = True})
         `shouldBe` IntCode {input = 88, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 8), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 0), (10, 8)], stopped = False, recur = True}
+    it "lessThanEightTruePos" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory lessThanEightPos, input = 5, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 5, output = 1, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 7), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 1), (10, 8)], stopped = False, recur = True}
+    it "lessThanEightFalsePos" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory lessThanEightPos, input = 9, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 9, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 7), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 0), (10, 8)], stopped = False, recur = True}
 
--- it "lessThanEightTruePos" $
---   do
---     runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory lessThanEightPos, input = 5, stopped = False, recur = True})
---     `shouldBe` IntCode {input = 5, output = 1, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 7), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 1), (10, 8)], stopped = False, recur = True}
--- it "lessThanEightFalsePos" $
---   do
---     runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory lessThanEightPos, input = 9})
---     `shouldBe` IntCode {input = 9, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 7), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 0), (10, 8)], stopped = False, recur = True}
 -- it "equalEightTrueImm" $
 --   do
 --     runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory equalEightImm, input = 8}, stopped = False, recur = True)
