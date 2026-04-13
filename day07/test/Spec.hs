@@ -72,31 +72,31 @@ main = hspec $ do
     it "1 times 2 should be set at 0 and pointer should be 4" $ do
       multiply instruction1 intCodeAddMult `shouldBe` intCodeMult
 
--- describe "\nrunOpCode Tests" $ do
---   it "aocMemory1Test" $
---     do
---       runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory1, stopped = False, recur = True})
---       `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = Map.fromList [(0, 1), (1, 0), (2, 0), (3, 2), (4, 99)], stopped = False, recur = True}
---   it "aocMemory2Test" $
---     do
---       runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory2, stopped = False, recur = True})
---       `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3500), (1, 9), (2, 10), (3, 70), (4, 2), (5, 3), (6, 11), (7, 0), (8, 99), (9, 30), (10, 40), (11, 50)], stopped = False, recur = True}
---   it "aocMemory3Test" $
---     do
---       runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory3, stopped = False, recur = True})
---       `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = Map.fromList [(0, 2), (1, 0), (2, 0), (3, 0), (4, 99)], stopped = False, recur = True}
---   it "aocMemory4Test" $
---     do
---       runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory4, stopped = False, recur = True})
---       `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = Map.fromList [(0, 2), (1, 3), (2, 0), (3, 6), (4, 99)], stopped = False, recur = True}
---   it "aocMemory5Test" $
---     do
---       runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory5, stopped = False, recur = True})
---       `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = Map.fromList [(0, 2), (1, 4), (2, 4), (3, 5), (4, 99), (5, 9801)], stopped = False, recur = True}
---   it "aocMemory6Test" $
---     do
---       runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory6, stopped = False, recur = True})
---       `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 30), (1, 1), (2, 1), (3, 4), (4, 2), (5, 5), (6, 6), (7, 0), (8, 99)], stopped = False, recur = True}
+  describe "\nrunOpCode Tests" $ do
+    it "aocMemory1Test" $
+      do
+        runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory1, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = Map.fromList [(0, 1), (1, 0), (2, 0), (3, 2), (4, 99)], stopped = False, recur = True}
+    it "aocMemory2Test" $
+      do
+        runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory2, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3500), (1, 9), (2, 10), (3, 70), (4, 2), (5, 3), (6, 11), (7, 0), (8, 99), (9, 30), (10, 40), (11, 50)], stopped = False, recur = True}
+    it "aocMemory3Test" $
+      do
+        runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory3, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = Map.fromList [(0, 2), (1, 0), (2, 0), (3, 0), (4, 99)], stopped = False, recur = True}
+    it "aocMemory4Test" $
+      do
+        runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory4, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = Map.fromList [(0, 2), (1, 3), (2, 0), (3, 6), (4, 99)], stopped = False, recur = True}
+    it "aocMemory5Test" $
+      do
+        runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory5, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = Map.fromList [(0, 2), (1, 4), (2, 4), (3, 5), (4, 99), (5, 9801)], stopped = False, recur = True}
+    it "aocMemory6Test" $
+      do
+        runOpCode (IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = makeMemory aocMemory6, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 0, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 30), (1, 1), (2, 1), (3, 4), (4, 2), (5, 5), (6, 6), (7, 0), (8, 99)], stopped = False, recur = True}
 
 -- describe "\ninput/output Tests" $ do
 --   it "input/outputTest" $
