@@ -69,9 +69,8 @@ main = hspec $ do
   describe "\nAdd/Mult Tests" $ do
     it "1 plus 2 should be set at 0 and pointer should be 4" $ do
       add instruction1 intCodeAddMult `shouldBe` intCodeAdd
-
---   it "1 times 2 should be set at 0 and pointer should be 4" $ do
---     multiply instruction1 intCodeAddMult `shouldBe` intCodeMult
+    it "1 times 2 should be set at 0 and pointer should be 4" $ do
+      multiply instruction1 intCodeAddMult `shouldBe` intCodeMult
 
 -- describe "\nrunOpCode Tests" $ do
 --   it "aocMemory1Test" $
