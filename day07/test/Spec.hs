@@ -22,8 +22,8 @@ main = hspec $ do
   let thisMemoryX = Map.fromList [(0, 0), (1, 1), (2, 2), (3 :: Int, 3 :: Int)]
   let intCodeX = IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = thisMemoryX, stopped = False, recur = True}
   let thisMemoryAddMult = Map.fromList [(0, 0), (1, 2), (2, 1), (3 :: Int, 0 :: Int)]
-  let intCodeAddMult = IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = thisMemoryAddMult, stopped = False, recur = True}
-  let intCodeAdd = IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = Map.fromList [(0, 3), (1, 2), (2, 1), (3, 0)], stopped = False, recur = True}
+  let intCodeAddMult = IntCode {input = 0, output = 0, phase = 0, pointer = 0, memory = thisMemoryAddMult, stopped = False, recur = True}
+  let intCodeAdd = IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = Map.fromList [(0, 3), (1, 2), (2, 1), (3, 0)], stopped = False, recur = True}
   let intCodeMult = IntCode {input = 0, output = 0, phase = 0, pointer = 4, memory = Map.fromList [(0, 2), (1, 2), (2, 1), (3, 0)], stopped = False, recur = True}
   let inputOutput :: String
       inputOutput = "3,0,4,0,99"
@@ -66,9 +66,10 @@ main = hspec $ do
     it "lookup a valid cParam" $ do
       cParam instruction1 intCodeX `shouldBe` 1
 
--- describe "\nAdd/Mult Tests" $ do
---   it "1 plus 2 should be set at 0 and pointer should be 4" $ do
---     add instruction1 intCodeAddMult `shouldBe` intCodeAdd
+  describe "\nAdd/Mult Tests" $ do
+    it "1 plus 2 should be set at 0 and pointer should be 4" $ do
+      add instruction1 intCodeAddMult `shouldBe` intCodeAdd
+
 --   it "1 times 2 should be set at 0 and pointer should be 4" $ do
 --     multiply instruction1 intCodeAddMult `shouldBe` intCodeMult
 
