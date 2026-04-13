@@ -53,7 +53,7 @@ executables:
       - day07
     when:
       - condition: false
-        other-modules: Paths_day05
+        other-modules: Paths_day07
 
 tests:
   day07-test:

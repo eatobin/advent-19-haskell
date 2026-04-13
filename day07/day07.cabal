@@ -42,10 +42,6 @@ library
 
 executable day07-exe
   main-is: Main.hs
-  other-modules:
-      Paths_day07
-  autogen-modules:
-      Paths_day07
   hs-source-dirs:
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N

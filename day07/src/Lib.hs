@@ -13,6 +13,8 @@ module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, pw, pr, aPa
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
+-- [input output phase pointer memory stopped? recur?]
+
 import qualified Data.Char as DC
 import qualified Data.List.Split as S
 import qualified Data.Map.Strict as Map
@@ -37,12 +39,21 @@ type Input = Int
 
 type Output = Int
 
+type Phase = Int
+
+type Stopped = Bool
+
+type Recur = Bool
+
 data IntCodeStruct
   = IntCode
   { input :: Input,
     output :: Output,
+    phase :: Phase,
     pointer :: Pointer,
-    memory :: Memory
+    memory :: Memory,
+    stopped :: Stopped,
+    recur :: Recur
   }
   deriving (Eq, Show)
 
@@ -123,12 +134,15 @@ add instruction intcode =
   IntCode
     { input = input intcode,
       output = output intcode,
+      phase = phase intcode,
       pointer = pointer intcode + 4,
       memory =
         Map.insert
           (aParam instruction intcode)
           (cParam instruction intcode + bParam instruction intcode)
-          (memory intcode)
+          (memory intcode),
+      stopped = stopped intcode,
+      recur = recur intcode
     }
 
 multiply :: Instruction -> IntCodeStruct -> IntCodeStruct
@@ -136,12 +150,15 @@ multiply instruction intcode =
   IntCode
     { input = input intcode,
       output = output intcode,
+      phase = phase intcode,
       pointer = pointer intcode + 4,
       memory =
         Map.insert
           (aParam instruction intcode)
           (cParam instruction intcode * bParam instruction intcode)
-          (memory intcode)
+          (memory intcode),
+      stopped = stopped intcode,
+      recur = recur intcode
     }
 
 takeInput :: Instruction -> IntCodeStruct -> IntCodeStruct
@@ -149,12 +166,15 @@ takeInput instruction intcode =
   IntCode
     { input = input intcode,
       output = output intcode,
+      phase = phase intcode,
       pointer = pointer intcode + 2,
       memory =
         Map.insert
           (cParam instruction intcode)
           (input intcode)
-          (memory intcode)
+          (memory intcode),
+      stopped = stopped intcode,
+      recur = recur intcode
     }
 
 giveOutput :: Instruction -> IntCodeStruct -> IntCodeStruct
@@ -162,8 +182,11 @@ giveOutput instruction intcode =
   IntCode
     { input = input intcode,
       output = cParam instruction intcode,
+      phase = phase intcode,
       pointer = pointer intcode + 2,
-      memory = memory intcode
+      memory = memory intcode,
+      stopped = stopped intcode,
+      recur = recur intcode
     }
 
 jumpIfTrue :: Instruction -> IntCodeStruct -> IntCodeStruct
@@ -171,11 +194,14 @@ jumpIfTrue instruction intcode =
   IntCode
     { input = input intcode,
       output = output intcode,
+      phase = phase intcode,
       pointer =
         if cParam instruction intcode /= 0
           then bParam instruction intcode
           else pointer intcode + 3,
-      memory = memory intcode
+      memory = memory intcode,
+      stopped = stopped intcode,
+      recur = recur intcode
     }
 
 jumpIfFalse :: Instruction -> IntCodeStruct -> IntCodeStruct
@@ -183,11 +209,14 @@ jumpIfFalse instruction intcode =
   IntCode
     { input = input intcode,
       output = output intcode,
+      phase = phase intcode,
       pointer =
         if cParam instruction intcode == 0
           then bParam instruction intcode
           else pointer intcode + 3,
-      memory = memory intcode
+      memory = memory intcode,
+      stopped = stopped intcode,
+      recur = recur intcode
     }
 
 lessThan :: Instruction -> IntCodeStruct -> IntCodeStruct
@@ -195,6 +224,7 @@ lessThan instruction intcode =
   IntCode
     { input = input intcode,
       output = output intcode,
+      phase = phase intcode,
       pointer = pointer intcode + 4,
       memory =
         if cParam instruction intcode < bParam instruction intcode
@@ -207,7 +237,9 @@ lessThan instruction intcode =
             Map.insert
               (aParam instruction intcode)
               0
-              (memory intcode)
+              (memory intcode),
+      stopped = stopped intcode,
+      recur = recur intcode
     }
 
 equals :: Instruction -> IntCodeStruct -> IntCodeStruct
@@ -215,6 +247,7 @@ equals instruction intcode =
   IntCode
     { input = input intcode,
       output = output intcode,
+      phase = phase intcode,
       pointer = pointer intcode + 4,
       memory =
         if cParam instruction intcode == bParam instruction intcode
@@ -227,7 +260,9 @@ equals instruction intcode =
             Map.insert
               (aParam instruction intcode)
               0
-              (memory intcode)
+              (memory intcode),
+      stopped = stopped intcode,
+      recur = recur intcode
     }
 
 runOpCode :: IntCodeStruct -> IntCodeStruct
