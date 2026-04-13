@@ -127,23 +127,22 @@ main = hspec $ do
       do
         runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory lessThanEightPos, input = 9, stopped = False, recur = True})
         `shouldBe` IntCode {input = 9, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 9), (2, 7), (3, 9), (4, 10), (5, 9), (6, 4), (7, 9), (8, 99), (9, 0), (10, 8)], stopped = False, recur = True}
-
--- it "equalEightTrueImm" $
---   do
---     runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory equalEightImm, input = 8}, stopped = False, recur = True)
---     `shouldBe` IntCode {input = 8, output = 1, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1108), (3, 1), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)], stopped = False, recur = True}
--- it "equalEightFalseImm" $
---   do
---     runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory equalEightImm, input = 88, stopped = False, recur = True})
---     `shouldBe` IntCode {input = 88, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1108), (3, 0), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)], stopped = False, recur = True}
--- it "lessThanEightTrueImm" $
---   do
---     runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory lessThanEightImm, input = 5, stopped = False, recur = True})
---     `shouldBe` IntCode {input = 5, output = 1, pointer = 8, phase = 0, memory = Map.fromList [(0, 3), (1, 3), (2, 1107), (3, 1), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)], stopped = False, recur = True}
--- it "lessThanEightFalseImm" $
---   do
---     runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory lessThanEightImm, input = 9})
---     `shouldBe` IntCode {input = 9, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1107), (3, 0), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)], stopped = False, recur = True}
+    it "equalEightTrueImm" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory equalEightImm, input = 8, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 8, output = 1, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1108), (3, 1), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)], stopped = False, recur = True}
+    it "equalEightFalseImm" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory equalEightImm, input = 88, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 88, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1108), (3, 0), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)], stopped = False, recur = True}
+    it "lessThanEightTrueImm" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory lessThanEightImm, input = 5, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 5, output = 1, pointer = 8, phase = 0, memory = Map.fromList [(0, 3), (1, 3), (2, 1107), (3, 1), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)], stopped = False, recur = True}
+    it "lessThanEightFalseImm" $
+      do
+        runOpCode (IntCode {pointer = 0, output = 0, phase = 0, memory = makeMemory lessThanEightImm, input = 9, stopped = False, recur = True})
+        `shouldBe` IntCode {input = 9, output = 0, phase = 0, pointer = 8, memory = Map.fromList [(0, 3), (1, 3), (2, 1107), (3, 0), (4, 8), (5, 3), (6, 4), (7, 3), (8, 99)], stopped = False, recur = True}
 
 -- describe "\njump Tests" $ do
 --   it "jumpIfZeroTruePos" $
