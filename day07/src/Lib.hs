@@ -280,3 +280,86 @@ runOpCode intcode =
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
+
+
+-- myStateGiveeIsSuccess :: MyStateStruct -> IO MyStateStruct
+-- myStateGiveeIsSuccess state = do
+--   let currentGiver :: Giver = DM.fromJust (maybeGiver state)
+--       currentGivee :: Givee = DM.fromJust (maybeGivee state)
+--       updatedGiveePlayers :: PlayersMap = playersUpdateMyGivee currentGiver currentGivee (giftYear state) (players state)
+--    in do
+--         return
+--           state
+--             { rosterName = rosterName state,
+--               rosterYear = rosterYear state,
+--               players = playersUpdateMyGiver currentGivee currentGiver (giftYear state) updatedGiveePlayers,
+--               giftYear = giftYear state,
+--               giveeHat = hatRemovePuck currentGivee (giveeHat state),
+--               giverHat = giverHat state,
+--               maybeGivee = Nothing,
+--               maybeGiver = maybeGiver state,
+--               discards = discards state,
+--               quit = quit state
+--             }
+
+-- (defn pass [[a b c d e] i-code]
+--   (last ((ic/op-code {:input         (last ((ic/op-code {:input         (last ((ic/op-code {:input         (last ((ic/op-code {:input         (last ((ic/op-code {:input  0
+--                                                                                                                                                                   :output []
+--                                                                                                                                                                   :phase a
+--                                                                                                                                                                   :pointer 0
+--                                                                                                                                                                   :relative-base 0
+--                                                                                                                                                                   :memory i-code
+--                                                                                                                                                                   :stopped? false
+--                                                                                                                                                                   :recur? true}) :output))
+--                                                                                                                                :output        []
+--                                                                                                                                :phase         b
+--                                                                                                                                :pointer       0
+--                                                                                                                                :relative-base 0
+--                                                                                                                                :memory        i-code
+--                                                                                                                                :stopped?      false
+--                                                                                                                                :recur?        true}) :output))
+--                                                                                             :output        []
+--                                                                                             :phase         c
+--                                                                                             :pointer       0
+--                                                                                             :relative-base 0
+--                                                                                             :memory        i-code
+--                                                                                             :stopped?      false
+--                                                                                             :recur?        true}) :output))
+--                                                          :output        []
+--                                                          :phase         d
+--                                                          :pointer       0
+--                                                          :relative-base 0
+--                                                          :memory        i-code
+--                                                          :stopped?      false
+--                                                          :recur?        true}) :output))
+--                       :output        []
+--                       :phase         e
+--                       :pointer       0
+--                       :relative-base 0
+--                       :memory        i-code
+--                       :stopped?      false
+--                       :recur?        true}) :output)))
+
+
+-- 3 (recur
+--    {:input         input
+--     :output        output
+--     :phase         phase
+--     :pointer       (+ 2 pointer)
+--     :relative-base relative-base
+--     :memory        (if (some? phase)
+--                      (if (= 0 pointer)
+--                        (assoc
+--                         memory
+--                         (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
+--                         phase)
+--                        (assoc
+--                         memory
+--                         (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
+--                         input))
+--                      (assoc
+--                       memory
+--                       (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base})
+--                       input))
+--     :stopped?      stopped?
+--     :recur?        recur?})
