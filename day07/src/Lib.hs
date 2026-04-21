@@ -161,21 +161,6 @@ multiply instruction intcode =
       recur = recur intcode
     }
 
--- takeInput :: Instruction -> IntCodeStruct -> IntCodeStruct
--- takeInput instruction intcode =
---   IntCode
---     { input = input intcode,
---       output = output intcode,
---       phase = phase intcode,
---       pointer = pointer intcode + 2,
---       memory =
---         Map.insert
---           (cParam instruction intcode)
---           (input intcode)
---           (memory intcode),
---       stopped = stopped intcode,
---       recur = recur intcode
---     }
 takeInput :: Instruction -> IntCodeStruct -> IntCodeStruct
 takeInput instruction intcode =
   IntCode
