@@ -161,6 +161,21 @@ multiply instruction intcode =
       recur = recur intcode
     }
 
+-- takeInput :: Instruction -> IntCodeStruct -> IntCodeStruct
+-- takeInput instruction intcode =
+--   IntCode
+--     { input = input intcode,
+--       output = output intcode,
+--       phase = phase intcode,
+--       pointer = pointer intcode + 2,
+--       memory =
+--         Map.insert
+--           (cParam instruction intcode)
+--           (input intcode)
+--           (memory intcode),
+--       stopped = stopped intcode,
+--       recur = recur intcode
+--     }
 takeInput :: Instruction -> IntCodeStruct -> IntCodeStruct
 takeInput instruction intcode =
   IntCode
@@ -169,10 +184,24 @@ takeInput instruction intcode =
       phase = phase intcode,
       pointer = pointer intcode + 2,
       memory =
-        Map.insert
-          (cParam instruction intcode)
-          (input intcode)
-          (memory intcode),
+        if phase intcode == (-1)
+          then
+            Map.insert
+              (cParam instruction intcode)
+              (input intcode)
+              (memory intcode)
+          else
+            if pointer intcode == 0
+              then
+                Map.insert
+                  (cParam instruction intcode)
+                  (phase intcode)
+                  (memory intcode)
+              else
+                Map.insert
+                  (cParam instruction intcode)
+                  (input intcode)
+                  (memory intcode),
       stopped = stopped intcode,
       recur = recur intcode
     }
@@ -281,7 +310,6 @@ runOpCode intcode =
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
 
-
 -- myStateGiveeIsSuccess :: MyStateStruct -> IO MyStateStruct
 -- myStateGiveeIsSuccess state = do
 --   let currentGiver :: Giver = DM.fromJust (maybeGiver state)
@@ -340,6 +368,18 @@ runOpCode intcode =
 --                       :stopped?      false
 --                       :recur?        true}) :output)))
 
+-- case 3:
+-- 				if icP.phase == -1 {
+-- 					icP.memory[cParam(icP, instruction)] = icP.input
+-- 				} else {
+-- 					if icP.pointer == 0 {
+-- 						icP.memory[cParam(icP, instruction)] = icP.phase
+-- 					} else {
+-- 						icP.memory[cParam(icP, instruction)] = icP.input
+-- 					}
+-- 				}
+-- 				icP.pointer += 2
+-- 				return 1
 
 -- 3 (recur
 --    {:input         input
