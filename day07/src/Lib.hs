@@ -17,6 +17,7 @@ module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, pw, pr, aPa
 
 import qualified Data.Char as DC
 import qualified Data.List.Split as S
+import qualified Data.List.Unique as DLU
 import qualified Data.Map.Strict as Map
 
 type Instruction = Map.Map Char Int
@@ -294,6 +295,13 @@ runOpCode intcode =
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
+
+possibilities :: [[Int]]
+-- possibilities = filter DLU.allUnique [[a, b, c, d, e] | a <- [0 .. 5 :: Int], b <- [0 .. 5 :: Int], c <- [0 .. 5 :: Int], d <- [0 .. 5 :: Int], e <- [0 .. 5 :: Int]]
+
+possibilities = [[a, b, c] | a <- [0 .. 2 :: Int], b <- [0 .. 2 :: Int], c <- [0 .. 2 :: Int], d <- [0 .. 2 :: Int], e <- [0 .. 2 :: Int]]
+
+-- [ x * x | x <- [1..10 :: Int], even x, x * x > 30 ]
 
 -- myStateGiveeIsSuccess :: MyStateStruct -> IO MyStateStruct
 -- myStateGiveeIsSuccess state = do

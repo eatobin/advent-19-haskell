@@ -31,16 +31,17 @@ resolver: lts-22.44
 #   - auto-update
 #   - wai
 packages:
-- .
+  - .
 # Dependency packages to be pulled from upstream that are not in the snapshot.
 # These entries can reference officially published versions as well as
 # forks / in-progress versions pinned to a git hash. For example:
 #
-# extra-deps:
-# - acme-missiles-0.3
-# - git: https://github.com/commercialhaskell/stack.git
-#   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
-#
+extra-deps:
+  # - acme-missiles-0.3
+  # - git: https://github.com/commercialhaskell/stack.git
+  #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
+  - Unique-0.4.8.0@sha256:d2c53fd8f83aabc1a1b2694d1d78a4ecd9f3c6f741ab0f513020041cdf75b133,2155
+
 # extra-deps: []
 
 # Override default flag values for project packages and extra-deps
