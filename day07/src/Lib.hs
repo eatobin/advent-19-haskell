@@ -297,9 +297,10 @@ runOpCode intcode =
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
 
 possibilities :: [[Int]]
--- possibilities = filter DLU.allUnique [[a, b, c, d, e] | a <- [0 .. 5 :: Int], b <- [0 .. 5 :: Int], c <- [0 .. 5 :: Int], d <- [0 .. 5 :: Int], e <- [0 .. 5 :: Int]]
+possibilities = filter DLU.allUnique [[a, b, c, d, e] | a <- [0 .. 4 :: Int], b <- [0 .. 4 :: Int], c <- [0 .. 4 :: Int], d <- [0 .. 4 :: Int], e <- [0 .. 4 :: Int]]
 
-possibilities = [[a, b, c] | a <- [0 .. 2 :: Int], b <- [0 .. 2 :: Int], c <- [0 .. 2 :: Int], d <- [0 .. 2 :: Int], e <- [0 .. 2 :: Int]]
+possibilities3 :: [[Int]]
+possibilities3 = filter DLU.allUnique [[a, b, c] | a <- [0 .. 2 :: Int], b <- [0 .. 2 :: Int], c <- [0 .. 2 :: Int]]
 
 -- [ x * x | x <- [1..10 :: Int], even x, x * x > 30 ]
 
