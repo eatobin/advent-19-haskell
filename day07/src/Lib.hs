@@ -16,8 +16,7 @@ module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, pw, pr, aPa
 -- [input output phase pointer memory stopped? recur?]
 
 import qualified Data.Char as DC
-import qualified Data.List.Split as S
-import qualified Data.List.Unique as DLU
+import qualified Data.List.Split as DLS
 import qualified Data.Map.Strict as Map
 
 type Instruction = Map.Map Char Int
@@ -79,7 +78,7 @@ makeInstruction op =
 
 makeMemory :: MemoryAsCSVString -> Memory
 makeMemory memoryAsCSVStringParam =
-  let memoryAsKVTupleList = zip [0 ..] (map read (S.splitOn "," memoryAsCSVStringParam))
+  let memoryAsKVTupleList = zip [0 ..] (map read (DLS.splitOn "," memoryAsCSVStringParam))
    in Map.fromList memoryAsKVTupleList
 
 lookupABC :: IntCodeStruct -> PointerOffset -> Maybe KeyOrValue
@@ -295,14 +294,6 @@ runOpCode intcode =
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
-
-possibilities :: [[Int]]
-possibilities = filter DLU.allUnique [[a, b, c, d, e] | a <- [0 .. 4 :: Int], b <- [0 .. 4 :: Int], c <- [0 .. 4 :: Int], d <- [0 .. 4 :: Int], e <- [0 .. 4 :: Int]]
-
-possibilities3 :: [[Int]]
-possibilities3 = filter DLU.allUnique [[a, b, c] | a <- [0 .. 2 :: Int], b <- [0 .. 2 :: Int], c <- [0 .. 2 :: Int]]
-
--- [ x * x | x <- [1..10 :: Int], even x, x * x > 30 ]
 
 -- myStateGiveeIsSuccess :: MyStateStruct -> IO MyStateStruct
 -- myStateGiveeIsSuccess state = do

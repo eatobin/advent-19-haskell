@@ -1,7 +1,19 @@
 module Main (main) where
 
+import qualified Data.List.Unique as DLU
 import Lib (IntCodeStruct (..), makeMemory, runOpCode)
 import Text.Printf (printf)
+
+possibilities :: [[Int]]
+possibilities =
+  [ [a, b, c, d, e]
+    | a <- [0 .. 4 :: Int],
+      b <- [0 .. 4 :: Int],
+      c <- [0 .. 4 :: Int],
+      d <- [0 .. 4 :: Int],
+      e <- [0 .. 4 :: Int],
+      DLU.allUnique [a, b, c, d, e]
+  ]
 
 main :: IO ()
 main =
@@ -16,3 +28,6 @@ main =
     let answer2 = output (runOpCode IntCode {input = 5, output = 0, phase = -1, pointer = 0, memory = theMemory, stopped = False, recur = True})
 
     printf "Part B answer = %u. Correct = 11981754.\n\n" (answer2 :: Int)
+
+    print possibilities
+    printf "\n"
