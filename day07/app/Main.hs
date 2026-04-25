@@ -1,10 +1,14 @@
 module Main (main) where
 
 import qualified Data.List.Unique as DLU
-import Lib (IntCodeStruct (..), makeMemory, runOpCode)
+import Lib (IntCodeStruct (..), Memory, Output, makeMemory, runOpCode)
 import Text.Printf (printf)
 
-possibilities :: [[Int]]
+type Possibility = [Int]
+
+type Possibilities = [[Int]]
+
+possibilities :: Possibilities
 possibilities =
   [ [a, b, c, d, e]
     | a <- [0 .. 4 :: Int],
@@ -14,6 +18,16 @@ possibilities =
       e <- [0 .. 4 :: Int],
       DLU.allUnique [a, b, c, d, e]
   ]
+
+pass :: Possibility -> Memory -> Output
+pass [a, b, c, d, e] intcodeMemory =
+  let opA = IntCode {input = 0, output = 0, phase = a, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
+      opB = IntCode {input = output (runOpCode opA), output = 0, phase = b, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
+      opC = IntCode {input = output (runOpCode opB), output = 0, phase = c, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
+      opD = IntCode {input = output (runOpCode opC), output = 0, phase = d, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
+      opE = IntCode {input = output (runOpCode opD), output = 0, phase = e, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
+   in output (runOpCode opE)
+pass _ _ = error "possibility and/or memory is wrong"
 
 main :: IO ()
 main =
