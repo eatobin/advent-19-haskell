@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), Output, Memory, makeInstruction, makeMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
+module Lib (IntCodeStruct (..), Output, Memory, Phase, makeInstruction, makeMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
 
 -- Instruction:
 -- ABCDE
@@ -294,23 +294,3 @@ runOpCode intcode =
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
-
--- myStateGiveeIsSuccess :: MyStateStruct -> IO MyStateStruct
--- myStateGiveeIsSuccess state = do
---   let currentGiver :: Giver = DM.fromJust (maybeGiver state)
---       currentGivee :: Givee = DM.fromJust (maybeGivee state)
---       updatedGiveePlayers :: PlayersMap = playersUpdateMyGivee currentGiver currentGivee (giftYear state) (players state)
---    in do
---         return
---           state
---             { rosterName = rosterName state,
---               rosterYear = rosterYear state,
---               players = playersUpdateMyGiver currentGivee currentGiver (giftYear state) updatedGiveePlayers,
---               giftYear = giftYear state,
---               giveeHat = hatRemovePuck currentGivee (giveeHat state),
---               giverHat = giverHat state,
---               maybeGivee = Nothing,
---               maybeGiver = maybeGiver state,
---               discards = discards state,
---               quit = quit state
---             }
