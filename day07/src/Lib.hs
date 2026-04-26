@@ -294,3 +294,52 @@ runOpCode intcode =
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
+
+
+-- (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
+--   (if stopped?
+--     {:input input :output output :phase phase :pointer pointer :relative-base relative-base :memory memory :stopped? stopped? :recur? recur?}
+--     (let [instruction (pad-5 (memory pointer))]
+--       (case (instruction :e)
+--         1 (recur
+
+
+-- 4 (if recur?
+--     (recur
+--      {:input         input
+--       :output        (conj output (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
+--       :phase         phase
+--       :pointer       (+ 2 pointer)
+--       :relative-base relative-base
+--       :memory        memory
+--       :stopped?      stopped?
+--       :recur?        recur?})
+--     {:input         input
+--      :output        (conj output (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
+--      :phase         phase
+--      :pointer       (+ 2 pointer)
+--      :relative-base relative-base
+--      :memory        memory
+--      :stopped?      stopped?
+--      :recur?        recur?})
+
+
+-- 9 (if (= (instruction :d) 9)
+--     (recur
+--      {:input         input
+--       :output        output
+--       :phase         phase
+--       :pointer       pointer
+--       :relative-base relative-base
+--       :memory        memory
+--       :stopped?      true
+--       :recur?        recur?})
+--     (recur
+--      {:input         input
+--       :output        output
+--       :phase         phase
+--       :pointer       (+ 2 pointer)
+--       :relative-base (+ (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}) relative-base)
+--       :memory        memory
+--       :stopped?      stopped?
+--       :recur?        recur?}))
