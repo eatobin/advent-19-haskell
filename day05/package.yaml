@@ -26,6 +26,7 @@ dependencies:
 - containers
 - hspec
 - split
+- Cabal
 
 ghc-options:
 - -Wall
