@@ -24,6 +24,7 @@ description: Please see the README on GitHub at <https://github.com/eatobin/day0
 dependencies:
   - base >= 4.7 && < 5
   - hspec
+  - Cabal
 
 ghc-options:
   - -Wall

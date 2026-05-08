@@ -27,6 +27,7 @@ dependencies:
   - hspec
   - split
   - Unique
+  - Cabal
 
 ghc-options:
   - -Wall
