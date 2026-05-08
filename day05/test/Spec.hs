@@ -20,9 +20,11 @@ main = hspec $ do
   let thisMemoryX = Map.fromList [(0, 0), (1, 1), (2, 2), (3 :: Int, 3 :: Int)]
   let intCodeX = IntCode {input = 0, output = 0, pointer = 0, memory = thisMemoryX}
   let thisMemoryAddMult = Map.fromList [(0, 0), (1, 2), (2, 1), (3 :: Int, 0 :: Int)]
+  let thisMemoryAddAnswer = Map.fromList [(0, 3), (1, 2), (2, 1), (3 :: Int, 0 :: Int)]
+  let thisMemoryMultAnswer = Map.fromList [(0, 2), (1, 2), (2, 1), (3 :: Int, 0 :: Int)]
   let intCodeAddMult = IntCode {input = 0, output = 0, pointer = 0, memory = thisMemoryAddMult}
-  let intCodeAdd = IntCode {input = 0, output = 0, pointer = 4, memory = Map.fromList [(0, 3), (1, 2), (2, 1), (3, 0)]}
-  let intCodeMult = IntCode {input = 0, output = 0, pointer = 4, memory = Map.fromList [(0, 2), (1, 2), (2, 1), (3, 0)]}
+  let intCodeAdd = IntCode {input = 0, output = 0, pointer = 4, memory = thisMemoryAddAnswer}
+  let intCodeMult = IntCode {input = 0, output = 0, pointer = 4, memory = thisMemoryMultAnswer}
   let inputOutput :: String
       inputOutput = "3,0,4,0,99"
   let modesString = "1002,4,3,4,33"
