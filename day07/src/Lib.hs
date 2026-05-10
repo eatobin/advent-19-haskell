@@ -295,12 +295,14 @@ runOpCode intcode =
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
 
+
 -- (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
 --   (if stopped?
 --     {:input input :output output :phase phase :pointer pointer :relative-base relative-base :memory memory :stopped? stopped? :recur? recur?}
 --     (let [instruction (pad-5 (memory pointer))]
 --       (case (instruction :e)
 --         1 (recur
+
 
 -- 4 (if recur?
 --     (recur
@@ -320,6 +322,7 @@ runOpCode intcode =
 --      :memory        memory
 --      :stopped?      stopped?
 --      :recur?        recur?})
+
 
 -- 9 (if (= (instruction :d) 9)
 --     (recur
