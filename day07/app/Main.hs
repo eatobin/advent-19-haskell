@@ -2,6 +2,7 @@ module Main (main) where
 
 import qualified Data.List.Unique as DLU
 import qualified Data.Map.Strict as Map
+import Foreign (new)
 import Lib (IntCodeStruct (..), Memory, Output, Phase, makeMemory, runOpCode)
 import Text.Printf (printf)
 
@@ -22,18 +23,33 @@ possibilities =
       DLU.allUnique [a, b, c, d, e]
   ]
 
--- TODO
--- grabMyInputFromPriorOutput :: Int -> PassMap -> PassMap
--- grabMyInputFromPriorOutput myIndex thisPassMap =
---   if myIndex == 1
---     then
---       memory =
---         Map.insert
---           (aParam instruction intcode)
---           (cParam instruction intcode + bParam instruction intcode)
---           (memory intcode)
---     else
---       thisPassMap
+passMap :: PassMap
+passMap =
+  Map.fromList
+    [ (1, IntCode {input = 0, output = 0, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
+      (2, IntCode {input = 0, output = 0, phase = 2, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
+      (3, IntCode {input = 0, output = 0, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
+      (4, IntCode {input = 0, output = 0, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
+      (5, IntCode {input = 0, output = 0, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True})
+    ]
+
+tinyA :: PassMap
+tinyA = Map.fromList [(1, IntCode {input = 0, output = 0, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True})]
+
+tinyB :: PassMap
+tinyB = Map.fromList [(2, IntCode {input = 0, output = 0, phase = 1, pointer = 0, memory = Map.fromList [(11, 11)], stopped = False, recur = True})]
+
+tiny99 :: PassMap
+tiny99 = Map.fromList [(99, IntCode {input = 0, output = 0, phase = 1, pointer = 0, memory = Map.fromList [(99, 9)], stopped = False, recur = True})]
+
+grabMyInputFromPriorOutput :: Int -> PassMap -> PassMap
+grabMyInputFromPriorOutput myIndex thisPassMap =
+  let newMap = thisPassMap
+   in if myIndex == 1
+        then
+          newMap
+        else
+          tiny99
 
 pass :: Memory -> Possibility -> Output
 pass intcodeMemory [a, b, c, d, e] =
