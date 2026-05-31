@@ -1,10 +1,13 @@
 module Main (main) where
 
 import qualified Data.List.Unique as DLU
+import qualified Data.Map.Strict as Map
 import Lib (IntCodeStruct (..), Memory, Output, Phase, makeMemory, runOpCode)
 import Text.Printf (printf)
 
 type Possibility = [Phase]
+
+type PassMap = Map.Map Int IntCodeStruct
 
 type Possibilities = [Possibility]
 
@@ -18,6 +21,19 @@ possibilities =
       e <- [0 .. 4 :: Int],
       DLU.allUnique [a, b, c, d, e]
   ]
+
+-- TODO
+-- grabMyInputFromPriorOutput :: Int -> PassMap -> PassMap
+-- grabMyInputFromPriorOutput myIndex thisPassMap =
+--   if myIndex == 1
+--     then
+--       memory =
+--         Map.insert
+--           (aParam instruction intcode)
+--           (cParam instruction intcode + bParam instruction intcode)
+--           (memory intcode)
+--     else
+--       thisPassMap
 
 pass :: Memory -> Possibility -> Output
 pass intcodeMemory [a, b, c, d, e] =
