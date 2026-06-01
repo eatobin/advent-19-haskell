@@ -39,6 +39,7 @@ library
     , base >=4.7 && <5
     , containers
     , hspec
+    , microlens-platform
     , split
   default-language: Haskell2010
 
@@ -54,6 +55,7 @@ executable day07-exe
     , containers
     , day07
     , hspec
+    , microlens-platform
     , split
   default-language: Haskell2010
 
@@ -74,5 +76,6 @@ test-suite day07-test
     , containers
     , day07
     , hspec
+    , microlens-platform
     , split
   default-language: Haskell2010

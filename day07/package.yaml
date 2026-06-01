@@ -28,6 +28,7 @@ dependencies:
   - split
   - Unique
   - Cabal
+  - microlens-platform
 
 ghc-options:
   - -Wall
