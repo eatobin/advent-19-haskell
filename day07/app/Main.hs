@@ -1,40 +1,38 @@
-{-# LANGUAGE TemplateHaskell #-}
+module Main (main) where
 
-import qualified Data.Map.Strict as Map
-import Lens.Micro.Platform (makeLenses, (%~), (&), (.~), (^.))
-import Lib (IntCodeStruct (..), Memory)
+import qualified Data.Map as M
 
--- data IntCode = IntCode {_inputIC :: Int, _outputIC :: Int, phase :: Int, pointer :: Int, memory :: Memory, stopped :: Bool, recur :: Bool} deriving (Show)
-type PassMap = Map.Map Int IntCodeStruct
+-- Example Map Type: Map String (Map String Int)
+type NestedMap = M.Map String (M.Map String Int)
 
-passMap :: PassMap
-passMap =
-  Map.fromList
-    [ (1, IntCode {_input = 11, _output = 0, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
-      (2, IntCode {_input = 22, _output = 0, phase = 2, pointer = 0, memory = Map.fromList [(2, 2)], stopped = False, recur = True}),
-      (3, IntCode {_input = 0, _output = 0, phase = 3, pointer = 0, memory = Map.fromList [(3, 3)], stopped = False, recur = True}),
-      (4, IntCode {_input = 0, _output = 0, phase = 4, pointer = 0, memory = Map.fromList [(4, 4)], stopped = False, recur = True}),
-      (5, IntCode {_input = 55, _output = 555, phase = 5, pointer = 0, memory = Map.fromList [(5, 5)], stopped = False, recur = True})
-    ]
+-- Updates an existing key in the nested map
 
-makeLenses ''IntCodeStruct
+-- updateNestedValue :: String -> String -> Int -> NestedMap -> NestedMap
+-- updateNestedValue outerKey innerKey newValue myMap =
+--   M.adjust
+--     (M.insert innerKey newValue)
+--     outerKey
+--     myMap
+
+-- eta reduced
+updateNestedValue :: String -> String -> Int -> NestedMap -> NestedMap
+updateNestedValue outerKey innerKey newValue =
+  M.adjust
+    (M.insert innerKey newValue)
+    outerKey
 
 main :: IO ()
 main = do
-  -- let tinyA = IC 111 7777 0 0 (Map.fromList [(1, 1)]) True True
-  -- let tinyB = IC 222 8888 0 0 (Map.fromList [(2, 2)]) True True
-  -- let tinyC = IC 333 9999 0 0 (Map.fromList [(3, 3)]) True True
-  -- let big3 =
-  --       Map.fromList
-  --         [ (1, IC 111 7777 0 0 (Map.fromList [(1, 1)]) True True),
-  --           (2, IC 222 8888 0 0 (Map.fromList [(2, 2)]) True True),
-  --           (3, IC 333 9999 0 0 (Map.fromList [(3, 3)]) True True)
-  --         ] ::
-  --         Map.Map Int IC
+  let innerMap = M.fromList [("jan", 1), ("feb", 2)] :: M.Map String Int
+  let outerMap = M.fromList [("mine", innerMap), ("yours", innerMap)]
+  print outerMap
+  let newmap = updateNestedValue "yours" "feb" 9 outerMap
+  print newmap
 
-  print $ passMap Map.! 1 ^. input
-  print $ passMap Map.! 5 ^. output
+-- adjust :: Ord k => (a -> a) -> k -> Map k a -> Map k a
+-- Update a value at a specific key with the result of the provided function.
+--   When the key is not a member of the map, the original map is returned.
 
-  print $ passMap Map.! 1 & input %~ succ
-  print $ passMap Map.! 3 & output .~ 42
-  print $ passMap Map.! 1 & input .~ (passMap Map.! 5 ^. output)
+-- adjust ("new " ++) 5 (fromList [(5,"a"), (3,"b")]) == fromList [(3, "b"), (5, "new a")]
+-- adjust ("new " ++) 7 (fromList [(5,"a"), (3,"b")]) == fromList [(3, "b"), (5, "a")]
+-- adjust ("new " ++) 7 empty                         == empty
