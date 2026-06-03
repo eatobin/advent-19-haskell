@@ -22,12 +22,18 @@ makeLenses ''IC
 main :: IO ()
 main = do
   let user = User "Alice" (Address "Phoenix" "AZ")
-  let tinyA = IC 111 7777 0 0 (Map.fromList [(1, 1)]) True True
-  let tinyB = IC 222 8888 0 0 (Map.fromList [(2, 2)]) True True
-  let tinyC = IC 333 9999 0 0 (Map.fromList [(3, 3)]) True True
+  -- let tinyA = IC 111 7777 0 0 (Map.fromList [(1, 1)]) True True
+  -- let tinyB = IC 222 8888 0 0 (Map.fromList [(2, 2)]) True True
+  -- let tinyC = IC 333 9999 0 0 (Map.fromList [(3, 3)]) True True
   -- let myAddress = Address "Nome" "AL"
   -- let big = Map.fromList [(1, 11111)] :: Map.Map Int Int
-  let big3 = Map.fromList [(1, tinyA), (2, tinyB), (3, tinyC)] :: Map.Map Int IC
+  let big3 =
+        Map.fromList
+          [ (1, IC 111 7777 0 0 (Map.fromList [(1, 1)]) True True),
+            (2, IC 222 8888 0 0 (Map.fromList [(2, 2)]) True True),
+            (3, IC 333 9999 0 0 (Map.fromList [(3, 3)]) True True)
+          ] ::
+          Map.Map Int IC
 
   -- 1. Get a nested field
   print $ user ^. address . city
