@@ -14,7 +14,7 @@ data IC = IC {_inputIC :: Int, _outputIC :: Int, phase :: Int, pointer :: Int, m
 
 -- Automatically generates _city and _name lenses
 makeLenses ''Address
-makeLenses 'User
+makeLenses ''User
 makeLenses ''IC
 
 -- makeLenses ''MyPass
