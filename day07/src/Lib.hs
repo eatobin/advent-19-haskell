@@ -13,7 +13,7 @@ module Lib (IntCodeStruct (..), Output, Memory, Phase, makeInstruction, makeMemo
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
--- [_input _output phase pointer memory stopped? recur?]
+-- [input output phase pointer memory stopped? recur?]
 
 import qualified Data.Char as DC
 import qualified Data.List.Split as DLS
@@ -47,8 +47,8 @@ type Recur = Bool
 
 data IntCodeStruct
   = IntCode
-  { _input :: Input,
-    _output :: Output,
+  { input :: Input,
+    output :: Output,
     phase :: Phase,
     pointer :: Pointer,
     memory :: Memory,
@@ -132,8 +132,8 @@ cParam instruction intcode =
 add :: Instruction -> IntCodeStruct -> IntCodeStruct
 add instruction intcode =
   IntCode
-    { _input = _input intcode,
-      _output = _output intcode,
+    { input = input intcode,
+      output = output intcode,
       phase = phase intcode,
       pointer = pointer intcode + 4,
       memory =
@@ -148,8 +148,8 @@ add instruction intcode =
 multiply :: Instruction -> IntCodeStruct -> IntCodeStruct
 multiply instruction intcode =
   IntCode
-    { _input = _input intcode,
-      _output = _output intcode,
+    { input = input intcode,
+      output = output intcode,
       phase = phase intcode,
       pointer = pointer intcode + 4,
       memory =
@@ -164,8 +164,8 @@ multiply instruction intcode =
 takeInput :: Instruction -> IntCodeStruct -> IntCodeStruct
 takeInput instruction intcode =
   IntCode
-    { _input = _input intcode,
-      _output = _output intcode,
+    { input = input intcode,
+      output = output intcode,
       phase = phase intcode,
       pointer = pointer intcode + 2,
       memory =
@@ -173,7 +173,7 @@ takeInput instruction intcode =
           then
             Map.insert
               (cParam instruction intcode)
-              (_input intcode)
+              (input intcode)
               (memory intcode)
           else
             if pointer intcode == 0
@@ -185,7 +185,7 @@ takeInput instruction intcode =
               else
                 Map.insert
                   (cParam instruction intcode)
-                  (_input intcode)
+                  (input intcode)
                   (memory intcode),
       stopped = stopped intcode,
       recur = recur intcode
@@ -194,8 +194,8 @@ takeInput instruction intcode =
 giveOutput :: Instruction -> IntCodeStruct -> IntCodeStruct
 giveOutput instruction intcode =
   IntCode
-    { _input = _input intcode,
-      _output = cParam instruction intcode,
+    { input = input intcode,
+      output = cParam instruction intcode,
       phase = phase intcode,
       pointer = pointer intcode + 2,
       memory = memory intcode,
@@ -206,8 +206,8 @@ giveOutput instruction intcode =
 jumpIfTrue :: Instruction -> IntCodeStruct -> IntCodeStruct
 jumpIfTrue instruction intcode =
   IntCode
-    { _input = _input intcode,
-      _output = _output intcode,
+    { input = input intcode,
+      output = output intcode,
       phase = phase intcode,
       pointer =
         if cParam instruction intcode /= 0
@@ -221,8 +221,8 @@ jumpIfTrue instruction intcode =
 jumpIfFalse :: Instruction -> IntCodeStruct -> IntCodeStruct
 jumpIfFalse instruction intcode =
   IntCode
-    { _input = _input intcode,
-      _output = _output intcode,
+    { input = input intcode,
+      output = output intcode,
       phase = phase intcode,
       pointer =
         if cParam instruction intcode == 0
@@ -236,8 +236,8 @@ jumpIfFalse instruction intcode =
 lessThan :: Instruction -> IntCodeStruct -> IntCodeStruct
 lessThan instruction intcode =
   IntCode
-    { _input = _input intcode,
-      _output = _output intcode,
+    { input = input intcode,
+      output = output intcode,
       phase = phase intcode,
       pointer = pointer intcode + 4,
       memory =
@@ -259,8 +259,8 @@ lessThan instruction intcode =
 equals :: Instruction -> IntCodeStruct -> IntCodeStruct
 equals instruction intcode =
   IntCode
-    { _input = _input intcode,
-      _output = _output intcode,
+    { input = input intcode,
+      output = output intcode,
       phase = phase intcode,
       pointer = pointer intcode + 4,
       memory =
@@ -295,25 +295,25 @@ runOpCode intcode =
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
 
--- (defn op-code [{:keys [_input _output phase pointer relative-base memory stopped? recur?]}]
+-- (defn op-code [{:keys [input output phase pointer relative-base memory stopped? recur?]}]
 --   (if stopped?
---     {:_input _input :_output _output :phase phase :pointer pointer :relative-base relative-base :memory memory :stopped? stopped? :recur? recur?}
+--     {:input input :output output :phase phase :pointer pointer :relative-base relative-base :memory memory :stopped? stopped? :recur? recur?}
 --     (let [instruction (pad-5 (memory pointer))]
 --       (case (instruction :e)
 --         1 (recur
 
 -- 4 (if recur?
 --     (recur
---      {:_input         _input
---       :_output        (conj _output (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
+--      {:input         input
+--       :output        (conj output (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
 --       :phase         phase
 --       :pointer       (+ 2 pointer)
 --       :relative-base relative-base
 --       :memory        memory
 --       :stopped?      stopped?
 --       :recur?        recur?})
---     {:_input         _input
---      :_output        (conj _output (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
+--     {:input         input
+--      :output        (conj output (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}))
 --      :phase         phase
 --      :pointer       (+ 2 pointer)
 --      :relative-base relative-base
@@ -323,8 +323,8 @@ runOpCode intcode =
 
 -- 9 (if (= (instruction :d) 9)
 --     (recur
---      {:_input         _input
---       :_output        _output
+--      {:input         input
+--       :output        output
 --       :phase         phase
 --       :pointer       pointer
 --       :relative-base relative-base
@@ -332,8 +332,8 @@ runOpCode intcode =
 --       :stopped?      true
 --       :recur?        recur?})
 --     (recur
---      {:_input         _input
---       :_output        _output
+--      {:input         input
+--       :output        output
 --       :phase         phase
 --       :pointer       (+ 2 pointer)
 --       :relative-base (+ (c-param {:instruction instruction :pointer pointer :memory memory :relative-base relative-base}) relative-base)
