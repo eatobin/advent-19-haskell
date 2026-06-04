@@ -1,36 +1,64 @@
 module Main (main) where
 
-import qualified Data.List.Unique as DLU
+-- import qualified Data.List.Unique as DLU
+-- import qualified Data.Map.Strict as Map
+-- import Lib (IntCodeStruct (..), Memory, Output, Phase, makeMemory, runOpCode)
+-- import Text.Printf (printf)
+
+-- type Possibility = [Phase]
+
+-- type Possibilities = [Possibility]
+
+-- type PassMap = Map.Map Int IntCodeStruct
+
+-- possibilities :: Possibilities
+-- possibilities =
+--   [ [a, b, c, d, e]
+--     | a <- [0 .. 4 :: Int],
+--       b <- [0 .. 4 :: Int],
+--       c <- [0 .. 4 :: Int],
+--       d <- [0 .. 4 :: Int],
+--       e <- [0 .. 4 :: Int],
+--       DLU.allUnique [a, b, c, d, e]
+--   ]
+
+-- passMap :: PassMap
+-- passMap =
+--   Map.fromList
+--     [ (1, IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
+--       (2, IntCode {input = 22, output = 222, phase = 2, pointer = 0, memory = Map.fromList [(2, 2)], stopped = False, recur = True}),
+--       (3, IntCode {input = 33, output = 333, phase = 3, pointer = 0, memory = Map.fromList [(3, 3)], stopped = False, recur = True}),
+--       (4, IntCode {input = 44, output = 444, phase = 4, pointer = 0, memory = Map.fromList [(4, 4)], stopped = False, recur = True}),
+--       (5, IntCode {input = 55, output = 555, phase = 5, pointer = 0, memory = Map.fromList [(5, 5)], stopped = False, recur = True})
+--     ]
+
 import qualified Data.Map.Strict as Map
-import Lib (IntCodeStruct (..), Memory, Output, Phase, makeMemory, runOpCode)
-import Text.Printf (printf)
 
-type Possibility = [Phase]
+type OuterKey = String
 
-type Possibilities = [Possibility]
+type InnerKey = Int
 
-type PassMap = Map.Map Int IntCodeStruct
+type Value = String
 
-possibilities :: Possibilities
-possibilities =
-  [ [a, b, c, d, e]
-    | a <- [0 .. 4 :: Int],
-      b <- [0 .. 4 :: Int],
-      c <- [0 .. 4 :: Int],
-      d <- [0 .. 4 :: Int],
-      e <- [0 .. 4 :: Int],
-      DLU.allUnique [a, b, c, d, e]
-  ]
+type NestedMap = Map.Map OuterKey (Map.Map InnerKey Value)
 
-passMap :: PassMap
-passMap =
-  Map.fromList
-    [ (1, IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
-      (2, IntCode {input = 22, output = 222, phase = 2, pointer = 0, memory = Map.fromList [(2, 2)], stopped = False, recur = True}),
-      (3, IntCode {input = 33, output = 333, phase = 3, pointer = 0, memory = Map.fromList [(3, 3)], stopped = False, recur = True}),
-      (4, IntCode {input = 44, output = 444, phase = 4, pointer = 0, memory = Map.fromList [(4, 4)], stopped = False, recur = True}),
-      (5, IntCode {input = 55, output = 555, phase = 5, pointer = 0, memory = Map.fromList [(5, 5)], stopped = False, recur = True})
-    ]
+-- Safely look up a nested value using Maybe's (>>=) operator
+lookupNested :: OuterKey -> InnerKey -> NestedMap -> Maybe Value
+lookupNested outerKey innerKey m =
+  Map.lookup outerKey m >>= Map.lookup innerKey
+
+lookupNestedEx :: OuterKey -> InnerKey -> NestedMap -> Value
+lookupNestedEx outerKey innerKey m =
+  -- Map.lookup outerKey m >>= Map.lookup innerKey
+  (m Map.! outerKey) Map.! innerKey
+
+-- Example usage:
+-- Just "Hello"
+example :: Maybe String
+example = lookupNested "section1" 42 (Map.singleton "section1" (Map.singleton 42 "Hello"))
+
+exampleEx :: String
+exampleEx = lookupNestedEx "section1" 42 (Map.singleton "section1" (Map.singleton 42 "Hello"))
 
 -- -- Example Map Type: Map String (Map String Int)
 -- type NestedMap = M.Map String (M.Map String Int)
@@ -53,7 +81,8 @@ passMap =
 
 main :: IO ()
 main = do
-  print "Hi"
+  print exampleEx
+  print example
 
 --   let innerMap = M.fromList [("jan", 1), ("feb", 2)] :: M.Map String Int
 --   let outerMap = M.fromList [("mine", innerMap), ("yours", innerMap)]
