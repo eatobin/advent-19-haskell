@@ -10,7 +10,7 @@ import Text.Printf (printf)
 
 -- type Possibilities = [Possibility]
 
-type PassMap = Map.Map Int IntCodeStruct
+-- type PassMap = Map.Map Int IntCodeStruct?
 
 possibilities :: [[Int]]
 possibilities =
@@ -23,7 +23,7 @@ possibilities =
       DLU.allUnique [a, b, c, d, e]
   ]
 
-passMap :: PassMap
+passMap :: Map.Map Int IntCodeStruct
 passMap =
   Map.fromList
     [ (1, IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
