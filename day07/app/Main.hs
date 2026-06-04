@@ -1,7 +1,6 @@
 module Main (main) where
 
 import qualified Data.List.Unique as DLU
-import Data.Map.Strict (fromList)
 import qualified Data.Map.Strict as Map
 import Lib (IntCodeStruct (..), makeMemory, runOpCode)
 import Text.Printf (printf)
@@ -33,19 +32,35 @@ passMap =
       (5, IntCode {input = 55, output = 555, phase = 5, pointer = 0, memory = Map.fromList [(5, 5)], stopped = False, recur = True})
     ]
 
--- grabMyInputFromPriorOutput :: Int -> PassMap -> PassMap
--- grabMyInputFromPriorOutput myIndex thisPassMap =
---   if myIndex == 1
---     then
---       -- Map.adjust ("new " ++) 5 (fromList [(5, "a"), (3, "b")])
---       Map.adjust (Map.insert input 0) myIndex thisPassMap
---     else
---       passMap
+updateIntCodeInPassMap :: Int -> IntCodeStruct -> Map.Map Int IntCodeStruct -> Map.Map Int IntCodeStruct
+updateIntCodeInPassMap = Map.insert
+
+updateInputInIntCodeStruct :: Int -> IntCodeStruct -> IntCodeStruct
+updateInputInIntCodeStruct newValue intCode =
+  intCode {input = newValue}
+
+updateInputInPassMap :: Int -> Int -> Map.Map Int IntCodeStruct -> Map.Map Int IntCodeStruct
+updateInputInPassMap index newValue thisPassMap =
+  updateIntCodeInPassMap index newIntCode thisPassMap
+  where
+    oldIntCode = thisPassMap Map.! index
+    newIntCode = updateInputInIntCodeStruct newValue oldIntCode
+
+grabMyInputFromPriorOutput :: Int -> Map.Map Int IntCodeStruct -> Map.Map Int IntCodeStruct
+grabMyInputFromPriorOutput myIndex thisPassMap =
+  if myIndex == 1
+    then
+      updateInputInPassMap myIndex 0 thisPassMap
+    else
+      updateInputInPassMap myIndex (output (thisPassMap Map.! pred myIndex)) thisPassMap
 
 main :: IO ()
 main = do
-  print possibilities
-  print passMap
+  print (updateIntCodeInPassMap 5 IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True} passMap)
+  print (updateInputInPassMap 1 888 passMap)
+  print (grabMyInputFromPriorOutput 1 passMap)
+  print (grabMyInputFromPriorOutput 5 passMap)
+  printf "\nPart A answer = %u. Correct = 368584.\n" (42 :: Int)
 
 --   let innerMap = M.fromList [("jan", 1), ("feb", 2)] :: M.Map String Int
 --   let outerMap = M.fromList [("mine", innerMap), ("yours", innerMap)]
