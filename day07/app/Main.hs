@@ -1,88 +1,51 @@
 module Main (main) where
 
--- import qualified Data.List.Unique as DLU
--- import qualified Data.Map.Strict as Map
--- import Lib (IntCodeStruct (..), Memory, Output, Phase, makeMemory, runOpCode)
--- import Text.Printf (printf)
+import qualified Data.List.Unique as DLU
+import Data.Map.Strict (fromList)
+import qualified Data.Map.Strict as Map
+import Lib (IntCodeStruct (..), makeMemory, runOpCode)
+import Text.Printf (printf)
 
--- type Possibility = [Phase]
+-- type Possibility = [Int]
 
 -- type Possibilities = [Possibility]
 
--- type PassMap = Map.Map Int IntCodeStruct
+type PassMap = Map.Map Int IntCodeStruct
 
--- possibilities :: Possibilities
--- possibilities =
---   [ [a, b, c, d, e]
---     | a <- [0 .. 4 :: Int],
---       b <- [0 .. 4 :: Int],
---       c <- [0 .. 4 :: Int],
---       d <- [0 .. 4 :: Int],
---       e <- [0 .. 4 :: Int],
---       DLU.allUnique [a, b, c, d, e]
---   ]
+possibilities :: [[Int]]
+possibilities =
+  [ [a, b, c, d, e]
+    | a <- [0 .. 4 :: Int],
+      b <- [0 .. 4 :: Int],
+      c <- [0 .. 4 :: Int],
+      d <- [0 .. 4 :: Int],
+      e <- [0 .. 4 :: Int],
+      DLU.allUnique [a, b, c, d, e]
+  ]
 
--- passMap :: PassMap
--- passMap =
---   Map.fromList
---     [ (1, IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
---       (2, IntCode {input = 22, output = 222, phase = 2, pointer = 0, memory = Map.fromList [(2, 2)], stopped = False, recur = True}),
---       (3, IntCode {input = 33, output = 333, phase = 3, pointer = 0, memory = Map.fromList [(3, 3)], stopped = False, recur = True}),
---       (4, IntCode {input = 44, output = 444, phase = 4, pointer = 0, memory = Map.fromList [(4, 4)], stopped = False, recur = True}),
---       (5, IntCode {input = 55, output = 555, phase = 5, pointer = 0, memory = Map.fromList [(5, 5)], stopped = False, recur = True})
---     ]
+passMap :: PassMap
+passMap =
+  Map.fromList
+    [ (1, IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
+      (2, IntCode {input = 22, output = 222, phase = 2, pointer = 0, memory = Map.fromList [(2, 2)], stopped = False, recur = True}),
+      (3, IntCode {input = 33, output = 333, phase = 3, pointer = 0, memory = Map.fromList [(3, 3)], stopped = False, recur = True}),
+      (4, IntCode {input = 44, output = 444, phase = 4, pointer = 0, memory = Map.fromList [(4, 4)], stopped = False, recur = True}),
+      (5, IntCode {input = 55, output = 555, phase = 5, pointer = 0, memory = Map.fromList [(5, 5)], stopped = False, recur = True})
+    ]
 
-import qualified Data.Map.Strict as Map
-
-type OuterKey = String
-
-type InnerKey = Int
-
-type Value = String
-
-type NestedMap = Map.Map OuterKey (Map.Map InnerKey Value)
-
--- Safely look up a nested value using Maybe's (>>=) operator
-lookupNested :: OuterKey -> InnerKey -> NestedMap -> Maybe Value
-lookupNested outerKey innerKey m =
-  Map.lookup outerKey m >>= Map.lookup innerKey
-
-lookupNestedEx :: OuterKey -> InnerKey -> NestedMap -> Value
-lookupNestedEx outerKey innerKey m =
-  -- Map.lookup outerKey m >>= Map.lookup innerKey
-  (m Map.! outerKey) Map.! innerKey
-
--- Example usage:
--- Just "Hello"
-example :: Maybe String
-example = lookupNested "section1" 42 (Map.singleton "section1" (Map.singleton 42 "Hello"))
-
-exampleEx :: String
-exampleEx = lookupNestedEx "section1" 42 (Map.singleton "section1" (Map.singleton 42 "Hello"))
-
--- -- Example Map Type: Map String (Map String Int)
--- type NestedMap = M.Map String (M.Map String Int)
-
--- -- Updates an existing key in the nested map
-
--- -- updateNestedValue :: String -> String -> Int -> NestedMap -> NestedMap
--- -- updateNestedValue outerKey innerKey newValue myMap =
--- --   M.adjust
--- --     (M.insert innerKey newValue)
--- --     outerKey
--- --     myMap
-
--- -- eta reduced
--- updateNestedValue :: String -> String -> Int -> NestedMap -> NestedMap
--- updateNestedValue outerKey innerKey newValue =
---   M.adjust
---     (M.insert innerKey newValue)
---     outerKey
+-- grabMyInputFromPriorOutput :: Int -> PassMap -> PassMap
+-- grabMyInputFromPriorOutput myIndex thisPassMap =
+--   if myIndex == 1
+--     then
+--       -- Map.adjust ("new " ++) 5 (fromList [(5, "a"), (3, "b")])
+--       Map.adjust (Map.insert input 0) myIndex thisPassMap
+--     else
+--       passMap
 
 main :: IO ()
 main = do
-  print exampleEx
-  print example
+  print possibilities
+  print passMap
 
 --   let innerMap = M.fromList [("jan", 1), ("feb", 2)] :: M.Map String Int
 --   let outerMap = M.fromList [("mine", innerMap), ("yours", innerMap)]

@@ -1,6 +1,6 @@
-module Lib (IntCodeStruct (..), Output, Memory, Phase, makeInstruction, makeMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
+module Lib (IntCodeStruct (..), makeInstruction, makeMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
 
--- Instruction:
+-- Map.Map Char Int:
 -- ABCDE
 -- 01234
 -- 01002
@@ -19,54 +19,54 @@ import qualified Data.Char as DC
 import qualified Data.List.Split as DLS
 import qualified Data.Map.Strict as Map
 
-type Instruction = Map.Map Char Int
+-- type Map.Map Char Int = Map.Map Char Int
 
-type Pointer = Int
+-- type Pointer = Int
 
-type Key = Int
+-- type Key = Int
 
-type Value = Int
+-- type Value = Int
 
-type KeyOrValue = Int
+-- type KeyOrValue = Int
 
-type Memory = Map.Map Key Value
+-- type Memory = Map.Map Int Int
 
 type MemoryAsCSVString = [Char]
 
-type PointerOffset = Int
+-- type Int = Int
 
-type Input = Int
+-- type Input = Int
 
-type Output = Int
+-- type Output = Int
 
-type Phase = Int
+-- type Phase = Int
 
-type Stopped = Bool
+-- type Stopped = Bool
 
-type Recur = Bool
+-- type Recur = Bool
 
 data IntCodeStruct
   = IntCode
-  { input :: Input,
-    output :: Output,
-    phase :: Phase,
-    pointer :: Pointer,
-    memory :: Memory,
-    stopped :: Stopped,
-    recur :: Recur
+  { input :: Int,
+    output :: Int,
+    phase :: Int,
+    pointer :: Int,
+    memory :: Map.Map Int Int,
+    stopped :: Bool,
+    recur :: Bool
   }
   deriving (Eq, Show)
 
-pointerOffsetC :: PointerOffset
+pointerOffsetC :: Int
 pointerOffsetC = 1
 
-pointerOffsetB :: PointerOffset
+pointerOffsetB :: Int
 pointerOffsetB = 2
 
-pointerOffsetA :: PointerOffset
+pointerOffsetA :: Int
 pointerOffsetA = 3
 
-makeInstruction :: Int -> Instruction
+makeInstruction :: Int -> Map.Map Char Int
 makeInstruction op =
   Map.fromList instructionAsKVTupleList
   where
@@ -76,60 +76,60 @@ makeInstruction op =
     values = map DC.digitToInt paddedOp
     instructionAsKVTupleList = zip keys values
 
-makeMemory :: MemoryAsCSVString -> Memory
+makeMemory :: MemoryAsCSVString -> Map.Map Int Int
 makeMemory memoryAsCSVStringParam =
   let memoryAsKVTupleList = zip [0 ..] (map read (DLS.splitOn "," memoryAsCSVStringParam))
    in Map.fromList memoryAsKVTupleList
 
-lookupABC :: IntCodeStruct -> PointerOffset -> Maybe KeyOrValue
+lookupABC :: IntCodeStruct -> Int -> Maybe Int
 lookupABC intcode pointerOffsetParam =
   Map.lookup
     (pointer intcode + pointerOffsetParam)
     (memory intcode)
 
-readABC :: IntCodeStruct -> PointerOffset -> KeyOrValue
+readABC :: IntCodeStruct -> Int -> Int
 readABC intcode pointerOffsetParam =
   case lookupABC intcode pointerOffsetParam of
     Just value -> value
     Nothing -> error "Key is not valid"
 
-pw :: IntCodeStruct -> PointerOffset -> Key
+pw :: IntCodeStruct -> Int -> Int
 pw =
   readABC
 
-pr :: IntCodeStruct -> PointerOffset -> Value
+pr :: IntCodeStruct -> Int -> Int
 pr intcode pointerOffsetParam =
   memory intcode Map.! readABC intcode pointerOffsetParam
 
-ir :: IntCodeStruct -> PointerOffset -> Value
+ir :: IntCodeStruct -> Int -> Int
 ir =
   readABC
 
-aParam :: Instruction -> IntCodeStruct -> Key
+aParam :: Map.Map Char Int -> IntCodeStruct -> Int
 aParam instruction intcode =
   case instruction Map.! 'a' of
     0 -> pw intcode pointerOffsetA -- a-p-w
-    _ -> error "Instruction is not valid"
+    _ -> error "Map.Map Char Int is not valid"
 
-bParam :: Instruction -> IntCodeStruct -> KeyOrValue
+bParam :: Map.Map Char Int -> IntCodeStruct -> Int
 bParam instruction intcode =
   case instruction Map.! 'b' of
     0 -> pr intcode pointerOffsetB -- b-p-r
     1 -> ir intcode pointerOffsetB -- b-i-r
-    _ -> error "Instruction is not valid"
+    _ -> error "Map.Map Char Int is not valid"
 
-cParam :: Instruction -> IntCodeStruct -> KeyOrValue
+cParam :: Map.Map Char Int -> IntCodeStruct -> Int
 cParam instruction intcode =
   if instruction Map.! 'e' == 3
     then case instruction Map.! 'c' of
       0 -> pw intcode pointerOffsetC -- c-p-w
-      _ -> error "Instruction is not valid"
+      _ -> error "Map.Map Char Int is not valid"
     else case instruction Map.! 'c' of
       0 -> pr intcode pointerOffsetC -- c-p-r
       1 -> ir intcode pointerOffsetC -- c-i-r
-      _ -> error "Instruction is not valid"
+      _ -> error "Map.Map Char Int is not valid"
 
-add :: Instruction -> IntCodeStruct -> IntCodeStruct
+add :: Map.Map Char Int -> IntCodeStruct -> IntCodeStruct
 add instruction intcode =
   IntCode
     { input = input intcode,
@@ -145,7 +145,7 @@ add instruction intcode =
       recur = recur intcode
     }
 
-multiply :: Instruction -> IntCodeStruct -> IntCodeStruct
+multiply :: Map.Map Char Int -> IntCodeStruct -> IntCodeStruct
 multiply instruction intcode =
   IntCode
     { input = input intcode,
@@ -161,7 +161,7 @@ multiply instruction intcode =
       recur = recur intcode
     }
 
-takeInput :: Instruction -> IntCodeStruct -> IntCodeStruct
+takeInput :: Map.Map Char Int -> IntCodeStruct -> IntCodeStruct
 takeInput instruction intcode =
   IntCode
     { input = input intcode,
@@ -191,7 +191,7 @@ takeInput instruction intcode =
       recur = recur intcode
     }
 
-giveOutput :: Instruction -> IntCodeStruct -> IntCodeStruct
+giveOutput :: Map.Map Char Int -> IntCodeStruct -> IntCodeStruct
 giveOutput instruction intcode =
   IntCode
     { input = input intcode,
@@ -203,7 +203,7 @@ giveOutput instruction intcode =
       recur = recur intcode
     }
 
-jumpIfTrue :: Instruction -> IntCodeStruct -> IntCodeStruct
+jumpIfTrue :: Map.Map Char Int -> IntCodeStruct -> IntCodeStruct
 jumpIfTrue instruction intcode =
   IntCode
     { input = input intcode,
@@ -218,7 +218,7 @@ jumpIfTrue instruction intcode =
       recur = recur intcode
     }
 
-jumpIfFalse :: Instruction -> IntCodeStruct -> IntCodeStruct
+jumpIfFalse :: Map.Map Char Int -> IntCodeStruct -> IntCodeStruct
 jumpIfFalse instruction intcode =
   IntCode
     { input = input intcode,
@@ -233,7 +233,7 @@ jumpIfFalse instruction intcode =
       recur = recur intcode
     }
 
-lessThan :: Instruction -> IntCodeStruct -> IntCodeStruct
+lessThan :: Map.Map Char Int -> IntCodeStruct -> IntCodeStruct
 lessThan instruction intcode =
   IntCode
     { input = input intcode,
@@ -256,7 +256,7 @@ lessThan instruction intcode =
       recur = recur intcode
     }
 
-equals :: Instruction -> IntCodeStruct -> IntCodeStruct
+equals :: Map.Map Char Int -> IntCodeStruct -> IntCodeStruct
 equals instruction intcode =
   IntCode
     { input = input intcode,
@@ -291,7 +291,7 @@ runOpCode intcode =
     7 -> runOpCode (lessThan instruction intcode)
     8 -> runOpCode (equals instruction intcode)
     9 -> intcode
-    _ -> error "Instruction is not valid"
+    _ -> error "Map.Map Char Int is not valid"
   where
     instruction = makeInstruction (memory intcode Map.! pointer intcode)
 
