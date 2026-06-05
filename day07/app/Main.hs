@@ -32,12 +32,12 @@ passMap =
       (5, IntCode {input = 55, output = 555, phase = 5, pointer = 0, memory = Map.fromList [(5, 5)], stopped = False, recur = True})
     ]
 
-updateIntCodeInPassMap :: Int -> IntCodeStruct -> Map.Map Int IntCodeStruct -> Map.Map Int IntCodeStruct
-updateIntCodeInPassMap = Map.insert
-
 updateInputInIntCodeStruct :: Int -> IntCodeStruct -> IntCodeStruct
 updateInputInIntCodeStruct newValue intCode =
   intCode {input = newValue}
+
+updateIntCodeInPassMap :: Int -> IntCodeStruct -> Map.Map Int IntCodeStruct -> Map.Map Int IntCodeStruct
+updateIntCodeInPassMap = Map.insert
 
 updateInputInPassMap :: Int -> Int -> Map.Map Int IntCodeStruct -> Map.Map Int IntCodeStruct
 updateInputInPassMap index newValue thisPassMap =
@@ -56,9 +56,11 @@ grabMyInputFromPriorOutput myIndex thisPassMap =
 
 main :: IO ()
 main = do
-  print (updateIntCodeInPassMap 5 IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True} passMap)
-  print (updateInputInPassMap 1 888 passMap)
+  -- print (updateIntCodeInPassMap 5 IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True} passMap)
+  -- print (updateInputInPassMap 1 888 passMap)
+  print ("")
   print (grabMyInputFromPriorOutput 1 passMap)
+  print ("")
   print (grabMyInputFromPriorOutput 5 passMap)
   printf "\nPart A answer = %u. Correct = 368584.\n" (42 :: Int)
 
