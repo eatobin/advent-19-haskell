@@ -58,9 +58,9 @@ main :: IO ()
 main = do
   -- print (updateIntCodeInPassMap 5 IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True} passMap)
   -- print (updateInputInPassMap 1 888 passMap)
-  print ("")
+  print ""
   print (grabMyInputFromPriorOutput 1 passMap)
-  print ("")
+  print ""
   print (grabMyInputFromPriorOutput 5 passMap)
   printf "\nPart A answer = %u. Correct = 368584.\n" (42 :: Int)
 
