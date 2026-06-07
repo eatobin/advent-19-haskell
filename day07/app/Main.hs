@@ -2,7 +2,7 @@ module Main (main) where
 
 import qualified Data.List.Unique as DLU
 import qualified Data.Map.Strict as Map
-import Lib (IntCodeStruct (..), makeMemory, runOpCode)
+import Lib (IntCodeStruct (..), makeInstruction, makeMemory, runOpCode)
 import Text.Printf (printf)
 
 type PossibilityFive = [Int]
