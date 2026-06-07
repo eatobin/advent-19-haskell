@@ -5,13 +5,17 @@ import qualified Data.Map.Strict as Map
 import Lib (IntCodeStruct (..), makeMemory, runOpCode)
 import Text.Printf (printf)
 
--- type Possibility = [Int]
+type PossibilityFive = [Int]
 
--- type Possibilities = [Possibility]
+type Possibilities = [PossibilityFive]
 
--- type PassMap = Map.Map Int IntCodeStruct?
+type PassMap = Map.Map Int IntCodeStruct
 
-possibilities :: [[Int]]
+type NewInput = Int
+
+type PassMapKey = Int
+
+possibilities :: Possibilities
 possibilities =
   [ [a, b, c, d, e]
     | a <- [0 .. 4 :: Int],
@@ -22,7 +26,7 @@ possibilities =
       DLU.allUnique [a, b, c, d, e]
   ]
 
-passMap :: Map.Map Int IntCodeStruct
+passMap :: PassMap
 passMap =
   Map.fromList
     [ (1, IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
@@ -32,27 +36,27 @@ passMap =
       (5, IntCode {input = 55, output = 555, phase = 5, pointer = 0, memory = Map.fromList [(5, 5)], stopped = False, recur = True})
     ]
 
-updateInputInIntCodeStruct :: Int -> IntCodeStruct -> IntCodeStruct
-updateInputInIntCodeStruct newValue intCode =
-  intCode {input = newValue}
+updateInputInIntCodeStruct :: NewInput -> IntCodeStruct -> IntCodeStruct
+updateInputInIntCodeStruct newInput intCodeStruct =
+  intCodeStruct {input = newInput}
 
-updateIntCodeInPassMap :: Int -> IntCodeStruct -> Map.Map Int IntCodeStruct -> Map.Map Int IntCodeStruct
-updateIntCodeInPassMap = Map.insert
+updateIntCodeStructInPassMap :: PassMapKey -> IntCodeStruct -> Map.Map PassMapKey IntCodeStruct -> Map.Map PassMapKey IntCodeStruct
+updateIntCodeStructInPassMap = Map.insert
 
-updateInputInPassMap :: Int -> Int -> Map.Map Int IntCodeStruct -> Map.Map Int IntCodeStruct
-updateInputInPassMap index newValue thisPassMap =
-  updateIntCodeInPassMap index newIntCode thisPassMap
+updateInputInPassMap :: PassMapKey -> NewInput -> Map.Map PassMapKey IntCodeStruct -> Map.Map PassMapKey IntCodeStruct
+updateInputInPassMap passMapKey newInput thisPassMap =
+  updateIntCodeStructInPassMap passMapKey newIntCodeStruct thisPassMap
   where
-    oldIntCode = thisPassMap Map.! index
-    newIntCode = updateInputInIntCodeStruct newValue oldIntCode
+    oldIntCodeStruct = thisPassMap Map.! passMapKey
+    newIntCodeStruct = updateInputInIntCodeStruct newInput oldIntCodeStruct
 
-grabMyInputFromPriorOutput :: Int -> Map.Map Int IntCodeStruct -> Map.Map Int IntCodeStruct
-grabMyInputFromPriorOutput myIndex thisPassMap =
-  if myIndex == 1
+grabMyInputFromPriorOutput :: PassMapKey -> Map.Map PassMapKey IntCodeStruct -> Map.Map PassMapKey IntCodeStruct
+grabMyInputFromPriorOutput passMapKey thisPassMap =
+  if passMapKey == 1
     then
-      updateInputInPassMap myIndex 0 thisPassMap
+      updateInputInPassMap passMapKey 0 thisPassMap
     else
-      updateInputInPassMap myIndex (output (thisPassMap Map.! pred myIndex)) thisPassMap
+      updateInputInPassMap passMapKey (output (thisPassMap Map.! pred passMapKey)) thisPassMap
 
 main :: IO ()
 main = do
