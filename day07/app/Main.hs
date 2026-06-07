@@ -1,9 +1,18 @@
 module Main (main) where
 
+import qualified Data.List.Split as DLS
 import qualified Data.List.Unique as DLU
 import qualified Data.Map.Strict as Map
-import Lib (IntCodeStruct (..), makeInstruction, makeMemory, runOpCode)
+import Lib (IntCodeStruct (..), makeInstruction, runOpCode)
 import Text.Printf (printf)
+
+type MemoryAsCSVString = [Char]
+
+type Key = Int
+
+type Value = Int
+
+type Memory = Map.Map Key Value
 
 type PossibilityFive = [Int]
 
@@ -14,6 +23,11 @@ type PassMap = Map.Map Int IntCodeStruct
 type NewInput = Int
 
 type PassMapKey = Int
+
+makeMemory :: MemoryAsCSVString -> Memory
+makeMemory memoryAsCSVStringParam =
+  let memoryAsKVTupleList = zip [0 ..] (map read (DLS.splitOn "," memoryAsCSVStringParam))
+   in Map.fromList memoryAsKVTupleList
 
 possibilities :: Possibilities
 possibilities =

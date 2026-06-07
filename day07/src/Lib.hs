@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), makeInstruction, makeMemory, runOpCode) where
+module Lib (IntCodeStruct (..), makeInstruction, runOpCode) where
 
 -- Instruction = Map.Map Char Int:
 
@@ -17,7 +17,6 @@ module Lib (IntCodeStruct (..), makeInstruction, makeMemory, runOpCode) where
 -- [input output phase pointer memory stopped? recur?]
 
 import qualified Data.Char as DC
-import qualified Data.List.Split as DLS
 import qualified Data.Map.Strict as Map
 
 type Instruction = Map.Map Char Int
@@ -30,10 +29,6 @@ type Value = Int
 
 type KeyOrValue = Int
 
-type Memory = Map.Map Key Value
-
-type MemoryAsCSVString = [Char]
-
 type PointerOffset = Int
 
 type Input = Int
@@ -41,6 +36,8 @@ type Input = Int
 type Output = Int
 
 type Phase = Int
+
+type Memory = Map.Map Key Value
 
 type Stopped = Bool
 
@@ -76,11 +73,6 @@ makeInstruction op =
     paddedOp = replicate (5 - length opAsString) '0' ++ opAsString
     values = map DC.digitToInt paddedOp
     instructionAsKVTupleList = zip keys values
-
-makeMemory :: MemoryAsCSVString -> Memory
-makeMemory memoryAsCSVStringParam =
-  let memoryAsKVTupleList = zip [0 ..] (map read (DLS.splitOn "," memoryAsCSVStringParam))
-   in Map.fromList memoryAsKVTupleList
 
 lookupABC :: IntCodeStruct -> PointerOffset -> Maybe KeyOrValue
 lookupABC intcode pointerOffsetParam =
