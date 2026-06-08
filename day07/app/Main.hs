@@ -54,23 +54,31 @@ updateInputInIntCodeStruct :: NewInput -> IntCodeStruct -> IntCodeStruct
 updateInputInIntCodeStruct newInput intCodeStruct =
   intCodeStruct {input = newInput}
 
-updateIntCodeStructInPassMap :: PassMapKey -> IntCodeStruct -> Map.Map PassMapKey IntCodeStruct -> Map.Map PassMapKey IntCodeStruct
+updateIntCodeStructInPassMap :: PassMapKey -> IntCodeStruct -> PassMap -> PassMap
 updateIntCodeStructInPassMap = Map.insert
 
-updateInputInPassMap :: PassMapKey -> NewInput -> Map.Map PassMapKey IntCodeStruct -> Map.Map PassMapKey IntCodeStruct
+updateInputInPassMap :: PassMapKey -> NewInput -> PassMap -> PassMap
 updateInputInPassMap passMapKey newInput thisPassMap =
   updateIntCodeStructInPassMap passMapKey newIntCodeStruct thisPassMap
   where
     oldIntCodeStruct = thisPassMap Map.! passMapKey
     newIntCodeStruct = updateInputInIntCodeStruct newInput oldIntCodeStruct
 
-grabMyInputFromPriorOutput :: PassMapKey -> Map.Map PassMapKey IntCodeStruct -> Map.Map PassMapKey IntCodeStruct
+grabMyInputFromPriorOutput :: PassMapKey -> PassMap -> PassMap
 grabMyInputFromPriorOutput passMapKey thisPassMap =
   if passMapKey == 1
     then
       updateInputInPassMap passMapKey 0 thisPassMap
     else
       updateInputInPassMap passMapKey (output (thisPassMap Map.! pred passMapKey)) thisPassMap
+
+-- runMyOutputFromMyInput :: PassMapKey PassMap
+
+-- (defn run-my-output-from-my-input [my-index this-pass-map]
+--   (assoc
+--    this-pass-map
+--    my-index
+--    (ic/op-code (get this-pass-map my-index))))
 
 main :: IO ()
 main = do
