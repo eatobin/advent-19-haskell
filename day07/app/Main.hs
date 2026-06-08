@@ -72,23 +72,22 @@ grabMyInputFromPriorOutput passMapKey thisPassMap =
     else
       updateInputInPassMap passMapKey (output (thisPassMap Map.! pred passMapKey)) thisPassMap
 
--- runMyOutputFromMyInput :: PassMapKey PassMap
-
--- (defn run-my-output-from-my-input [my-index this-pass-map]
---   (assoc
---    this-pass-map
---    my-index
---    (ic/op-code (get this-pass-map my-index))))
+runMyOutputFromMyInput :: PassMapKey -> PassMap -> PassMap
+runMyOutputFromMyInput passMapKey thisPassMap =
+  Map.insert passMapKey (runOpCode (thisPassMap Map.! passMapKey)) thisPassMap
 
 main :: IO ()
 main = do
   -- print (updateIntCodeInPassMap 5 IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True} passMap)
   -- print (updateInputInPassMap 1 888 passMap)
   print ""
-  print (grabMyInputFromPriorOutput 1 passMap)
+  -- print (grabMyInputFromPriorOutput 1 passMap)
   print ""
-  print (grabMyInputFromPriorOutput 5 passMap)
-  printf "\nPart A answer = %u. Correct = 368584.\n" (42 :: Int)
+  -- print (grabMyInputFromPriorOutput 5 passMap)
+  print (runMyOutputFromMyInput 1 passMap)
+  print (runMyOutputFromMyInput 5 passMap)
+
+-- printf "\nPart A answer = %u. Correct = 368584.\n" (42 :: Int)
 
 --   let innerMap = M.fromList [("jan", 1), ("feb", 2)] :: M.Map String Int
 --   let outerMap = M.fromList [("mine", innerMap), ("yours", innerMap)]
