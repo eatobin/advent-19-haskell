@@ -84,15 +84,38 @@ grabAndRun :: PassMapKey -> PassMap -> PassMap
 grabAndRun passMapKey thisPassMap =
   runMyOutputFromMyInput passMapKey (grabMyInputFromPriorOutput passMapKey thisPassMap)
 
-pass :: Memory -> PossibilityFive -> Output
+-- pass :: Memory -> PossibilityFive -> Output
+-- pass intcodeMemory [a, b, c, d, e] =
+--   let opA = IntCode {input = 0, output = 0, phase = a, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
+--       opB = IntCode {input = output (runOpCode opA), output = 0, phase = b, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
+--       opC = IntCode {input = output (runOpCode opB), output = 0, phase = c, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
+--       opD = IntCode {input = output (runOpCode opC), output = 0, phase = d, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
+--       opE = IntCode {input = output (runOpCode opD), output = 0, phase = e, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
+--    in output (runOpCode opE)
+-- pass _ _ = error "possibility and/or memory is wrong"
+
+pass :: Memory -> Possibility -> Output
 pass intcodeMemory [a, b, c, d, e] =
-  let opA = IntCode {input = 0, output = 0, phase = a, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
-      opB = IntCode {input = output (runOpCode opA), output = 0, phase = b, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
-      opC = IntCode {input = output (runOpCode opB), output = 0, phase = c, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
-      opD = IntCode {input = output (runOpCode opC), output = 0, phase = d, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
-      opE = IntCode {input = output (runOpCode opD), output = 0, phase = e, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}
-   in output (runOpCode opE)
-pass _ _ = error "possibility and/or memory is wrong"
+  let go passMapKey thisPassMap = if stopped (thisPassMap Map.! 5) then output (thisPassMap Map.! 5) else 0
+   in go 6
+
+-- let go passMapKey thisPassMap =
+--   in go 1 thisPassMap
+-- passMapKey = 1
+-- thisPassMap =
+--   Map.fromList
+--   [ (1, IntCode {input = 0, output = 0, phase = a, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+--     (2, IntCode {input = 0, output = 0, phase = b, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+--     (3, IntCode {input = 0, output = 0, phase = c, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+--     (4, IntCode {input = 0, output = 0, phase = d, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+--     (5, IntCode {input = 0, output = 0, phase = e, pointer = 0, memory = intcodeMemory, stopped = False, recur = True})
+--   ]
+
+-- sumListLet :: [Int] -> Int
+-- sumListLet xs =
+--   let go [] acc = acc
+--       go (y : ys) acc = go ys (acc + y)
+--    in go xs 0
 
 -- (defn pass [[a b c d e]]
 --   (loop [my-index      1
