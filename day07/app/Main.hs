@@ -98,3 +98,5 @@ main =
     let answer1 = maximum (passes theMemory)
 
     printf "\nPart A answer = %u. Correct = 368584.\n" answer1
+
+    -- TODO Start Part B
