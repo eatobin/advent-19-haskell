@@ -84,36 +84,54 @@ grabAndRun :: PassMapKey -> PassMap -> PassMap
 grabAndRun passMapKey thisPassMap =
   runMyOutputFromMyInput passMapKey (grabMyInputFromPriorOutput passMapKey thisPassMap)
 
-go :: PassMapKey -> PassMap -> Output
-go passMapKey thisPassMap =
-  if stopped (thisPassMap Map.! 5)
-    then
-      output (thisPassMap Map.! 5)
-    else
-      go (succ (mod passMapKey 5)) (grabAndRun passMapKey thisPassMap)
-
+-- goX :: PassMapKey -> PassMap -> Output
+-- goX passMapKey thisPassMap =
+--   if stopped (thisPassMap Map.! 5)
+--     then
+--       output (thisPassMap Map.! 5)
+--     else
+--       goX (succ (mod passMapKey 5)) (grabAndRun passMapKey thisPassMap)
 -- go _ _ = error "some argument is wrong"
 
+-- pass :: Memory -> PossibilityFive -> Output
+-- pass intcodeMemory [a, b, c, d, e] =
+--   let passMapKey = 1
+--       thisPassMap =
+--        Map.fromList
+--        [ (1, IntCode {input = 0, output = 0, phase = a, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+--          (2, IntCode {input = 0, output = 0, phase = b, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+--          (3, IntCode {input = 0, output = 0, phase = c, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+--          (4, IntCode {input = 0, output = 0, phase = d, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+--          (5, IntCode {input = 0, output = 0, phase = e, pointer = 0, memory = intcodeMemory, stopped = False, recur = True})
+--        ]
+--       go passMapKey thisPassMap =
+--        if stopped (thisPassMap Map.! 5)
+--         then
+--           output (thisPassMap Map.! 5)
+--         else
+--          go (succ (mod passMapKey 5)) (grabAndRun passMapKey thisPassMap)
+--    in
 
 pass :: Memory -> PossibilityFive -> Output
 pass intcodeMemory [a, b, c, d, e] =
-  let passMapKey = 1
-      thisPassMap =
-       Map.fromList
-       [ (1, IntCode {input = 0, output = 0, phase = a, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
-         (2, IntCode {input = 0, output = 0, phase = b, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
-         (3, IntCode {input = 0, output = 0, phase = c, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
-         (4, IntCode {input = 0, output = 0, phase = d, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
-         (5, IntCode {input = 0, output = 0, phase = e, pointer = 0, memory = intcodeMemory, stopped = False, recur = True})
-       ]
+  let go :: PassMapKey -> PassMap -> Output
       go passMapKey thisPassMap =
-       if stopped (thisPassMap Map.! 5)
-        then
-          output (thisPassMap Map.! 5)
-        else
-         go (succ (mod passMapKey 5)) (grabAndRun passMapKey thisPassMap) 
-   in
-
+        if stopped (thisPassMap Map.! 5)
+          then
+            output (thisPassMap Map.! 5)
+          else
+            go (succ (mod passMapKey 5)) (grabAndRun passMapKey thisPassMap)
+   in go
+        1
+        ( Map.fromList
+            [ (1, IntCode {input = 0, output = 0, phase = a, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+              (2, IntCode {input = 0, output = 0, phase = b, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+              (3, IntCode {input = 0, output = 0, phase = c, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+              (4, IntCode {input = 0, output = 0, phase = d, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
+              (5, IntCode {input = 0, output = 0, phase = e, pointer = 0, memory = intcodeMemory, stopped = False, recur = True})
+            ]
+        )
+pass _ _ = error "possibility and/or memory is wrong"
 
 -- pass :: Memory -> PossibilityFive -> Output
 -- pass intcodeMemory [a, b, c, d, e] =
