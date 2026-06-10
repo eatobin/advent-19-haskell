@@ -1,11 +1,9 @@
-{-# OPTIONS_GHC -Wno-unused-top-binds #-}
-
 module Main (main) where
 
 import qualified Data.List.Split as DLS
 import qualified Data.List.Unique as DLU
 import qualified Data.Map.Strict as Map
-import Lib (IntCodeStruct (..), makeInstruction, runOpCode)
+import Lib (IntCodeStruct (..), runOpCode)
 import Text.Printf (printf)
 
 type MemoryAsCSVString = [Char]
@@ -44,16 +42,6 @@ possibilities =
       DLU.allUnique [a, b, c, d, e]
   ]
 
-passMap :: PassMap
-passMap =
-  Map.fromList
-    [ (1, IntCode {input = 11, output = 111, phase = 1, pointer = 0, memory = Map.fromList [(1, 1)], stopped = False, recur = True}),
-      (2, IntCode {input = 22, output = 222, phase = 2, pointer = 0, memory = Map.fromList [(2, 2)], stopped = False, recur = True}),
-      (3, IntCode {input = 33, output = 333, phase = 3, pointer = 0, memory = Map.fromList [(3, 3)], stopped = False, recur = True}),
-      (4, IntCode {input = 44, output = 444, phase = 4, pointer = 0, memory = Map.fromList [(4, 4)], stopped = False, recur = True}),
-      (5, IntCode {input = 55, output = 555, phase = 5, pointer = 0, memory = Map.fromList [(5, 5)], stopped = False, recur = True})
-    ]
-
 updateInputInIntCodeStruct :: NewInput -> IntCodeStruct -> IntCodeStruct
 updateInputInIntCodeStruct newInput intCodeStruct =
   intCodeStruct {input = newInput}
@@ -83,34 +71,6 @@ runMyOutputFromMyInput passMapKey thisPassMap =
 grabAndRun :: PassMapKey -> PassMap -> PassMap
 grabAndRun passMapKey thisPassMap =
   runMyOutputFromMyInput passMapKey (grabMyInputFromPriorOutput passMapKey thisPassMap)
-
--- goX :: PassMapKey -> PassMap -> Output
--- goX passMapKey thisPassMap =
---   if stopped (thisPassMap Map.! 5)
---     then
---       output (thisPassMap Map.! 5)
---     else
---       goX (succ (mod passMapKey 5)) (grabAndRun passMapKey thisPassMap)
--- go _ _ = error "some argument is wrong"
-
--- pass :: Memory -> PossibilityFive -> Output
--- pass intcodeMemory [a, b, c, d, e] =
---   let passMapKey = 1
---       thisPassMap =
---        Map.fromList
---        [ (1, IntCode {input = 0, output = 0, phase = a, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
---          (2, IntCode {input = 0, output = 0, phase = b, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
---          (3, IntCode {input = 0, output = 0, phase = c, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
---          (4, IntCode {input = 0, output = 0, phase = d, pointer = 0, memory = intcodeMemory, stopped = False, recur = True}),
---          (5, IntCode {input = 0, output = 0, phase = e, pointer = 0, memory = intcodeMemory, stopped = False, recur = True})
---        ]
---       go passMapKey thisPassMap =
---        if stopped (thisPassMap Map.! 5)
---         then
---           output (thisPassMap Map.! 5)
---         else
---          go (succ (mod passMapKey 5)) (grabAndRun passMapKey thisPassMap)
---    in
 
 pass :: Memory -> PossibilityFive -> Output
 pass intcodeMemory [a, b, c, d, e] =
