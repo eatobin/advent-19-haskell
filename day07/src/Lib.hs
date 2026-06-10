@@ -278,7 +278,12 @@ runOpCode intcode =
     1 -> runOpCode (add instruction intcode)
     2 -> runOpCode (multiply instruction intcode)
     3 -> runOpCode (takeInput instruction intcode)
-    4 -> runOpCode (giveOutput instruction intcode)
+    4 ->
+      if recur intcode
+        then
+          runOpCode (giveOutput instruction intcode)
+        else
+          giveOutput instruction intcode
     5 -> runOpCode (jumpIfTrue instruction intcode)
     6 -> runOpCode (jumpIfFalse instruction intcode)
     7 -> runOpCode (lessThan instruction intcode)
