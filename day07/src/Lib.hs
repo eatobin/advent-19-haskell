@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), runOpCode) where
+module Lib (IntCodeStruct (..), aParam, add, bParam, cParam, makeMemory, makeInstruction, multiply, pr, pw, runOpCode) where
 
 -- Instruction = Map.Map Char Int:
 
@@ -17,7 +17,10 @@ module Lib (IntCodeStruct (..), runOpCode) where
 -- [input output phase pointer memory stopped? recur?]
 
 import qualified Data.Char as DC
+import qualified Data.List.Split as DLS
 import qualified Data.Map.Strict as Map
+
+type MemoryAsCSVString = [Char]
 
 type Instruction = Map.Map Char Int
 
@@ -63,6 +66,11 @@ pointerOffsetB = 2
 
 pointerOffsetA :: PointerOffset
 pointerOffsetA = 3
+
+makeMemory :: MemoryAsCSVString -> Memory
+makeMemory memoryAsCSVStringParam =
+  let memoryAsKVTupleList = zip [0 ..] (map read (DLS.splitOn "," memoryAsCSVStringParam))
+   in Map.fromList memoryAsKVTupleList
 
 makeInstruction :: Int -> Instruction
 makeInstruction op =
