@@ -83,6 +83,10 @@ grabAndRun :: PassMapKey -> PassMap -> PassMap
 grabAndRun passMapKey thisPassMap =
   runMyOutputFromMyInput passMapKey (grabMyInputFromPriorOutput passMapKey thisPassMap)
 
+grabAndRun2 :: PassMapKey -> PassMap -> PassMap
+grabAndRun2 passMapKey thisPassMap =
+  runMyOutputFromMyInput passMapKey (grabMyInputFromLastOutput passMapKey thisPassMap)
+
 pass :: Memory -> PossibilityFive -> Output
 pass intcodeMemory [a, b, c, d, e] =
   let go :: PassMapKey -> PassMap -> Output
@@ -104,9 +108,34 @@ pass intcodeMemory [a, b, c, d, e] =
         )
 pass _ _ = error "possibility and/or memory is wrong"
 
+pass2 :: Memory -> PossibilityFive -> Output
+pass2 intcodeMemory [a, b, c, d, e] =
+  let go :: PassMapKey -> PassMap -> Output
+      go passMapKey thisPassMap =
+        if stopped (thisPassMap Map.! 5)
+          then
+            output (thisPassMap Map.! 5)
+          else
+            go (succ (mod passMapKey 5)) (grabAndRun2 passMapKey thisPassMap)
+   in go
+        1
+        ( Map.fromList
+            [ (1, IntCode {input = 0, output = 0, phase = a, pointer = 0, memory = intcodeMemory, stopped = False, recur = False}),
+              (2, IntCode {input = 0, output = 0, phase = b, pointer = 0, memory = intcodeMemory, stopped = False, recur = False}),
+              (3, IntCode {input = 0, output = 0, phase = c, pointer = 0, memory = intcodeMemory, stopped = False, recur = False}),
+              (4, IntCode {input = 0, output = 0, phase = d, pointer = 0, memory = intcodeMemory, stopped = False, recur = False}),
+              (5, IntCode {input = 0, output = 0, phase = e, pointer = 0, memory = intcodeMemory, stopped = False, recur = False})
+            ]
+        )
+pass2 _ _ = error "possibility and/or memory is wrong"
+
 passes :: Memory -> [Output]
 passes intcodeMemory =
   map (pass intcodeMemory) possibilities
+
+passes2 :: Memory -> [Output]
+passes2 intcodeMemory =
+  map (pass2 intcodeMemory) possibilities2
 
 main :: IO ()
 main =
@@ -114,8 +143,8 @@ main =
     let memoryAsCSVString = "3,8,1001,8,10,8,105,1,0,0,21,38,55,72,93,118,199,280,361,442,99999,3,9,1001,9,2,9,1002,9,5,9,101,4,9,9,4,9,99,3,9,1002,9,3,9,1001,9,5,9,1002,9,4,9,4,9,99,3,9,101,4,9,9,1002,9,3,9,1001,9,4,9,4,9,99,3,9,1002,9,4,9,1001,9,4,9,102,5,9,9,1001,9,4,9,4,9,99,3,9,101,3,9,9,1002,9,3,9,1001,9,3,9,102,5,9,9,101,4,9,9,4,9,99,3,9,101,1,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,99,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,101,1,9,9,4,9,99,3,9,101,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,99,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,1001,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,102,2,9,9,4,9,99,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,99"
     let theMemory = makeMemory memoryAsCSVString
 
-    let answer1 = maximum (passes theMemory)
+    let answerA = maximum (passes theMemory)
+    let answerB = maximum (passes2 theMemory)
 
-    printf "\nPart A answer = %u. Correct = 368584.\n" answer1
-
--- TODO Start Part B
+    printf "\nPart A answer = %u. Correct = 368584.\n" answerA
+    printf "Part B answer = %u. Correct = 35993240.\n\n" answerB
