@@ -34,6 +34,17 @@ possibilities =
       DLU.allUnique [a, b, c, d, e]
   ]
 
+possibilities2 :: Possibilities
+possibilities2 =
+  [ [a, b, c, d, e]
+    | a <- [5 .. 9 :: Int],
+      b <- [5 .. 9 :: Int],
+      c <- [5 .. 9 :: Int],
+      d <- [5 .. 9 :: Int],
+      e <- [5 .. 9 :: Int],
+      DLU.allUnique [a, b, c, d, e]
+  ]
+
 updateInputInIntCodeStruct :: NewInput -> IntCodeStruct -> IntCodeStruct
 updateInputInIntCodeStruct newInput intCodeStruct =
   intCodeStruct {input = newInput}
@@ -53,6 +64,14 @@ grabMyInputFromPriorOutput passMapKey thisPassMap =
   if passMapKey == 1
     then
       updateInputInPassMap passMapKey 0 thisPassMap
+    else
+      updateInputInPassMap passMapKey (output (thisPassMap Map.! pred passMapKey)) thisPassMap
+
+grabMyInputFromLastOutput :: PassMapKey -> PassMap -> PassMap
+grabMyInputFromLastOutput passMapKey thisPassMap =
+  if passMapKey == 1
+    then
+      updateInputInPassMap passMapKey (output (thisPassMap Map.! 5)) thisPassMap
     else
       updateInputInPassMap passMapKey (output (thisPassMap Map.! pred passMapKey)) thisPassMap
 
@@ -99,4 +118,4 @@ main =
 
     printf "\nPart A answer = %u. Correct = 368584.\n" answer1
 
-    -- TODO Start Part B
+-- TODO Start Part B
