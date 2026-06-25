@@ -1,6 +1,5 @@
 module Main (main) where
 
-import qualified Data.List.Unique as DLU
 import qualified Data.Map.Strict as Map
 import Lib (IntCodeStruct (..), makeMemory, runOpCode)
 import Text.Printf (printf)
@@ -23,27 +22,12 @@ type PassMapKey = Int
 
 type Output = Int
 
-possibilities :: Possibilities
-possibilities =
-  [ [a, b, c, d, e]
-    | a <- [0 .. 4 :: Int],
-      b <- [0 .. 4 :: Int],
-      c <- [0 .. 4 :: Int],
-      d <- [0 .. 4 :: Int],
-      e <- [0 .. 4 :: Int],
-      DLU.allUnique [a, b, c, d, e]
-  ]
-
-possibilities2 :: Possibilities
-possibilities2 =
-  [ [a, b, c, d, e]
-    | a <- [5 .. 9 :: Int],
-      b <- [5 .. 9 :: Int],
-      c <- [5 .. 9 :: Int],
-      d <- [5 .. 9 :: Int],
-      e <- [5 .. 9 :: Int],
-      DLU.allUnique [a, b, c, d, e]
-  ]
+allPossibilities :: PossibilityFive -> Possibilities
+allPossibilities [] = [[]]
+allPossibilities (x : xs) = concatMap (interleave x) (allPossibilities xs)
+  where
+    interleave aa [] = [[aa]]
+    interleave bb (y : ys) = (bb : y : ys) : map (y :) (interleave bb ys)
 
 updateInputInIntCodeStruct :: NewInput -> IntCodeStruct -> IntCodeStruct
 updateInputInIntCodeStruct newInput intCodeStruct =
@@ -131,11 +115,11 @@ pass2 _ _ = error "possibility and/or memory is wrong"
 
 passes :: Memory -> [Output]
 passes intcodeMemory =
-  map (pass intcodeMemory) possibilities
+  map (pass intcodeMemory) (allPossibilities [0, 1, 2, 3, 4])
 
 passes2 :: Memory -> [Output]
 passes2 intcodeMemory =
-  map (pass2 intcodeMemory) possibilities2
+  map (pass2 intcodeMemory) (allPossibilities [5, 6, 7, 8, 9])
 
 main :: IO ()
 main =
