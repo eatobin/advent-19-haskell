@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
+module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode, createVec, updateVec, accessVec, mapVec) where
 
 -- Instruction:
 -- ABCDE
@@ -14,8 +14,11 @@ module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemo
 -- r or w - read or write
 
 import qualified Data.Char as DC
-import qualified Data.List.Split as S
+import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
+import qualified Data.Vector as Vec
+
+type MyVec = Vec.Vector Int
 
 type Instruction = Map.Map Char Int
 
@@ -59,7 +62,7 @@ makeInstruction op =
 
 makeMemory :: MemoryAsCSVString -> Memory
 makeMemory memoryAsCSVStringParam =
-  let memoryAsKVTupleList = zip [0 ..] (map read (S.splitOn "," memoryAsCSVStringParam))
+  let memoryAsKVTupleList = zip [0 ..] (map read (Split.splitOn "," memoryAsCSVStringParam))
    in Map.fromList memoryAsKVTupleList
 
 updatedMemory :: Int -> Int -> Memory -> Memory
@@ -129,3 +132,18 @@ runOpCode intCode =
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intCode Map.! pointer intCode)
+
+createVec :: Int -> Int -> MyVec
+createVec start stop =
+  Vec.fromList [start .. stop]
+
+updateVec :: Int -> Int -> MyVec -> MyVec
+updateVec key value myVec =
+  myVec Vec.// [(key, value)]
+
+accessVec :: Int -> MyVec -> Int
+accessVec key myVec =
+  myVec Vec.! key
+
+mapVec :: (Int -> Int) -> MyVec -> MyVec
+mapVec = Vec.map

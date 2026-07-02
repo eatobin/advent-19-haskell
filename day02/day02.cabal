@@ -1,6 +1,6 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.39.1.
+-- This file has been generated from package.yaml by hpack version 0.39.6.
 --
 -- see: https://github.com/sol/hpack
 
@@ -39,6 +39,7 @@ library
     , containers
     , hspec
     , split
+    , vector
   default-language: Haskell2010
 
 executable day02-exe
@@ -53,6 +54,7 @@ executable day02-exe
     , day02
     , hspec
     , split
+    , vector
   default-language: Haskell2010
 
 test-suite day02-test
@@ -72,4 +74,5 @@ test-suite day02-test
     , day02
     , hspec
     , split
+    , vector
   default-language: Haskell2010

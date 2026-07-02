@@ -1,7 +1,7 @@
 module Main (main) where
 
 import qualified Data.Map.Strict as Map
-import Lib (IntCodeStruct (..), makeMemory, runOpCode, updatedMemory)
+import Lib (IntCodeStruct (..), accessVec, createVec, makeMemory, mapVec, runOpCode, updateVec, updatedMemory)
 import Text.Printf (printf)
 
 main :: IO ()
@@ -24,3 +24,12 @@ main =
             ]
 
     printf "Part B answer = %u. Correct = 8226.\n\n" (answer2 :: Int)
+
+    -- \*** Vector Stuff
+    let vvv = createVec 0 8
+
+    print vvv
+    print (updateVec 0 99 vvv)
+    print (accessVec 6 vvv)
+    print (mapVec (* 3) vvv)
+    print (mapVec (\x -> (x * 10) + 200) vvv)
