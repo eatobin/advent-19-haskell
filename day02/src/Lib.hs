@@ -18,8 +18,6 @@ import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
 
--- type MyVec = Vec.Vector Int
-
 type Instruction = Map.Map Char Int
 
 type Pointer = Int
@@ -134,18 +132,3 @@ runOpCode intCode =
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intCode Vec.! pointer intCode)
-
--- createVec :: Int -> Int -> MyVec
--- createVec start stop =
---   Vec.fromList [start .. stop]
-
--- updateVec :: Int -> Int -> MyVec -> MyVec
--- updateVec key value myVec =
---   myVec Vec.// [(key, value)]
-
--- accessVec :: Int -> MyVec -> Int
--- accessVec key myVec =
---   myVec Vec.! key
-
--- mapVec :: (Int -> Int) -> MyVec -> MyVec
--- mapVec = Vec.map
