@@ -1,7 +1,7 @@
 import Control.Exception (evaluate)
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
-import Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, pr, pw)
+import Lib (IntCodeStruct (..), Memory, aParam, bParam, cParam, makeInstruction, makeMemory, pr, pw)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -21,8 +21,10 @@ main = hspec $ do
   -- thisMemory :: Memory
   -- let thisMemory = Vec.fromList [10, 11, 1]
   let intCode = IntCode {pointer = 0, memory = thisMemory}
+  let thisMemoryX :: Memory
+      thisMemoryX = Vec.fromList [0, 1, 2, 3]
   -- let thisMemoryX = Map.fromList [(0, 0), (1, 1), (2, 2), (3 :: Int, 3 :: Int)]
-  -- let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
+  let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
   -- let thisMemoryAddMult = Map.fromList [(0, 0), (1, 2), (2, 1), (3 :: Int, 0 :: Int)]
   -- let intCodeAddMult = IntCode {pointer = 0, memory = thisMemoryAddMult}
   -- let intCodeAdd = IntCode {pointer = 4, memory = Map.fromList [(0, 3), (1, 2), (2, 1), (3, 0)]}
@@ -50,13 +52,13 @@ main = hspec $ do
     it "lookup an invalid Memory index" $ do
       evaluate (pw intCode 33) `shouldThrow` anyErrorCall
 
--- describe "\nxParam Tests" $ do
---   it "lookup a valid aParam" $ do
---     aParam instruction1 intCodeX `shouldBe` 3
---   it "lookup a valid bParam" $ do
---     bParam instruction1 intCodeX `shouldBe` 2
---   it "lookup a valid cParam" $ do
---     cParam instruction1 intCodeX `shouldBe` 1
+  describe "\nxParam Tests" $ do
+    it "lookup a valid aParam" $ do
+      aParam instruction1 intCodeX `shouldBe` 3
+    it "lookup a valid bParam" $ do
+      bParam instruction1 intCodeX `shouldBe` 2
+    it "lookup a valid cParam" $ do
+      cParam instruction1 intCodeX `shouldBe` 1
 
 -- describe "\nAdd/Mult Tests" $ do
 --   it "1 plus 2 should be set at 0 and pointer should be 4" $ do
