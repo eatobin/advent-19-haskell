@@ -28,7 +28,7 @@ type Key = Int
 
 type Value = Int
 
-type Memory = Map.Map Key Value
+type Memory = Vec.Vector Int
 
 type MemoryAsCSVString = [Char]
 
