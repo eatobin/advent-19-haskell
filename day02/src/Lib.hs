@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode, createVec, updateVec, accessVec, mapVec) where
+module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
 
 -- Instruction:
 -- ABCDE
@@ -18,7 +18,7 @@ import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
 
-type MyVec = Vec.Vector Int
+-- type MyVec = Vec.Vector Int
 
 type Instruction = Map.Map Char Int
 
@@ -62,18 +62,18 @@ makeInstruction op =
 
 makeMemory :: MemoryAsCSVString -> Memory
 makeMemory memoryAsCSVStringParam =
-  let memoryAsKVTupleList = zip [0 ..] (map read (Split.splitOn "," memoryAsCSVStringParam))
-   in Map.fromList memoryAsKVTupleList
+  let memoryAsIntList = map read (Split.splitOn "," memoryAsCSVStringParam)
+   in Vec.fromList memoryAsIntList
 
 updatedMemory :: Int -> Int -> Memory -> Memory
 updatedMemory noun verb mem =
-  Map.insert 2 verb nounish
+  nounish Vec.// [(2, verb)]
   where
-    nounish = Map.insert 1 noun mem
+    nounish = mem Vec.// [(1, noun)]
 
 keyToKey :: IntCodeStruct -> PointerOffset -> Key
 keyToKey intCode pointerOffsetParam =
-  memory intCode Map.! (pointer intCode + pointerOffsetParam)
+  memory intCode Vec.! (pointer intCode + pointerOffsetParam)
 
 pw :: IntCodeStruct -> PointerOffset -> Key
 pw =
@@ -81,7 +81,7 @@ pw =
 
 pr :: IntCodeStruct -> PointerOffset -> Value
 pr intCode pointerOffsetParam =
-  memory intCode Map.! keyToKey intCode pointerOffsetParam
+  memory intCode Vec.! keyToKey intCode pointerOffsetParam
 
 aParam :: Instruction -> IntCodeStruct -> Int
 aParam instruction intcode =
@@ -106,10 +106,11 @@ add instruction intcode =
   IntCode
     { pointer = pointer intcode + 4,
       memory =
-        Map.insert
-          (aParam instruction intcode)
-          (cParam instruction intcode + bParam instruction intcode)
-          (memory intcode)
+        memory intcode
+          Vec.// [ ( aParam instruction intcode,
+                     cParam instruction intcode + bParam instruction intcode
+                   )
+                 ]
     }
 
 multiply :: Instruction -> IntCodeStruct -> IntCodeStruct
@@ -117,10 +118,11 @@ multiply instruction intcode =
   IntCode
     { pointer = pointer intcode + 4,
       memory =
-        Map.insert
-          (aParam instruction intcode)
-          (cParam instruction intcode * bParam instruction intcode)
-          (memory intcode)
+        memory intcode
+          Vec.// [ ( aParam instruction intcode,
+                     cParam instruction intcode * bParam instruction intcode
+                   )
+                 ]
     }
 
 runOpCode :: IntCodeStruct -> IntCodeStruct
@@ -131,19 +133,19 @@ runOpCode intCode =
     9 -> intCode
     _ -> error "Instruction is not valid"
   where
-    instruction = makeInstruction (memory intCode Map.! pointer intCode)
+    instruction = makeInstruction (memory intCode Vec.! pointer intCode)
 
-createVec :: Int -> Int -> MyVec
-createVec start stop =
-  Vec.fromList [start .. stop]
+-- createVec :: Int -> Int -> MyVec
+-- createVec start stop =
+--   Vec.fromList [start .. stop]
 
-updateVec :: Int -> Int -> MyVec -> MyVec
-updateVec key value myVec =
-  myVec Vec.// [(key, value)]
+-- updateVec :: Int -> Int -> MyVec -> MyVec
+-- updateVec key value myVec =
+--   myVec Vec.// [(key, value)]
 
-accessVec :: Int -> MyVec -> Int
-accessVec key myVec =
-  myVec Vec.! key
+-- accessVec :: Int -> MyVec -> Int
+-- accessVec key myVec =
+--   myVec Vec.! key
 
-mapVec :: (Int -> Int) -> MyVec -> MyVec
-mapVec = Vec.map
+-- mapVec :: (Int -> Int) -> MyVec -> MyVec
+-- mapVec = Vec.map
