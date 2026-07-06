@@ -1,7 +1,7 @@
 import Control.Exception (evaluate)
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
-import Lib (IntCodeStructState (..), Memory, aParam, add, bParam, cParam, makeInstruction, makeMemory, multiply, pr, pw)
+import Lib (IntCodeStruct (..), Memory, aParam, add, bParam, cParam, makeInstruction, makeMemory, multiply, pr, pw)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()

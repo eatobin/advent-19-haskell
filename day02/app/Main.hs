@@ -1,7 +1,7 @@
 module Main (main) where
 
 import qualified Data.Vector as Vec
-import Lib (IntCodeStructState (..), makeMemory, runOpCode, updatedMemory)
+import Lib (IntCodeStruct (..), makeMemory, runOpCode, updatedMemory)
 import Text.Printf (printf)
 
 main :: IO ()
