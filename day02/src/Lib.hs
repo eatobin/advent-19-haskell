@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
+module Lib (IntCodeStructState (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
 
 -- Instruction:
 -- ABCDE
@@ -39,7 +39,7 @@ type MemoryAsCSVString = [Char]
 
 type PointerOffset = Int
 
-data IntCodeStruct
+data IntCodeStructState
   = IntCode
   { pointer :: Pointer,
     memory :: Memory
@@ -76,37 +76,37 @@ updatedMemory noun verb mem =
   where
     nounish = mem Vec.// [(1, noun)]
 
-keyToKey :: IntCodeStruct -> PointerOffset -> Key
+keyToKey :: IntCodeStructState -> PointerOffset -> Key
 keyToKey intCode pointerOffsetParam =
   memory intCode Vec.! (pointer intCode + pointerOffsetParam)
 
-pw :: IntCodeStruct -> PointerOffset -> Key
+pw :: IntCodeStructState -> PointerOffset -> Key
 pw =
   keyToKey
 
-pr :: IntCodeStruct -> PointerOffset -> Value
+pr :: IntCodeStructState -> PointerOffset -> Value
 pr intCode pointerOffsetParam =
   memory intCode Vec.! keyToKey intCode pointerOffsetParam
 
-aParam :: Instruction -> IntCodeStruct -> Int
+aParam :: Instruction -> IntCodeStructState -> Int
 aParam instruction intcode =
   case instruction Map.! 'a' of
     0 -> pw intcode pointerOffsetA -- a-p-w
     _ -> error "Instruction is not valid"
 
-bParam :: Instruction -> IntCodeStruct -> Int
+bParam :: Instruction -> IntCodeStructState -> Int
 bParam instruction intcode =
   case instruction Map.! 'b' of
     0 -> pr intcode pointerOffsetB -- b-p-r
     _ -> error "Instruction is not valid"
 
-cParam :: Instruction -> IntCodeStruct -> Int
+cParam :: Instruction -> IntCodeStructState -> Int
 cParam instruction intcode =
   case instruction Map.! 'c' of
     0 -> pr intcode pointerOffsetC -- c-p-r
     _ -> error "Instruction is not valid"
 
-add :: Instruction -> IntCodeStruct -> IntCodeStruct
+add :: Instruction -> IntCodeStructState -> IntCodeStructState
 add instruction intcode =
   IntCode
     { pointer = pointer intcode + 4,
@@ -118,7 +118,7 @@ add instruction intcode =
                  ]
     }
 
-multiply :: Instruction -> IntCodeStruct -> IntCodeStruct
+multiply :: Instruction -> IntCodeStructState -> IntCodeStructState
 multiply instruction intcode =
   IntCode
     { pointer = pointer intcode + 4,
@@ -130,7 +130,7 @@ multiply instruction intcode =
                  ]
     }
 
-runOpCode :: IntCodeStruct -> IntCodeStruct
+runOpCode :: IntCodeStructState -> IntCodeStructState
 runOpCode intCode =
   case instruction Map.! 'e' of
     1 -> runOpCode (add instruction intCode)
