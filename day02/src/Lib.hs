@@ -138,8 +138,8 @@ multiply instruction intcode =
     }
 
 goIntCodeAdd, goIntCodeMultiply :: IntCodeStruct -> (IntCodeStructAction, IntCodeStruct)
-goIntCodeAdd IntCodeStruct {pointer, memory} = (Add, IntCodeStruct {pointer, memory})
-goIntCodeMultiply IntCodeStruct {pointer, memory} = (Multiply, IntCodeStruct {pointer, memory})
+goIntCodeAdd IntCodeStruct {pointer, memory} = (Add, IntCodeStruct {pointer = pointer + 1, memory})
+goIntCodeMultiply IntCodeStruct {pointer, memory} = (Multiply, IntCodeStruct {pointer = pointer * 10, memory})
 
 goIntCodeAddState, goIntCodeMultiplyState :: State IntCodeStruct IntCodeStructAction
 goIntCodeAddState = state goIntCodeAdd
@@ -198,7 +198,9 @@ addToMultiplyState :: State IntCodeStruct [IntCodeStructAction]
 addToMultiplyState = do
   a1 <- goIntCodeAddState
   a2 <- goIntCodeMultiplyState
-  return [a1, a2]
+  a3 <- goIntCodeAddState
+  a4 <- goIntCodeMultiplyState
+  return [a1, a2, a3, a4]
 
 greenToGreenAgainState :: State TrafficLightState [TrafficLightAction]
 greenToGreenAgainState = do
@@ -228,10 +230,11 @@ trafficLightMainAgain =
 intCodeStructMain :: IO ()
 intCodeStructMain =
   do
-    print (runState addToMultiplyState IntCodeStruct {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]})
-    print (runState addToMultiplyState IntCodeStruct {pointer = 44, memory = Vec.fromList [33, 22, 11, 10]})
-    print (evalState addToMultiplyState IntCodeStruct {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]})
-    print (execState addToMultiplyState IntCodeStruct {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]})
+    print (runState addToMultiplyState IntCodeStruct {pointer = 1, memory = Vec.fromList [3, 2, 1]})
+
+-- print (runState addToMultiplyState IntCodeStruct {pointer = 2, memory = Vec.fromList [33, 22, 11]})
+-- print (evalState addToMultiplyState IntCodeStruct {pointer = 3, memory = Vec.fromList [333, 222, 111]})
+-- print (execState addToMultiplyState IntCodeStruct {pointer = 4, memory = Vec.fromList [3333, 2222, 1111]})
 
 -- λ> trafficLightMain
 -- λ> trafficLightMainAgain
