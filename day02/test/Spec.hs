@@ -12,15 +12,15 @@ main = hspec $ do
   let memoryAsCSVString = "10,11,1"
   let thisMemory :: Memory
       thisMemory = Vec.fromList [10, 11, 1]
-  let intCode = IntCode {pointer = 0, memory = thisMemory}
+  let intCode = IntCodeStruct {pointer = 0, memory = thisMemory}
   let thisMemoryX :: Memory
       thisMemoryX = Vec.fromList [0, 1, 2, 3]
-  let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
+  let intCodeX = IntCodeStruct {pointer = 0, memory = thisMemoryX}
   let thisMemoryAddMult :: Memory
       thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
-  let intCodeAddMult = IntCode {pointer = 0, memory = thisMemoryAddMult}
-  let intCodeAdd = IntCode {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]}
-  let intCodeMult = IntCode {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
+  let intCodeAddMult = IntCodeStruct {pointer = 0, memory = thisMemoryAddMult}
+  let intCodeAdd = IntCodeStruct {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]}
+  let intCodeMult = IntCodeStruct {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do

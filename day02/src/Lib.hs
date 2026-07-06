@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
 
 -- Instruction:
@@ -40,13 +42,10 @@ type MemoryAsCSVString = [Char]
 type PointerOffset = Int
 
 data IntCodeStruct
-  = IntCode
+  = IntCodeStruct
   { pointer :: Pointer,
     memory :: Memory
   }
-  deriving (Eq, Show)
-
-data IntCodeStructState = IntCodeStruct
   deriving (Eq, Show)
 
 data IntCodeStructAction
@@ -116,7 +115,7 @@ cParam instruction intcode =
 
 add :: Instruction -> IntCodeStruct -> IntCodeStruct
 add instruction intcode =
-  IntCode
+  IntCodeStruct
     { pointer = pointer intcode + 4,
       memory =
         memory intcode
@@ -128,7 +127,7 @@ add instruction intcode =
 
 multiply :: Instruction -> IntCodeStruct -> IntCodeStruct
 multiply instruction intcode =
-  IntCode
+  IntCodeStruct
     { pointer = pointer intcode + 4,
       memory =
         memory intcode
@@ -138,11 +137,11 @@ multiply instruction intcode =
                  ]
     }
 
-goIntCodeAdd, goIntCodeMultiply :: IntCodeStructState -> (IntCodeStructAction, IntCodeStructState)
-goIntCodeAdd IntCodeStruct = (Add, IntCodeStruct)
-goIntCodeMultiply IntCodeStruct = (Multiply, IntCodeStruct)
+goIntCodeAdd, goIntCodeMultiply :: IntCodeStruct -> (IntCodeStructAction, IntCodeStruct)
+goIntCodeAdd IntCodeStruct {pointer, memory} = (Add, IntCodeStruct {pointer, memory})
+goIntCodeMultiply IntCodeStruct {pointer, memory} = (Multiply, IntCodeStruct {pointer, memory})
 
-goIntCodeAddState, goIntCodeMultiplyState :: State IntCodeStructState IntCodeStructAction
+goIntCodeAddState, goIntCodeMultiplyState :: State IntCodeStruct IntCodeStructAction
 goIntCodeAddState = state goIntCodeAdd
 goIntCodeMultiplyState = state goIntCodeMultiply
 
