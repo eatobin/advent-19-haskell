@@ -28,6 +28,7 @@ dependencies:
   - split
   - Cabal
   - vector
+  - transformers
 
 ghc-options:
   - -Wall

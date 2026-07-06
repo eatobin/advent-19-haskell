@@ -13,6 +13,13 @@ module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemo
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
+import Control.Monad.Trans.State.Strict
+  ( State,
+    evalState,
+    execState,
+    runState,
+    state,
+  )
 import qualified Data.Char as DC
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
@@ -132,3 +139,76 @@ runOpCode intCode =
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intCode Vec.! pointer intCode)
+
+data TrafficLightState = Red | Yellow | Green
+  deriving (Eq, Show)
+
+data TrafficLightAction
+  = IAmStoppingFromYellowToRed
+  | IAmSlowingFromGreenToYellow
+  | IAmGoingFromRedToGreen
+  | ICannotGoFromRedToYellow
+  | ICannotGoFromGreenToRed
+  | ICannotGoFromYellowToGreen
+  | IAmAlreadyGreen
+  | IAmAlreadyYellow
+  | IAmAlreadyRed
+  deriving (Eq, Show)
+
+goGreen, goYellow, goRed :: TrafficLightState -> (TrafficLightAction, TrafficLightState)
+goGreen Red = (IAmGoingFromRedToGreen, Green)
+goGreen Yellow = (ICannotGoFromYellowToGreen, Yellow)
+goGreen Green = (IAmAlreadyGreen, Green)
+goYellow Green = (IAmSlowingFromGreenToYellow, Yellow)
+goYellow Red = (ICannotGoFromRedToYellow, Red)
+goYellow Yellow = (IAmAlreadyYellow, Yellow)
+goRed Yellow = (IAmStoppingFromYellowToRed, Red)
+goRed Green = (ICannotGoFromGreenToRed, Green)
+goRed Red = (IAmAlreadyRed, Red)
+
+goGreenState, goYellowState, goRedState :: State TrafficLightState TrafficLightAction
+goGreenState = state goGreen
+goYellowState = state goYellow
+goRedState = state goRed
+
+greenToRedState :: State TrafficLightState [TrafficLightAction]
+greenToRedState = do
+  a1 <- goYellowState
+  a2 <- goRedState
+  return [a1, a2]
+
+greenToGreenAgainState :: State TrafficLightState [TrafficLightAction]
+greenToGreenAgainState = do
+  a1 <- goYellowState
+  a2 <- goRedState
+  a3 <- goGreenState
+  return [a1, a2, a3]
+
+trafficLightMain :: IO ()
+trafficLightMain =
+  do
+    print (runState greenToRedState Green)
+    print (runState greenToRedState Yellow)
+    print (runState greenToRedState Red)
+    print (evalState greenToRedState Green)
+    print (execState greenToRedState Green)
+
+trafficLightMainAgain :: IO ()
+trafficLightMainAgain =
+  do
+    print (runState greenToGreenAgainState Green)
+    print (runState greenToGreenAgainState Yellow)
+    print (runState greenToGreenAgainState Red)
+    print (evalState greenToGreenAgainState Green)
+    print (execState greenToGreenAgainState Green)
+
+-- λ> trafficLightMain
+-- λ> trafficLightMainAgain
+
+-- λ> runState greenToRedState Green
+-- λ> execState greenToRedState Green
+-- λ> evalState greenToRedState Green
+
+-- λ> runState goRedState Yellow
+-- λ> runState goRedState Green
+-- λ> runState goRedState Red
