@@ -140,6 +140,8 @@ runOpCode intCode =
   where
     instruction = makeInstruction (memory intCode Vec.! pointer intCode)
 
+-- New stuff begins
+
 data TrafficLightState = Red | Yellow | Green
   deriving (Eq, Show)
 
