@@ -46,9 +46,12 @@ data IntCodeStruct
   }
   deriving (Eq, Show)
 
+data IntCodeStructState = IntCodeStruct
+  deriving (Eq, Show)
+
 data IntCodeStructAction
   = Add
-  | Mutiply
+  | Multiply
   deriving (Eq, Show)
 
 pointerOffsetC :: PointerOffset
@@ -136,9 +139,11 @@ multiply instruction intcode =
     }
 
 -- TODO
--- goIntCode :: IntCodeStruct -> (IntCodeStructAction, IntCodeStruct)
--- goIntCode Add = (Add, IntCodeStruct)
--- goIntCode Multiply = (Multiply, IntCodeStruct)
+goIntCodeAdd, goIntCodeMultiply :: IntCodeStructState -> (IntCodeStructAction, IntCodeStructState)
+goIntCodeAdd IntCodeStruct = (Add, IntCodeStruct)
+goIntCodeMultiply IntCodeStruct = (Multiply, IntCodeStruct)
+
+-- goIntCode Mutiply = (Multiply, IntCodeStruct)
 
 runOpCode :: IntCodeStruct -> IntCodeStruct
 runOpCode intCode =
