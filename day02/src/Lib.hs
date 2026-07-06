@@ -138,12 +138,13 @@ multiply instruction intcode =
                  ]
     }
 
--- TODO
 goIntCodeAdd, goIntCodeMultiply :: IntCodeStructState -> (IntCodeStructAction, IntCodeStructState)
 goIntCodeAdd IntCodeStruct = (Add, IntCodeStruct)
 goIntCodeMultiply IntCodeStruct = (Multiply, IntCodeStruct)
 
--- goIntCode Mutiply = (Multiply, IntCodeStruct)
+goIntCodeAddState, goIntCodeMultiplyState :: State IntCodeStructState IntCodeStructAction
+goIntCodeAddState = state goIntCodeAdd
+goIntCodeMultiplyState = state goIntCodeMultiply
 
 runOpCode :: IntCodeStruct -> IntCodeStruct
 runOpCode intCode =
