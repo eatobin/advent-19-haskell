@@ -194,6 +194,12 @@ greenToRedState = do
   a2 <- goRedState
   return [a1, a2]
 
+addToMultiplyState :: State IntCodeStruct [IntCodeStructAction]
+addToMultiplyState = do
+  a1 <- goIntCodeAddState
+  a2 <- goIntCodeMultiplyState
+  return [a1, a2]
+
 greenToGreenAgainState :: State TrafficLightState [TrafficLightAction]
 greenToGreenAgainState = do
   a1 <- goYellowState
@@ -218,6 +224,14 @@ trafficLightMainAgain =
     print (runState greenToGreenAgainState Red)
     print (evalState greenToGreenAgainState Green)
     print (execState greenToGreenAgainState Green)
+
+intCodeStructMain :: IO ()
+intCodeStructMain =
+  do
+    print (runState addToMultiplyState IntCodeStruct {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]})
+    print (runState addToMultiplyState IntCodeStruct {pointer = 44, memory = Vec.fromList [33, 22, 11, 10]})
+    print (evalState addToMultiplyState IntCodeStruct {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]})
+    print (execState addToMultiplyState IntCodeStruct {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]})
 
 -- λ> trafficLightMain
 -- λ> trafficLightMainAgain
