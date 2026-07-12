@@ -1,5 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
-
 module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
 
 -- Instruction:
@@ -15,13 +13,7 @@ module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemo
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
-import Control.Monad.Trans.State.Strict
-  ( State,
-    evalState,
-    execState,
-    runState,
-    state,
-  )
+
 import qualified Data.Char as DC
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
@@ -48,9 +40,9 @@ data IntCodeStruct
   }
   deriving (Eq, Show)
 
-data IntCodeStructAction
-  = Add
-  | Multiply
+data IntCodeAction = Add | Multiply
+  deriving (Eq, Show)
+data TrafficLightState = Red | Yellow | Green
   deriving (Eq, Show)
 
 pointerOffsetC :: PointerOffset
@@ -157,8 +149,7 @@ runOpCode intCode =
 
 -- New stuff begins
 
-data TrafficLightState = Red | Yellow | Green
-  deriving (Eq, Show)
+
 
 data TrafficLightAction
   = IAmStoppingFromYellowToRed
