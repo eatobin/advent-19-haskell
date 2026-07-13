@@ -13,7 +13,6 @@ module Lib (IntCodeState (..), Memory, makeInstruction, makeMemory, updatedMemor
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
-
 import qualified Data.Char as DC
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
@@ -103,26 +102,26 @@ cParam instruction intcode =
     0 -> pr intcode pointerOffsetC -- c-p-r
     _ -> error "Instruction is not valid"
 
--- 2. Define a function to modify state inside the Monad
--- It returns a String confirmation message, and mutates InventoryState
-addItem :: String -> Double -> State InventoryState String
-addItem itemName itemWeight = do
-  -- 'get' fetches the current state snapshot
-  currentState <- get
+-- -- 2. Define a function to modify state inside the Monad
+-- -- It returns a String confirmation message, and mutates InventoryState
+-- addItem :: String -> Double -> State InventoryState String
+-- addItem itemName itemWeight = do
+--   -- 'get' fetches the current state snapshot
+--   currentState <- get
 
-  let currentWeight = totalWeight currentState
-  let maxWeight = 10.0
+--   let currentWeight = totalWeight currentState
+--   let maxWeight = 10.0
 
-  if currentWeight + itemWeight > maxWeight
-    then return ("Too heavy! Could not add " ++ itemName)
-    else do
-      -- 'put' overwrites the old state with a new state
-      put $
-        InventoryState
-          { items = itemName : items currentState,
-            totalWeight = currentWeight + itemWeight
-          }
-      return ("Successfully added " ++ itemName)
+--   if currentWeight + itemWeight > maxWeight
+--     then return ("Too heavy! Could not add " ++ itemName)
+--     else do
+--       -- 'put' overwrites the old state with a new state
+--       put $
+--         InventoryState
+--           { items = itemName : items currentState,
+--             totalWeight = currentWeight + itemWeight
+--           }
+--       return ("Successfully added " ++ itemName)
 
 add :: Instruction -> IntCodeState -> IntCodeState
 add instruction intcode =
@@ -148,13 +147,13 @@ multiply instruction intcode =
                  ]
     }
 
--- 3. Sequence multiple stateful operations inside a do-block
-gameSession :: State InventoryState [String]
-gameSession = do
-  msg1 <- addItem "Iron Sword" 4.5
-  msg2 <- addItem "Healing Potion" 1.0
-  msg3 <- addItem "Heavy Gold Chest" 8.0 -- This one should fail due to weight limits
-  return [msg1, msg2, msg3]
+-- -- 3. Sequence multiple stateful operations inside a do-block
+-- gameSession :: State InventoryState [String]
+-- gameSession = do
+--   msg1 <- addItem "Iron Sword" 4.5
+--   msg2 <- addItem "Healing Potion" 1.0
+--   msg3 <- addItem "Heavy Gold Chest" 8.0 -- This one should fail due to weight limits
+--   return [msg1, msg2, msg3]
 
 runOpCode :: IntCodeState -> IntCodeState
 runOpCode intCode =
@@ -166,25 +165,25 @@ runOpCode intCode =
   where
     instruction = makeInstruction (memory intCode Vec.! pointer intCode)
 
--- The state is an Int (the current countdown number).
--- The result of the computation is a list of Strings (the emitted outputs).
-type CountdownState = State Int [String]
+-- -- The state is an Int (the current countdown number).
+-- -- The result of the computation is a list of Strings (the emitted outputs).
+-- type CountdownState = State Int [String]
 
-countdownStep :: CountdownState
-countdownStep = do
-  n <- get -- Get the current state
-  if n <= 0
-    then do
-      return ["Blast off!"]
-    else do
-      put (n - 1) -- Update state (decrement)
-      let msg = "Counting down: " ++ show n
-      rest <- countdownStep -- Recursively call next step
-      return (msg : rest) -- Cons the current output to the rest
+-- countdownStep :: CountdownState
+-- countdownStep = do
+--   n <- get -- Get the current state
+--   if n <= 0
+--     then do
+--       return ["Blast off!"]
+--     else do
+--       put (n - 1) -- Update state (decrement)
+--       let msg = "Counting down: " ++ show n
+--       rest <- countdownStep -- Recursively call next step
+--       return (msg : rest) -- Cons the current output to the rest
 
-main :: IO ()
-main = do
-  let (outputs, finalState) = runState countdownStep 5
-  print outputs
-  -- mapM_ putStrLn outputs
-  putStrLn $ "Final state: " ++ show finalState
+-- main :: IO ()
+-- main = do
+--   let (outputs, finalState) = runState countdownStep 5
+--   print outputs
+--   -- mapM_ putStrLn outputs
+--   putStrLn $ "Final state: " ++ show finalState

@@ -1,7 +1,7 @@
 import Control.Exception (evaluate)
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
-import Lib (IntCodeStruct (..), Memory, aParam, add, bParam, cParam, makeInstruction, makeMemory, multiply, pr, pw)
+import Lib (IntCodeState (..), Memory, aParam, add, bParam, cParam, makeInstruction, makeMemory, multiply, pr, pw)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -12,15 +12,15 @@ main = hspec $ do
   let memoryAsCSVString = "10,11,1"
   let thisMemory :: Memory
       thisMemory = Vec.fromList [10, 11, 1]
-  let intCode = IntCodeStruct {pointer = 0, memory = thisMemory}
+  let intCode = IntCodeState {pointer = 0, memory = thisMemory}
   let thisMemoryX :: Memory
       thisMemoryX = Vec.fromList [0, 1, 2, 3]
-  let intCodeX = IntCodeStruct {pointer = 0, memory = thisMemoryX}
+  let intCodeX = IntCodeState {pointer = 0, memory = thisMemoryX}
   let thisMemoryAddMult :: Memory
       thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
-  let intCodeAddMult = IntCodeStruct {pointer = 0, memory = thisMemoryAddMult}
-  let intCodeAdd = IntCodeStruct {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]}
-  let intCodeMult = IntCodeStruct {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
+  let intCodeAddMult = IntCodeState {pointer = 0, memory = thisMemoryAddMult}
+  let intCodeAdd = IntCodeState {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]}
+  let intCodeMult = IntCodeState {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
