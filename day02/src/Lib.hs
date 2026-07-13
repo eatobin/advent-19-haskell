@@ -42,8 +42,6 @@ data IntCodeStruct
 
 data IntCodeAction = Add | Multiply
   deriving (Eq, Show)
-data TrafficLightState = Red | Yellow | Green
-  deriving (Eq, Show)
 
 pointerOffsetC :: PointerOffset
 pointerOffsetC = 1
