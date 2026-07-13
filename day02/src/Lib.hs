@@ -33,8 +33,8 @@ type MemoryAsCSVString = [Char]
 
 type PointerOffset = Int
 
-data IntCodeStruct
-  = IntCodeStruct
+data IntCodeState
+  = IntCodeState
   { pointer :: Pointer,
     memory :: Memory
   }
@@ -148,13 +148,13 @@ multiply instruction intcode =
                  ]
     }
 
-goIntCodeAdd, goIntCodeMultiply :: IntCodeStruct -> (IntCodeStructAction, IntCodeStruct)
-goIntCodeAdd IntCodeStruct {pointer, memory} = (Add, IntCodeStruct {pointer = pointer + 1, memory})
-goIntCodeMultiply IntCodeStruct {pointer, memory} = (Multiply, IntCodeStruct {pointer = pointer * 10, memory})
-
-goIntCodeAddState, goIntCodeMultiplyState :: State IntCodeStruct IntCodeStructAction
-goIntCodeAddState = state goIntCodeAdd
-goIntCodeMultiplyState = state goIntCodeMultiply
+-- 3. Sequence multiple stateful operations inside a do-block
+gameSession :: State InventoryState [String]
+gameSession = do
+  msg1 <- addItem "Iron Sword" 4.5
+  msg2 <- addItem "Healing Potion" 1.0
+  msg3 <- addItem "Heavy Gold Chest" 8.0 -- This one should fail due to weight limits
+  return [msg1, msg2, msg3]
 
 runOpCode :: IntCodeStruct -> IntCodeStruct
 runOpCode intCode =
@@ -165,94 +165,3 @@ runOpCode intCode =
     _ -> error "Instruction is not valid"
   where
     instruction = makeInstruction (memory intCode Vec.! pointer intCode)
-
--- New stuff begins
-
-
-
-data TrafficLightAction
-  = IAmStoppingFromYellowToRed
-  | IAmSlowingFromGreenToYellow
-  | IAmGoingFromRedToGreen
-  | ICannotGoFromRedToYellow
-  | ICannotGoFromGreenToRed
-  | ICannotGoFromYellowToGreen
-  | IAmAlreadyGreen
-  | IAmAlreadyYellow
-  | IAmAlreadyRed
-  deriving (Eq, Show)
-
-goGreen, goYellow, goRed :: TrafficLightState -> (TrafficLightAction, TrafficLightState)
-goGreen Red = (IAmGoingFromRedToGreen, Green)
-goGreen Yellow = (ICannotGoFromYellowToGreen, Yellow)
-goGreen Green = (IAmAlreadyGreen, Green)
-goYellow Green = (IAmSlowingFromGreenToYellow, Yellow)
-goYellow Red = (ICannotGoFromRedToYellow, Red)
-goYellow Yellow = (IAmAlreadyYellow, Yellow)
-goRed Yellow = (IAmStoppingFromYellowToRed, Red)
-goRed Green = (ICannotGoFromGreenToRed, Green)
-goRed Red = (IAmAlreadyRed, Red)
-
-goGreenState, goYellowState, goRedState :: State TrafficLightState TrafficLightAction
-goGreenState = state goGreen
-goYellowState = state goYellow
-goRedState = state goRed
-
-greenToRedState :: State TrafficLightState [TrafficLightAction]
-greenToRedState = do
-  a1 <- goYellowState
-  a2 <- goRedState
-  return [a1, a2]
-
-addToMultiplyState :: State IntCodeStruct [IntCodeStructAction]
-addToMultiplyState = do
-  a1 <- goIntCodeAddState
-  a2 <- goIntCodeMultiplyState
-  a3 <- goIntCodeAddState
-  a4 <- goIntCodeMultiplyState
-  return [a1, a2, a3, a4]
-
-greenToGreenAgainState :: State TrafficLightState [TrafficLightAction]
-greenToGreenAgainState = do
-  a1 <- goYellowState
-  a2 <- goRedState
-  a3 <- goGreenState
-  return [a1, a2, a3]
-
-trafficLightMain :: IO ()
-trafficLightMain =
-  do
-    print (runState greenToRedState Green)
-    print (runState greenToRedState Yellow)
-    print (runState greenToRedState Red)
-    print (evalState greenToRedState Green)
-    print (execState greenToRedState Green)
-
-trafficLightMainAgain :: IO ()
-trafficLightMainAgain =
-  do
-    print (runState greenToGreenAgainState Green)
-    print (runState greenToGreenAgainState Yellow)
-    print (runState greenToGreenAgainState Red)
-    print (evalState greenToGreenAgainState Green)
-    print (execState greenToGreenAgainState Green)
-
-intCodeStructMain :: IO ()
-intCodeStructMain =
-  do
-    print (runState addToMultiplyState IntCodeStruct {pointer = 1, memory = Vec.fromList [3, 2, 1]})
-
--- print (runState addToMultiplyState IntCodeStruct {pointer = 2, memory = Vec.fromList [33, 22, 11]})
--- print (evalState addToMultiplyState IntCodeStruct {pointer = 3, memory = Vec.fromList [333, 222, 111]})
--- print (execState addToMultiplyState IntCodeStruct {pointer = 4, memory = Vec.fromList [3333, 2222, 1111]})
-
--- λ> trafficLightMain
--- λ> trafficLightMainAgain
-
--- λ> runState greenToRedState Green
--- λ> execState greenToRedState Green
--- λ> evalState greenToRedState Green
-
--- λ> runState goRedState Yellow
--- λ> runState goRedState Green
--- λ> runState goRedState Red
