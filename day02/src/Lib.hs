@@ -1,4 +1,4 @@
-module Lib (IntCodeStruct (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
+module Lib (IntCodeState (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
 
 -- Instruction:
 -- ABCDE
@@ -73,31 +73,31 @@ updatedMemory noun verb mem =
   where
     nounish = mem Vec.// [(1, noun)]
 
-keyToKey :: IntCodeStruct -> PointerOffset -> Key
+keyToKey :: IntCodeState -> PointerOffset -> Key
 keyToKey intCode pointerOffsetParam =
   memory intCode Vec.! (pointer intCode + pointerOffsetParam)
 
-pw :: IntCodeStruct -> PointerOffset -> Key
+pw :: IntCodeState -> PointerOffset -> Key
 pw =
   keyToKey
 
-pr :: IntCodeStruct -> PointerOffset -> Value
+pr :: IntCodeState -> PointerOffset -> Value
 pr intCode pointerOffsetParam =
   memory intCode Vec.! keyToKey intCode pointerOffsetParam
 
-aParam :: Instruction -> IntCodeStruct -> Int
+aParam :: Instruction -> IntCodeState -> Int
 aParam instruction intcode =
   case instruction Map.! 'a' of
     0 -> pw intcode pointerOffsetA -- a-p-w
     _ -> error "Instruction is not valid"
 
-bParam :: Instruction -> IntCodeStruct -> Int
+bParam :: Instruction -> IntCodeState -> Int
 bParam instruction intcode =
   case instruction Map.! 'b' of
     0 -> pr intcode pointerOffsetB -- b-p-r
     _ -> error "Instruction is not valid"
 
-cParam :: Instruction -> IntCodeStruct -> Int
+cParam :: Instruction -> IntCodeState -> Int
 cParam instruction intcode =
   case instruction Map.! 'c' of
     0 -> pr intcode pointerOffsetC -- c-p-r
@@ -124,9 +124,9 @@ addItem itemName itemWeight = do
           }
       return ("Successfully added " ++ itemName)
 
-add :: Instruction -> IntCodeStruct -> IntCodeStruct
+add :: Instruction -> IntCodeState -> IntCodeState
 add instruction intcode =
-  IntCodeStruct
+  IntCodeState
     { pointer = pointer intcode + 4,
       memory =
         memory intcode
@@ -136,9 +136,9 @@ add instruction intcode =
                  ]
     }
 
-multiply :: Instruction -> IntCodeStruct -> IntCodeStruct
+multiply :: Instruction -> IntCodeState -> IntCodeState
 multiply instruction intcode =
-  IntCodeStruct
+  IntCodeState
     { pointer = pointer intcode + 4,
       memory =
         memory intcode
@@ -156,7 +156,7 @@ gameSession = do
   msg3 <- addItem "Heavy Gold Chest" 8.0 -- This one should fail due to weight limits
   return [msg1, msg2, msg3]
 
-runOpCode :: IntCodeStruct -> IntCodeStruct
+runOpCode :: IntCodeState -> IntCodeState
 runOpCode intCode =
   case instruction Map.! 'e' of
     1 -> runOpCode (add instruction intCode)
