@@ -1,4 +1,4 @@
-module Lib (IntCodeState (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, runOpCode) where
+module Lib (IntCodeState (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply) where
 
 -- Instruction:
 -- ABCDE
@@ -162,15 +162,15 @@ multiply instruction = do
 --   msg3 <- addItem "Heavy Gold Chest" 8.0 -- This one should fail due to weight limits
 --   return [msg1, msg2, msg3]
 
-runOpCode :: IntCodeState -> IntCodeState
-runOpCode intCode =
-  case instruction Map.! 'e' of
-    1 -> runOpCode (add instruction intCode)
-    2 -> runOpCode (multiply instruction intCode)
-    9 -> intCode
-    _ -> error "Instruction is not valid"
-  where
-    instruction = makeInstruction (memory intCode Vec.! pointer intCode)
+-- runOpCode :: IntCodeState -> IntCodeState
+-- runOpCode intCode =
+--   case instruction Map.! 'e' of
+--     1 -> runOpCode (add instruction intCode)
+--     2 -> runOpCode (multiply instruction intCode)
+--     9 -> intCode
+--     _ -> error "Instruction is not valid"
+--   where
+--     instruction = makeInstruction (memory intCode Vec.! pointer intCode)
 
 -- -- The state is an Int (the current countdown number).
 -- -- The result of the computation is a list of Strings (the emitted outputs).
