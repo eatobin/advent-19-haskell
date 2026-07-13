@@ -103,6 +103,27 @@ cParam instruction intcode =
     0 -> pr intcode pointerOffsetC -- c-p-r
     _ -> error "Instruction is not valid"
 
+-- 2. Define a function to modify state inside the Monad
+-- It returns a String confirmation message, and mutates InventoryState
+addItem :: String -> Double -> State InventoryState String
+addItem itemName itemWeight = do
+  -- 'get' fetches the current state snapshot
+  currentState <- get
+
+  let currentWeight = totalWeight currentState
+  let maxWeight = 10.0
+
+  if currentWeight + itemWeight > maxWeight
+    then return ("Too heavy! Could not add " ++ itemName)
+    else do
+      -- 'put' overwrites the old state with a new state
+      put $
+        InventoryState
+          { items = itemName : items currentState,
+            totalWeight = currentWeight + itemWeight
+          }
+      return ("Successfully added " ++ itemName)
+
 add :: Instruction -> IntCodeStruct -> IntCodeStruct
 add instruction intcode =
   IntCodeStruct
