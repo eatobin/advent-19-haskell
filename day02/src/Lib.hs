@@ -13,6 +13,7 @@ module Lib (IntCodeState (..), Memory, makeInstruction, makeMemory, updatedMemor
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
+import Control.Monad.Trans.State (State, get, put)
 import qualified Data.Char as DC
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
@@ -123,29 +124,35 @@ cParam instruction intcode =
 --           }
 --       return ("Successfully added " ++ itemName)
 
-add :: Instruction -> IntCodeState -> IntCodeState
-add instruction intcode =
-  IntCodeState
-    { pointer = pointer intcode + 4,
-      memory =
-        memory intcode
-          Vec.// [ ( aParam instruction intcode,
-                     cParam instruction intcode + bParam instruction intcode
-                   )
-                 ]
-    }
+add :: Instruction -> State IntCodeState IntCodeAction
+add instruction = do
+  currentState <- get
+  put $
+    IntCodeState
+      { pointer = pointer currentState + 4,
+        memory =
+          memory currentState
+            Vec.// [ ( aParam instruction currentState,
+                       cParam instruction currentState + bParam instruction currentState
+                     )
+                   ]
+      }
+  return Add
 
-multiply :: Instruction -> IntCodeState -> IntCodeState
-multiply instruction intcode =
-  IntCodeState
-    { pointer = pointer intcode + 4,
-      memory =
-        memory intcode
-          Vec.// [ ( aParam instruction intcode,
-                     cParam instruction intcode * bParam instruction intcode
-                   )
-                 ]
-    }
+multiply :: Instruction -> State IntCodeState IntCodeAction
+multiply instruction = do
+  currentState <- get
+  put $
+    IntCodeState
+      { pointer = pointer currentState + 4,
+        memory =
+          memory currentState
+            Vec.// [ ( aParam instruction currentState,
+                       cParam instruction currentState * bParam instruction currentState
+                     )
+                   ]
+      }
+  return Multiply
 
 -- -- 3. Sequence multiple stateful operations inside a do-block
 -- gameSession :: State InventoryState [String]
