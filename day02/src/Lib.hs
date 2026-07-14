@@ -40,8 +40,8 @@ data IntCodeState
   }
   deriving (Eq, Show)
 
-data IntCodeAction = Add | Multiply
-  deriving (Eq, Show)
+-- data IntCodeAction = Add | Multiply
+--   deriving (Eq, Show)
 
 pointerOffsetC :: PointerOffset
 pointerOffsetC = 1
@@ -124,7 +124,7 @@ cParam instruction intcode =
 --           }
 --       return ("Successfully added " ++ itemName)
 
-add :: Instruction -> State IntCodeState IntCodeAction
+add :: Instruction -> State IntCodeState String
 add instruction = do
   currentState <- get
   put $
@@ -137,9 +137,9 @@ add instruction = do
                      )
                    ]
       }
-  return Add
+  return "Add"
 
-multiply :: Instruction -> State IntCodeState IntCodeAction
+multiply :: Instruction -> State IntCodeState String
 multiply instruction = do
   currentState <- get
   put $
@@ -152,7 +152,7 @@ multiply instruction = do
                      )
                    ]
       }
-  return Multiply
+  return "Multiply"
 
 -- -- 3. Sequence multiple stateful operations inside a do-block
 -- gameSession :: State InventoryState [String]

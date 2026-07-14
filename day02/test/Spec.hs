@@ -1,7 +1,7 @@
 import Control.Exception (evaluate)
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
-import Lib (IntCodeState (..), Memory, aParam, add, bParam, cParam, makeInstruction, makeMemory, multiply, pr, pw)
+import Lib (IntCodeState (..), Memory, aParam, add, bParam, cParam, makeInstruction, makeMemory, pr, pw)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -18,7 +18,8 @@ main = hspec $ do
   let intCodeX = IntCodeState {pointer = 0, memory = thisMemoryX}
   let thisMemoryAddMult :: Memory
       thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
-  let intCodeAddMult = IntCodeState {pointer = 0, memory = thisMemoryAddMult}
+  let intCodeAddMult :: IntCodeState -> (String, IntCodeState)
+      intCodeAddMult _ = ("Add", IntCodeState {pointer = 0, memory = thisMemoryAddMult})
   let intCodeAdd = IntCodeState {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]}
   let intCodeMult = IntCodeState {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
 
@@ -52,8 +53,9 @@ main = hspec $ do
     it "lookup a valid cParam" $ do
       cParam instruction1 intCodeX `shouldBe` 1
 
--- describe "\nAdd/Mult Tests" $ do
---   it "1 plus 2 should be set at 0 and pointer should be 4" $ do
---     add instruction1 intCodeAddMult `shouldBe` intCodeAdd
+  describe "\nAdd/Mult Tests" $ do
+    it "1 plus 2 should be set at 0 and pointer should be 4" $ do
+      add instruction1 intCodeAddMult `shouldBe` intCodeAdd
+
 --   it "1 times 2 should be set at 0 and pointer should be 4" $ do
 --     multiply instruction1 intCodeAddMult `shouldBe` intCodeMult
