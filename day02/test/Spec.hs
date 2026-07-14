@@ -1,7 +1,8 @@
 import Control.Exception (evaluate)
+import Control.Monad.Trans.State (execState)
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
-import Lib (IntCodeState (..), Memory, aParam, add, bParam, cParam, makeInstruction, makeMemory, pr, pw)
+import Lib (IntCode (..), Memory, aParam, bParam, cParam, makeInstruction, makeMemory, pr, pw, runSession)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -12,16 +13,15 @@ main = hspec $ do
   let memoryAsCSVString = "10,11,1"
   let thisMemory :: Memory
       thisMemory = Vec.fromList [10, 11, 1]
-  let intCode = IntCodeState {pointer = 0, memory = thisMemory}
+  let intCode = IntCode {pointer = 0, memory = thisMemory}
   let thisMemoryX :: Memory
       thisMemoryX = Vec.fromList [0, 1, 2, 3]
-  let intCodeX = IntCodeState {pointer = 0, memory = thisMemoryX}
+  let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
   let thisMemoryAddMult :: Memory
       thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
-  let intCodeAddMult :: IntCodeState -> (String, IntCodeState)
-      intCodeAddMult _ = ("Add", IntCodeState {pointer = 0, memory = thisMemoryAddMult})
-  let intCodeAdd = IntCodeState {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]}
-  let intCodeMult = IntCodeState {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
+  let intCodeAddMult = IntCode {pointer = 0, memory = thisMemoryAddMult}
+  let intCodeAdd = IntCode {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]}
+  -- let intCodeMult = IntCode {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
@@ -55,7 +55,7 @@ main = hspec $ do
 
   describe "\nAdd/Mult Tests" $ do
     it "1 plus 2 should be set at 0 and pointer should be 4" $ do
-      add instruction1 intCodeAddMult `shouldBe` intCodeAdd
+      execState runSession intCodeAddMult `shouldBe` intCodeAdd
 
 --   it "1 times 2 should be set at 0 and pointer should be 4" $ do
 --     multiply instruction1 intCodeAddMult `shouldBe` intCodeMult

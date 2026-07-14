@@ -1,4 +1,4 @@
-module Lib (IntCodeState (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply) where
+module Lib (IntCode (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, mainX, runSession) where
 
 -- Instruction:
 -- ABCDE
@@ -13,7 +13,7 @@ module Lib (IntCodeState (..), Memory, makeInstruction, makeMemory, updatedMemor
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
-import Control.Monad.Trans.State (State, get, put)
+import Control.Monad.Trans.State (State, evalState, execState, get, put, runState)
 import qualified Data.Char as DC
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
@@ -33,15 +33,17 @@ type MemoryAsCSVString = [Char]
 
 type PointerOffset = Int
 
-data IntCodeState
-  = IntCodeState
+data IntCode
+  = IntCode
   { pointer :: Pointer,
     memory :: Memory
   }
   deriving (Eq, Show)
 
--- data IntCodeAction = Add | Multiply
---   deriving (Eq, Show)
+data IntCodeAction = Add | Multiply
+  deriving (Eq, Show)
+
+type IntCodeState a = State IntCode a
 
 pointerOffsetC :: PointerOffset
 pointerOffsetC = 1
@@ -73,62 +75,41 @@ updatedMemory noun verb mem =
   where
     nounish = mem Vec.// [(1, noun)]
 
-keyToKey :: IntCodeState -> PointerOffset -> Key
+keyToKey :: IntCode -> PointerOffset -> Key
 keyToKey intCode pointerOffsetParam =
   memory intCode Vec.! (pointer intCode + pointerOffsetParam)
 
-pw :: IntCodeState -> PointerOffset -> Key
+pw :: IntCode -> PointerOffset -> Key
 pw =
   keyToKey
 
-pr :: IntCodeState -> PointerOffset -> Value
+pr :: IntCode -> PointerOffset -> Value
 pr intCode pointerOffsetParam =
   memory intCode Vec.! keyToKey intCode pointerOffsetParam
 
-aParam :: Instruction -> IntCodeState -> Int
+aParam :: Instruction -> IntCode -> Int
 aParam instruction intcode =
   case instruction Map.! 'a' of
     0 -> pw intcode pointerOffsetA -- a-p-w
     _ -> error "Instruction is not valid"
 
-bParam :: Instruction -> IntCodeState -> Int
+bParam :: Instruction -> IntCode -> Int
 bParam instruction intcode =
   case instruction Map.! 'b' of
     0 -> pr intcode pointerOffsetB -- b-p-r
     _ -> error "Instruction is not valid"
 
-cParam :: Instruction -> IntCodeState -> Int
+cParam :: Instruction -> IntCode -> Int
 cParam instruction intcode =
   case instruction Map.! 'c' of
     0 -> pr intcode pointerOffsetC -- c-p-r
     _ -> error "Instruction is not valid"
 
--- -- 2. Define a function to modify state inside the Monad
--- -- It returns a String confirmation message, and mutates InventoryState
--- addItem :: String -> Double -> State InventoryState String
--- addItem itemName itemWeight = do
---   -- 'get' fetches the current state snapshot
---   currentState <- get
-
---   let currentWeight = totalWeight currentState
---   let maxWeight = 10.0
-
---   if currentWeight + itemWeight > maxWeight
---     then return ("Too heavy! Could not add " ++ itemName)
---     else do
---       -- 'put' overwrites the old state with a new state
---       put $
---         InventoryState
---           { items = itemName : items currentState,
---             totalWeight = currentWeight + itemWeight
---           }
---       return ("Successfully added " ++ itemName)
-
-add :: Instruction -> State IntCodeState String
+add :: Instruction -> IntCodeState String
 add instruction = do
   currentState <- get
   put $
-    IntCodeState
+    IntCode
       { pointer = pointer currentState + 4,
         memory =
           memory currentState
@@ -139,11 +120,11 @@ add instruction = do
       }
   return "Add"
 
-multiply :: Instruction -> State IntCodeState String
+multiply :: Instruction -> IntCodeState String
 multiply instruction = do
   currentState <- get
   put $
-    IntCodeState
+    IntCode
       { pointer = pointer currentState + 4,
         memory =
           memory currentState
@@ -153,6 +134,23 @@ multiply instruction = do
                    ]
       }
   return "Multiply"
+
+runSession :: IntCodeState [String]
+runSession = do
+  msg1 <- add (Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)])
+  return [msg1]
+
+mainX :: IO ()
+mainX = do
+  let thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
+  let initialIntCode = IntCode {pointer = 0, memory = thisMemoryAddMult}
+  let (results, finalState) = runState runSession initialIntCode
+  let xxx = evalState runSession initialIntCode
+  let yyy = execState runSession initialIntCode
+  print results
+  putStrLn $ "Final state: " ++ show finalState
+  print xxx
+  print yyy
 
 -- -- 3. Sequence multiple stateful operations inside a do-block
 -- gameSession :: State InventoryState [String]
