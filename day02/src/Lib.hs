@@ -137,12 +137,14 @@ multiply instruction = do
 
 runSessionAdd :: IntCodeState [IntCodeAction]
 runSessionAdd = do
-  msg1 <- add (Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)])
+  let instruction = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)]
+  msg1 <- add instruction
   return [msg1]
 
 runSessionMult :: IntCodeState [IntCodeAction]
 runSessionMult = do
-  msg1 <- multiply (Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)])
+  let instruction = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)]
+  msg1 <- multiply instruction
   return [msg1]
 
 mainX :: IO ()
