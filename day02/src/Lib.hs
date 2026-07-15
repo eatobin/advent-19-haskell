@@ -40,7 +40,7 @@ data IntCode
   }
   deriving (Eq, Show)
 
-data IntCodeAction = Add | Multiply
+data IntCodeAction = Add | Multiply | Done
   deriving (Eq, Show)
 
 type IntCodeState a = State IntCode a
