@@ -105,7 +105,7 @@ cParam instruction intcode =
     0 -> pr intcode pointerOffsetC -- c-p-r
     _ -> error "Instruction is not valid"
 
-add :: Instruction -> IntCodeState String
+add :: Instruction -> IntCodeState IntCodeAction
 add instruction = do
   currentState <- get
   put $
@@ -118,9 +118,9 @@ add instruction = do
                      )
                    ]
       }
-  return "Add"
+  return Add
 
-multiply :: Instruction -> IntCodeState String
+multiply :: Instruction -> IntCodeState IntCodeAction
 multiply instruction = do
   currentState <- get
   put $
@@ -133,14 +133,14 @@ multiply instruction = do
                      )
                    ]
       }
-  return "Multiply"
+  return Multiply
 
-runSessionAdd :: IntCodeState [String]
+runSessionAdd :: IntCodeState [IntCodeAction]
 runSessionAdd = do
   msg1 <- add (Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)])
   return [msg1]
 
-runSessionMult :: IntCodeState [String]
+runSessionMult :: IntCodeState [IntCodeAction]
 runSessionMult = do
   msg1 <- multiply (Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)])
   return [msg1]
