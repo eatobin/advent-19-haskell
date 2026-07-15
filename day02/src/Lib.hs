@@ -1,4 +1,4 @@
-module Lib (IntCode (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, mainX, runSession) where
+module Lib (IntCode (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, mainX, runSessionAdd, runSessionMult) where
 
 -- Instruction:
 -- ABCDE
@@ -135,22 +135,30 @@ multiply instruction = do
       }
   return "Multiply"
 
-runSession :: IntCodeState [String]
-runSession = do
+runSessionAdd :: IntCodeState [String]
+runSessionAdd = do
   msg1 <- add (Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)])
+  return [msg1]
+
+runSessionMult :: IntCodeState [String]
+runSessionMult = do
+  msg1 <- multiply (Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)])
   return [msg1]
 
 mainX :: IO ()
 mainX = do
   let thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
   let initialIntCode = IntCode {pointer = 0, memory = thisMemoryAddMult}
-  let (results, finalState) = runState runSession initialIntCode
-  let xxx = evalState runSession initialIntCode
-  let yyy = execState runSession initialIntCode
+  let (results, finalState) = runState runSessionAdd initialIntCode
+  let xxx = evalState runSessionAdd initialIntCode
+  let yyy = execState runSessionAdd initialIntCode
   print results
-  putStrLn $ "Final state: " ++ show finalState
+  putStrLn $ "Final Add: " ++ show finalState
   print xxx
   print yyy
+  let (resultsM, finalStateM) = runState runSessionMult initialIntCode
+  print resultsM
+  putStrLn $ "Final Mult: " ++ show finalStateM
 
 -- -- 3. Sequence multiple stateful operations inside a do-block
 -- gameSession :: State InventoryState [String]

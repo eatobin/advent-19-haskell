@@ -2,7 +2,7 @@ import Control.Exception (evaluate)
 import Control.Monad.Trans.State (execState)
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
-import Lib (IntCode (..), Memory, aParam, bParam, cParam, makeInstruction, makeMemory, pr, pw, runSession)
+import Lib (IntCode (..), Memory, aParam, bParam, cParam, makeInstruction, makeMemory, pr, pw, runSessionAdd, runSessionMult)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -21,7 +21,7 @@ main = hspec $ do
       thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
   let intCodeAddMult = IntCode {pointer = 0, memory = thisMemoryAddMult}
   let intCodeAdd = IntCode {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]}
-  -- let intCodeMult = IntCode {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
+  let intCodeMult = IntCode {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
@@ -55,7 +55,6 @@ main = hspec $ do
 
   describe "\nAdd/Mult Tests" $ do
     it "1 plus 2 should be set at 0 and pointer should be 4" $ do
-      execState runSession intCodeAddMult `shouldBe` intCodeAdd
-
---   it "1 times 2 should be set at 0 and pointer should be 4" $ do
---     multiply instruction1 intCodeAddMult `shouldBe` intCodeMult
+      execState runSessionAdd intCodeAddMult `shouldBe` intCodeAdd
+    it "1 times 2 should be set at 0 and pointer should be 4" $ do
+      execState runSessionMult intCodeAddMult `shouldBe` intCodeMult
