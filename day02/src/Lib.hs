@@ -1,4 +1,4 @@
-module Lib (IntCode (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, runOpCode, aParam, bParam, cParam, add, multiply) where
+module Lib (IntCode (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply) where
 
 -- Instruction:
 -- ABCDE
@@ -13,7 +13,6 @@ module Lib (IntCode (..), Memory, makeInstruction, makeMemory, updatedMemory, pw
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
-import Control.Monad.Trans.State (State, get, put)
 import qualified Data.Char as DC
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
@@ -39,11 +38,6 @@ data IntCode
     memory :: Memory
   }
   deriving (Eq, Show)
-
-data IntCodeAction = Add | Multiply | Done
-  deriving (Eq, Show)
-
-type IntCodeState a = State IntCode a
 
 pointerOffsetC :: PointerOffset
 pointerOffsetC = 1
@@ -128,17 +122,3 @@ multiply instruction intcode =
                    )
                  ]
     }
-
-runOpCode :: IntCodeState ()
-runOpCode = do
-  currentState <- get
-  let instruction = makeInstruction (memory currentState Vec.! pointer currentState)
-  case instruction Map.! 'e' of
-    1 -> do
-      put (add instruction currentState)
-      runOpCode
-    2 -> do
-      put (multiply instruction currentState)
-      runOpCode
-    9 -> do put currentState
-    _ -> error "Instruction is not valid"

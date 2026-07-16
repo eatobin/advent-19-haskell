@@ -1,9 +1,29 @@
 module Main (main) where
 
-import Control.Monad.Trans.State (execState)
+import Control.Monad.Trans.State (State, execState, get, put)
+import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
-import Lib (IntCode (..), makeMemory, runOpCode, updatedMemory)
+import Lib (IntCode (..), add, makeInstruction, makeMemory, multiply, updatedMemory)
 import Text.Printf (printf)
+
+type IntCodeState a = State IntCode a
+
+data IntCodeAction = Add | Multiply | Done
+  deriving (Eq, Show)
+
+runOpCode :: IntCodeState ()
+runOpCode = do
+  currentState <- get
+  let instruction = makeInstruction (memory currentState Vec.! pointer currentState)
+  case instruction Map.! 'e' of
+    1 -> do
+      put (add instruction currentState)
+      runOpCode
+    2 -> do
+      put (multiply instruction currentState)
+      runOpCode
+    9 -> do put currentState
+    _ -> error "Instruction is not valid"
 
 main :: IO ()
 main =
