@@ -1,4 +1,4 @@
-module Lib (IntCode (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, mainX, runSessionAdd, runSessionMult) where
+module Lib (IntCode (..), Memory, makeInstruction, makeMemory, updatedMemory, pw, pr, runOpCode, aParam, bParam, cParam, add, multiply) where
 
 -- Instruction:
 -- ABCDE
@@ -13,7 +13,7 @@ module Lib (IntCode (..), Memory, makeInstruction, makeMemory, updatedMemory, pw
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
-import Control.Monad.Trans.State (State, evalState, execState, get, put, runState)
+import Control.Monad.Trans.State (State, get, modify, put)
 import qualified Data.Char as DC
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
@@ -105,62 +105,78 @@ cParam instruction intcode =
     0 -> pr intcode pointerOffsetC -- c-p-r
     _ -> error "Instruction is not valid"
 
-add :: Instruction -> IntCodeState IntCodeAction
-add instruction = do
+add :: Instruction -> IntCode -> IntCode
+add instruction intcode =
+  IntCode
+    { pointer = pointer intcode + 4,
+      memory =
+        memory intcode
+          Vec.// [ ( aParam instruction intcode,
+                     cParam instruction intcode + bParam instruction intcode
+                   )
+                 ]
+    }
+
+multiply :: Instruction -> IntCode -> IntCode
+multiply instruction intcode =
+  IntCode
+    { pointer = pointer intcode + 4,
+      memory =
+        memory intcode
+          Vec.// [ ( aParam instruction intcode,
+                     cParam instruction intcode * bParam instruction intcode
+                   )
+                 ]
+    }
+
+-- runSessionAdd :: IntCodeState ()
+-- runSessionAdd = do
+--   let instruction = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)]
+--   add instruction
+
+-- runSessionMult :: IntCodeState ()
+-- runSessionMult = do
+--   let instruction = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)]
+--   multiply instruction
+
+runOpCode :: IntCodeState ()
+runOpCode = do
   currentState <- get
-  put $
-    IntCode
-      { pointer = pointer currentState + 4,
-        memory =
-          memory currentState
-            Vec.// [ ( aParam instruction currentState,
-                       cParam instruction currentState + bParam instruction currentState
-                     )
-                   ]
-      }
-  return Add
+  let instruction = makeInstruction (memory currentState Vec.! pointer currentState)
+  case instruction Map.! 'e' of
+    1 -> do
+      put (add instruction currentState)
+      runOpCode
+    2 -> do
+      put (multiply instruction currentState)
+      runOpCode
+    9 -> do put currentState
+    _ -> error "Instruction is not valid"
 
-multiply :: Instruction -> IntCodeState IntCodeAction
-multiply instruction = do
-  currentState <- get
-  put $
-    IntCode
-      { pointer = pointer currentState + 4,
-        memory =
-          memory currentState
-            Vec.// [ ( aParam instruction currentState,
-                       cParam instruction currentState * bParam instruction currentState
-                     )
-                   ]
-      }
-  return Multiply
+-- import Control.Monad.State
 
-runSessionAdd :: IntCodeState [IntCodeAction]
-runSessionAdd = do
-  let instruction = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)]
-  msg1 <- add instruction
-  return [msg1]
+-- incrementState :: State Int ()
+-- incrementState = modify (+1)
 
-runSessionMult :: IntCodeState [IntCodeAction]
-runSessionMult = do
-  let instruction = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)]
-  msg1 <- multiply instruction
-  return [msg1]
+-- -- Running the state: initial state is 10
+-- -- execState returns only the final state
+-- main :: IO ()
+-- main = print $ execState incrementState 10  -- Output: 11
 
-mainX :: IO ()
-mainX = do
-  let thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
-  let initialIntCode = IntCode {pointer = 0, memory = thisMemoryAddMult}
-  let (results, finalState) = runState runSessionAdd initialIntCode
-  let xxx = evalState runSessionAdd initialIntCode
-  let yyy = execState runSessionAdd initialIntCode
-  print results
-  putStrLn $ "Final Add: " ++ show finalState
-  print xxx
-  print yyy
-  let (resultsM, finalStateM) = runState runSessionMult initialIntCode
-  print resultsM
-  putStrLn $ "Final Mult: " ++ show finalStateM
+-- mainX :: IO ()
+-- mainX = do
+--   let thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
+--   let initialIntCode = IntCode {pointer = 0, memory = thisMemoryAddMult}
+--   let (results, finalState) = runState runSessionAdd initialIntCode
+--   let xxx = evalState runSessionAdd initialIntCode
+--   let yyy = execState runSessionAdd initialIntCode
+--   print results
+--   putStrLn $ "Final Add: " ++ show finalState
+--   print xxx
+--   print yyy
+--   let (resultsM, finalStateM) = runState runSessionMult initialIntCode
+--   print resultsM
+--   putStrLn $ "Final Mult: " ++ show finalStateM
 
 -- -- 3. Sequence multiple stateful operations inside a do-block
 -- gameSession :: State InventoryState [String]

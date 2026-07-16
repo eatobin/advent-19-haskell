@@ -1,8 +1,8 @@
 import Control.Exception (evaluate)
-import Control.Monad.Trans.State (execState)
+-- import Control.Monad.Trans.State (execState)
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
-import Lib (IntCode (..), Memory, aParam, bParam, cParam, makeInstruction, makeMemory, pr, pw, runSessionAdd, runSessionMult)
+import Lib (IntCode (..), Memory, aParam, bParam, cParam, makeInstruction, makeMemory, pr, pw)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -17,11 +17,11 @@ main = hspec $ do
   let thisMemoryX :: Memory
       thisMemoryX = Vec.fromList [0, 1, 2, 3]
   let intCodeX = IntCode {pointer = 0, memory = thisMemoryX}
-  let thisMemoryAddMult :: Memory
-      thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
-  let intCodeAddMult = IntCode {pointer = 0, memory = thisMemoryAddMult}
-  let intCodeAdd = IntCode {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]}
-  let intCodeMult = IntCode {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
+  -- let thisMemoryAddMult :: Memory
+  --     thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
+  -- let intCodeAddMult = IntCode {pointer = 0, memory = thisMemoryAddMult}
+  -- let intCodeAdd = IntCode {pointer = 4, memory = Vec.fromList [3, 2, 1, 0]}
+  -- let intCodeMult = IntCode {pointer = 4, memory = Vec.fromList [2, 2, 1, 0]}
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
@@ -53,8 +53,8 @@ main = hspec $ do
     it "lookup a valid cParam" $ do
       cParam instruction1 intCodeX `shouldBe` 1
 
-  describe "\nAdd/Mult Tests" $ do
-    it "1 plus 2 should be set at 0 and pointer should be 4" $ do
-      execState runSessionAdd intCodeAddMult `shouldBe` intCodeAdd
-    it "1 times 2 should be set at 0 and pointer should be 4" $ do
-      execState runSessionMult intCodeAddMult `shouldBe` intCodeMult
+-- describe "\nAdd/Mult Tests" $ do
+--   it "1 plus 2 should be set at 0 and pointer should be 4" $ do
+--     execState runSessionAdd intCodeAddMult `shouldBe` intCodeAdd
+--   it "1 times 2 should be set at 0 and pointer should be 4" $ do
+--     execState runSessionMult intCodeAddMult `shouldBe` intCodeMult
