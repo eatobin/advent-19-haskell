@@ -13,7 +13,7 @@ module Lib (IntCode (..), Memory, makeInstruction, makeMemory, updatedMemory, pw
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
-import Control.Monad.Trans.State (State, get, modify, put)
+import Control.Monad.Trans.State (State, get, put)
 import qualified Data.Char as DC
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map

@@ -15,13 +15,13 @@ main =
 
     printf "\nPart A answer = %u. Correct = 2890696.\n" (answer1 :: Int)
 
--- let answer2 =
---       head
---         [ (100 * noun) + verb
---           | noun <- [0 .. (99 :: Int)],
---             verb <- [0 .. (99 :: Int)],
---             let candidate = memory (runOpCode IntCodeState {pointer = 0, memory = updatedMemory noun verb firstMemory}) Vec.! 0,
---             candidate == 19690720
---         ]
+    let answer2 =
+          head
+            [ (100 * noun) + verb
+              | noun <- [0 .. (99 :: Int)],
+                verb <- [0 .. (99 :: Int)],
+                let candidate = memory (execState runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory}) Vec.! 0,
+                candidate == 19690720
+            ]
 
--- printf "Part B answer = %u. Correct = 8226.\n\n" (answer2 :: Int)
+    printf "Part B answer = %u. Correct = 8226.\n\n" (answer2 :: Int)
