@@ -153,5 +153,6 @@ runOpCode = do
     2 -> do
       put (multiply instruction currentState)
       runOpCode
-    9 -> do put currentState
+    9 -> do
+      put (exit currentState)
     _ -> error "Instruction is not valid"
