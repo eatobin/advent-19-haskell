@@ -33,8 +33,7 @@ type MemoryAsCSVString = [Char]
 
 type PointerOffset = Int
 
-data IntCodeAction = Add | Multiply | Done
-  deriving (Eq, Show)
+type IntCodeState a = State IntCode a
 
 type Actions = [IntCodeAction]
 
@@ -46,7 +45,8 @@ data IntCode
   }
   deriving (Eq, Show)
 
-type IntCodeState a = State IntCode a
+data IntCodeAction = Add | Multiply | Done
+  deriving (Eq, Show)
 
 pointerOffsetC :: PointerOffset
 pointerOffsetC = 1
