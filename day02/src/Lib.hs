@@ -91,55 +91,55 @@ pr intCode pointerOffsetParam =
   memory intCode Vec.! keyToKey intCode pointerOffsetParam
 
 aParam :: Instruction -> IntCode -> Int
-aParam instruction intcode =
+aParam instruction intCode =
   case instruction Map.! 'a' of
-    0 -> pw intcode pointerOffsetA -- a-p-w
+    0 -> pw intCode pointerOffsetA -- a-p-w
     _ -> error "Instruction is not valid"
 
 bParam :: Instruction -> IntCode -> Int
-bParam instruction intcode =
+bParam instruction intCode =
   case instruction Map.! 'b' of
-    0 -> pr intcode pointerOffsetB -- b-p-r
+    0 -> pr intCode pointerOffsetB -- b-p-r
     _ -> error "Instruction is not valid"
 
 cParam :: Instruction -> IntCode -> Int
-cParam instruction intcode =
+cParam instruction intCode =
   case instruction Map.! 'c' of
-    0 -> pr intcode pointerOffsetC -- c-p-r
+    0 -> pr intCode pointerOffsetC -- c-p-r
     _ -> error "Instruction is not valid"
 
 add :: Instruction -> IntCode -> IntCode
-add instruction intcode =
+add instruction intCode =
   IntCode
-    { pointer = pointer intcode + 4,
+    { pointer = pointer intCode + 4,
       memory =
-        memory intcode
-          Vec.// [ ( aParam instruction intcode,
-                     cParam instruction intcode + bParam instruction intcode
+        memory intCode
+          Vec.// [ ( aParam instruction intCode,
+                     cParam instruction intCode + bParam instruction intCode
                    )
                  ],
-      actions = Add : actions intcode
+      actions = Add : actions intCode
     }
 
 multiply :: Instruction -> IntCode -> IntCode
-multiply instruction intcode =
+multiply instruction intCode =
   IntCode
-    { pointer = pointer intcode + 4,
+    { pointer = pointer intCode + 4,
       memory =
-        memory intcode
-          Vec.// [ ( aParam instruction intcode,
-                     cParam instruction intcode * bParam instruction intcode
+        memory intCode
+          Vec.// [ ( aParam instruction intCode,
+                     cParam instruction intCode * bParam instruction intCode
                    )
                  ],
-      actions = Multiply : actions intcode
+      actions = Multiply : actions intCode
     }
 
 exit :: IntCode -> IntCode
-exit intcode =
+exit intCode =
   IntCode
-    { pointer = pointer intcode,
-      memory = memory intcode,
-      actions = Exit : actions intcode
+    { pointer = pointer intCode,
+      memory = memory intCode,
+      actions = Exit : actions intCode
     }
 
 runOpCode :: IntCodeState ()
