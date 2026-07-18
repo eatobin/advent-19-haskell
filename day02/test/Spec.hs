@@ -1,7 +1,7 @@
 import Control.Exception (evaluate)
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
-import Lib (IntCode (..), Memory, aParam, add, bParam, cParam, makeInstruction, makeMemory, multiply, pr, pw)
+import Lib (IntCode (..), IntCodeAction (..), Memory, aParam, add, bParam, cParam, exit, makeInstruction, makeMemory, multiply, pr, pw)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
 main :: IO ()
@@ -16,11 +16,12 @@ main = hspec $ do
   let thisMemoryX :: Memory
       thisMemoryX = Vec.fromList [0, 1, 2, 3]
   let intCodeX = IntCode {pointer = 0, memory = thisMemoryX, actions = []}
-  let thisMemoryAddMult :: Memory
-      thisMemoryAddMult = Vec.fromList [0, 2, 1, 0]
-  let intCodeAddMult = IntCode {pointer = 0, memory = thisMemoryAddMult, actions = []}
-  let intCodeAdd = IntCode {pointer = 4, memory = Vec.fromList [3, 2, 1, 0], actions = []}
-  let intCodeMult = IntCode {pointer = 4, memory = Vec.fromList [2, 2, 1, 0], actions = []}
+  let thisMemoryAddMultExit :: Memory
+      thisMemoryAddMultExit = Vec.fromList [0, 2, 1, 0]
+  let intCodeAddMultExit = IntCode {pointer = 0, memory = thisMemoryAddMultExit, actions = []}
+  let intCodeAdd = IntCode {pointer = 4, memory = Vec.fromList [3, 2, 1, 0], actions = [Add]}
+  let intCodeMult = IntCode {pointer = 4, memory = Vec.fromList [2, 2, 1, 0], actions = [Multiply]}
+  let intCodeExit = IntCode {pointer = 0, memory = thisMemoryAddMultExit, actions = [Exit]}
 
   describe "\nJust test if tests work" $ do
     it "a test all by itself" $ do
@@ -52,8 +53,10 @@ main = hspec $ do
     it "lookup a valid cParam" $ do
       cParam instruction1 intCodeX `shouldBe` 1
 
-  describe "\nAdd/Mult Tests" $ do
+  describe "\nAdd/Mult/Exit Tests" $ do
     it "1 plus 2 should be set at 0 and pointer should be 4" $ do
-      add instruction1 intCodeAddMult `shouldBe` intCodeAdd
+      add instruction1 intCodeAddMultExit `shouldBe` intCodeAdd
     it "1 times 2 should be set at 0 and pointer should be 4" $ do
-      multiply instruction1 intCodeAddMult `shouldBe` intCodeMult
+      multiply instruction1 intCodeAddMultExit `shouldBe` intCodeMult
+    it "exit should just add an Exit to the actions and return the intCode" $ do
+      exit intCodeAddMultExit `shouldBe` intCodeExit

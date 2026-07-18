@@ -1,4 +1,4 @@
-module Lib (IntCode (..), Memory, runOpCode, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply) where
+module Lib (IntCode (..), IntCodeAction (..), Memory, runOpCode, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, exit) where
 
 -- Instruction:
 -- ABCDE
@@ -45,7 +45,7 @@ data IntCode
   }
   deriving (Eq, Show)
 
-data IntCodeAction = Add | Multiply | Done
+data IntCodeAction = Add | Multiply | Exit
   deriving (Eq, Show)
 
 pointerOffsetC :: PointerOffset
@@ -118,7 +118,7 @@ add instruction intcode =
                      cParam instruction intcode + bParam instruction intcode
                    )
                  ],
-      actions = []
+      actions = Add : actions intcode
     }
 
 multiply :: Instruction -> IntCode -> IntCode
@@ -131,7 +131,15 @@ multiply instruction intcode =
                      cParam instruction intcode * bParam instruction intcode
                    )
                  ],
-      actions = []
+      actions = Multiply : actions intcode
+    }
+
+exit :: IntCode -> IntCode
+exit intcode =
+  IntCode
+    { pointer = pointer intcode,
+      memory = memory intcode,
+      actions = Exit : actions intcode
     }
 
 runOpCode :: IntCodeState ()
