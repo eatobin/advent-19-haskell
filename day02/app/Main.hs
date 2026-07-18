@@ -20,11 +20,6 @@ main =
 
     let answer2 =
           head
-            [ (100 * noun) + verb
-              | noun <- [0 .. (99 :: Int)],
-                verb <- [0 .. (99 :: Int)],
-                let candidate = memory (execState runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory, actions = []}) Vec.! 0,
-                candidate == 19690720
-            ]
+            [((100 * noun) + verb, candidate) | noun <- [0 .. (99 :: Int)], verb <- [0 .. (99 :: Int)], let candidate = memory (execState runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory, actions = []}) Vec.! 0, candidate == 19690720]
 
-    printf "\nPart B answer = %u. Correct = 8226.\n\n" (answer2 :: Int)
+    printf "\nPart B answer = %u. Correct = 8226.\n\n" (fst answer2 :: Int)
