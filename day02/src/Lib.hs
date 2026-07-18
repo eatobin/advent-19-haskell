@@ -33,17 +33,20 @@ type MemoryAsCSVString = [Char]
 
 type PointerOffset = Int
 
+data IntCodeAction = Add | Multiply | Done
+  deriving (Eq, Show)
+
+type Actions = [IntCodeAction]
+
 data IntCode
   = IntCode
   { pointer :: Pointer,
-    memory :: Memory
+    memory :: Memory,
+    actions :: Actions
   }
   deriving (Eq, Show)
 
 type IntCodeState a = State IntCode a
-
-data IntCodeAction = Add | Multiply | Done
-  deriving (Eq, Show)
 
 pointerOffsetC :: PointerOffset
 pointerOffsetC = 1
@@ -114,7 +117,8 @@ add instruction intcode =
           Vec.// [ ( aParam instruction intcode,
                      cParam instruction intcode + bParam instruction intcode
                    )
-                 ]
+                 ],
+      actions = []
     }
 
 multiply :: Instruction -> IntCode -> IntCode
@@ -126,7 +130,8 @@ multiply instruction intcode =
           Vec.// [ ( aParam instruction intcode,
                      cParam instruction intcode * bParam instruction intcode
                    )
-                 ]
+                 ],
+      actions = []
     }
 
 runOpCode :: IntCodeState ()
