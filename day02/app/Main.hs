@@ -36,10 +36,9 @@ main :: IO ()
 main =
   do
     -- part A
-    let firstMemory = makeThisMemory
-    let initialState = IntCode {pointer = 0, memory = updatedMemory 12 2 firstMemory, actions = []}
+    let initialStateA = IntCode {pointer = 0, memory = updatedMemory 12 2 makeThisMemory, actions = []}
 
-    let finalStateA = execState runOpCode initialState
+    let finalStateA = execState runOpCode initialStateA
     let answer1 = memory finalStateA Vec.! 0
 
     printf "\nPart A answer = %u. Correct = 2890696.\n" (answer1 :: Int)
@@ -49,16 +48,9 @@ main =
     let ((noun, verb), _) = findWinner
     let answer2 = (100 * noun) + verb
 
-    -- let answer2 =
-    --       head
-    --         [ ((100 * noun) + verb, candidateIntCode)
-    --           | noun <- [0 .. (99 :: Int)],
-    --             verb <- [0 .. (99 :: Int)],
-    --             let candidateIntCode = execState runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory, actions = []},
-    --             let candidate = memory candidateIntCode Vec.! 0,
-    --             candidate == 19690720
-    --         ]
-
     printf "\nPart B answer = %u. Correct = 8226.\n" (answer2 :: Int)
-    -- print $ reverse (actions (snd answer2))
+
+    let initialStateB = IntCode {pointer = 0, memory = updatedMemory noun verb makeThisMemory, actions = []}
+    let finalStateB = execState runOpCode initialStateB
+    print $ reverse (actions finalStateB)
     putStrLn ""
