@@ -14,6 +14,21 @@ candidatePairs :: [(Int, Int)]
 candidatePairs =
   [(noun, verb) | noun <- [0 .. (99 :: Int)], verb <- [0 .. (99 :: Int)]]
 
+runAcandidatePair :: (Int, Int) -> ((Int, Int), Int)
+runAcandidatePair candidatePair =
+  let candidateIntCode =
+        execState runOpCode (IntCode {pointer = 0, memory = uncurry updatedMemory candidatePair makeThisMemory, actions = []})
+   in (candidatePair, memory candidateIntCode Vec.! 0)
+
+-- let runAcandidatePair (candidatePair: int * int) : (int * int) * int =
+--     let candidateIntCode: IntCode =
+--         runOpCode
+--             { pointer = 0
+--               memory = (updatedMemory (fst candidatePair) (snd candidatePair) makeThisMemory)
+--               actions = [] }
+
+--     (candidatePair, candidateIntCode.memory[0])
+
 main :: IO ()
 main =
   do
