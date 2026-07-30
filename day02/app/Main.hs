@@ -24,8 +24,16 @@ mapOverPairs :: [((Int, Int), Int)]
 mapOverPairs =
   map runAcandidatePair candidatePairs
 
--- let mapOverPairs: ((int * int) * int) list =
---     candidatePairs |> List.map runAcandidatePair
+winnerIs :: ((Int, Int), Int) -> Bool
+winnerIs candidate =
+  let ((_, _), calculation) = candidate
+   in calculation == 19690720
+
+findWinner :: ((Int, Int), Int)
+findWinner = head (filter winnerIs mapOverPairs)
+
+-- let findWinner: (int * int) * int =
+--      mapOverPairs |> List.filter winnerIs |> List.head
 
 main :: IO ()
 main =
