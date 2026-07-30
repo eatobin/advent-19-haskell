@@ -32,12 +32,10 @@ winnerIs candidate =
 findWinner :: ((Int, Int), Int)
 findWinner = head (filter winnerIs mapOverPairs)
 
--- let findWinner: (int * int) * int =
---      mapOverPairs |> List.filter winnerIs |> List.head
-
 main :: IO ()
 main =
   do
+    -- part A
     let firstMemory = makeThisMemory
     let initialState = IntCode {pointer = 0, memory = updatedMemory 12 2 firstMemory, actions = []}
 
@@ -47,16 +45,20 @@ main =
     printf "\nPart A answer = %u. Correct = 2890696.\n" (answer1 :: Int)
     print $ reverse (actions finalStateA)
 
-    let answer2 =
-          head
-            [ ((100 * noun) + verb, candidateIntCode)
-              | noun <- [0 .. (99 :: Int)],
-                verb <- [0 .. (99 :: Int)],
-                let candidateIntCode = execState runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory, actions = []},
-                let candidate = memory candidateIntCode Vec.! 0,
-                candidate == 19690720
-            ]
+    -- part B
+    let ((noun, verb), _) = findWinner
+    let answer2 = (100 * noun) + verb
 
-    printf "\nPart B answer = %u. Correct = 8226.\n" (fst answer2 :: Int)
-    print $ reverse (actions (snd answer2))
+    -- let answer2 =
+    --       head
+    --         [ ((100 * noun) + verb, candidateIntCode)
+    --           | noun <- [0 .. (99 :: Int)],
+    --             verb <- [0 .. (99 :: Int)],
+    --             let candidateIntCode = execState runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory, actions = []},
+    --             let candidate = memory candidateIntCode Vec.! 0,
+    --             candidate == 19690720
+    --         ]
+
+    printf "\nPart B answer = %u. Correct = 8226.\n" (answer2 :: Int)
+    -- print $ reverse (actions (snd answer2))
     putStrLn ""
