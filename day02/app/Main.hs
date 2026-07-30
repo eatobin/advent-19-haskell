@@ -20,14 +20,12 @@ runAcandidatePair candidatePair =
         execState runOpCode (IntCode {pointer = 0, memory = uncurry updatedMemory candidatePair makeThisMemory, actions = []})
    in (candidatePair, memory candidateIntCode Vec.! 0)
 
--- let runAcandidatePair (candidatePair: int * int) : (int * int) * int =
---     let candidateIntCode: IntCode =
---         runOpCode
---             { pointer = 0
---               memory = (updatedMemory (fst candidatePair) (snd candidatePair) makeThisMemory)
---               actions = [] }
+mapOverPairs :: [((Int, Int), Int)]
+mapOverPairs =
+  map runAcandidatePair candidatePairs
 
---     (candidatePair, candidateIntCode.memory[0])
+-- let mapOverPairs: ((int * int) * int) list =
+--     candidatePairs |> List.map runAcandidatePair
 
 main :: IO ()
 main =
