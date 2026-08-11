@@ -90,23 +90,23 @@ pr :: IntCode -> PointerOffset -> Value
 pr intCode pointerOffsetParam =
   memory intCode Vec.! keyToKey intCode pointerOffsetParam
 
-aParam :: Instruction -> IntCode -> Int
+aParam :: Instruction -> IntCode -> Key
 aParam instruction intCode =
   case instruction Map.! 'a' of
     0 -> pw intCode pointerOffsetA -- a-p-w
-    _ -> error "Instruction is not valid"
+    _ -> error "Instruction A is not valid"
 
-bParam :: Instruction -> IntCode -> Int
+bParam :: Instruction -> IntCode -> Value
 bParam instruction intCode =
   case instruction Map.! 'b' of
     0 -> pr intCode pointerOffsetB -- b-p-r
-    _ -> error "Instruction is not valid"
+    _ -> error "Instruction B is not valid"
 
-cParam :: Instruction -> IntCode -> Int
+cParam :: Instruction -> IntCode -> Value
 cParam instruction intCode =
   case instruction Map.! 'c' of
     0 -> pr intCode pointerOffsetC -- c-p-r
-    _ -> error "Instruction is not valid"
+    _ -> error "Instruction C is not valid"
 
 add :: Instruction -> IntCode -> IntCode
 add instruction intCode =
@@ -155,4 +155,4 @@ runOpCode = do
       runOpCode
     9 -> do
       put (exit currentState)
-    _ -> error "Instruction is not valid"
+    _ -> error "Instruction runOpCode is not valid"
