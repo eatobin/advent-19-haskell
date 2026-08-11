@@ -37,6 +37,16 @@ type IntCodeState a = State IntCode a
 
 type Actions = [IntCodeAction]
 
+type CandidatePair = (Int, Int)
+
+type CandidatePairList = [CandidatePair]
+
+type Winner = Int
+
+type PairAndWinner = (CandidatePair, Winner)
+
+type PairAndWinnerList = [(CandidatePair, Winner)]
+
 data IntCode
   = IntCode
   { pointer :: Pointer,
@@ -160,24 +170,24 @@ runOpCode = do
 makeThisMemory :: String -> Memory
 makeThisMemory = makeMemory
 
-makeCandidatePairs :: [(Int, Int)]
+makeCandidatePairs :: CandidatePairList
 makeCandidatePairs =
   [(noun, verb) | noun <- [0 .. (99 :: Int)], verb <- [0 .. (99 :: Int)]]
 
-runAcandidatePair :: Memory -> (Int, Int) -> ((Int, Int), Int)
+runAcandidatePair :: Memory -> CandidatePair -> PairAndWinner
 runAcandidatePair thisMemory candidatePair =
   let candidateIntCode =
         execState runOpCode (IntCode {pointer = 0, memory = uncurry updatedMemory candidatePair thisMemory, actions = []})
    in (candidatePair, memory candidateIntCode Vec.! 0)
 
-mapOverPairs :: [(Int, Int)] -> Memory -> [((Int, Int), Int)]
+mapOverPairs :: CandidatePairList -> Memory -> PairAndWinnerList
 mapOverPairs pairs thisMemory =
   map (runAcandidatePair thisMemory) pairs
 
-winnerIs :: ((Int, Int), Int) -> Bool
+winnerIs :: PairAndWinner -> Bool
 winnerIs candidate =
   let ((_, _), calculation) = candidate
    in calculation == 19690720
 
-findWinner :: [(Int, Int)] -> Memory -> ((Int, Int), Int)
+findWinner :: CandidatePairList -> Memory -> PairAndWinner
 findWinner pairs thisMemory = head (filter winnerIs (mapOverPairs pairs thisMemory))
