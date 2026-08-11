@@ -37,7 +37,9 @@ type IntCodeState a = State IntCode a
 
 type Actions = [IntCodeAction]
 
-type CandidatePair = (Int, Int)
+type Candidate = Int
+
+type CandidatePair = (Candidate, Candidate)
 
 type CandidatePairList = [CandidatePair]
 
