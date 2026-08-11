@@ -1,4 +1,4 @@
-module Lib (IntCode (..), IntCodeAction (..), Memory, runOpCode, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, exit) where
+module Lib (IntCode (..), IntCodeAction (..), Memory, makeThisMemory, makeCandidatePairs, findWinner, runOpCode, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, exit) where
 
 -- Instruction:
 -- ABCDE
@@ -13,7 +13,7 @@ module Lib (IntCode (..), IntCodeAction (..), Memory, runOpCode, makeInstruction
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
-import Control.Monad.Trans.State (State, get, put)
+import Control.Monad.Trans.State (State, execState, get, put)
 import qualified Data.Char as DC
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
@@ -156,3 +156,28 @@ runOpCode = do
     9 -> do
       put (exit currentState)
     _ -> error "Instruction runOpCode is not valid"
+
+makeThisMemory :: String -> Memory
+makeThisMemory = makeMemory
+
+makeCandidatePairs :: [(Int, Int)]
+makeCandidatePairs =
+  [(noun, verb) | noun <- [0 .. (99 :: Int)], verb <- [0 .. (99 :: Int)]]
+
+runAcandidatePair :: Memory -> (Int, Int) -> ((Int, Int), Int)
+runAcandidatePair thisMemory candidatePair =
+  let candidateIntCode =
+        execState runOpCode (IntCode {pointer = 0, memory = uncurry updatedMemory candidatePair thisMemory, actions = []})
+   in (candidatePair, memory candidateIntCode Vec.! 0)
+
+mapOverPairs :: [(Int, Int)] -> Memory -> [((Int, Int), Int)]
+mapOverPairs pairs thisMemory =
+  map (runAcandidatePair thisMemory) pairs
+
+winnerIs :: ((Int, Int), Int) -> Bool
+winnerIs candidate =
+  let ((_, _), calculation) = candidate
+   in calculation == 19690720
+
+findWinner :: [(Int, Int)] -> Memory -> ((Int, Int), Int)
+findWinner pairs thisMemory = head (filter winnerIs (mapOverPairs pairs thisMemory))

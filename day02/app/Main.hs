@@ -2,33 +2,8 @@ module Main (main) where
 
 import Control.Monad.Trans.State (execState)
 import qualified Data.Vector as Vec
-import Lib (IntCode (..), Memory, makeMemory, runOpCode, updatedMemory)
+import Lib (IntCode (..), findWinner, makeCandidatePairs, makeThisMemory, runOpCode, updatedMemory)
 import Text.Printf (printf)
-
-makeThisMemory :: String -> Memory
-makeThisMemory = makeMemory
-
-makeCandidatePairs :: [(Int, Int)]
-makeCandidatePairs =
-  [(noun, verb) | noun <- [0 .. (99 :: Int)], verb <- [0 .. (99 :: Int)]]
-
-runAcandidatePair :: Memory -> (Int, Int) -> ((Int, Int), Int)
-runAcandidatePair thisMemory candidatePair =
-  let candidateIntCode =
-        execState runOpCode (IntCode {pointer = 0, memory = uncurry updatedMemory candidatePair thisMemory, actions = []})
-   in (candidatePair, memory candidateIntCode Vec.! 0)
-
-mapOverPairs :: [(Int, Int)] -> Memory -> [((Int, Int), Int)]
-mapOverPairs pairs thisMemory =
-  map (runAcandidatePair thisMemory) pairs
-
-winnerIs :: ((Int, Int), Int) -> Bool
-winnerIs candidate =
-  let ((_, _), calculation) = candidate
-   in calculation == 19690720
-
-findWinner :: [(Int, Int)] -> Memory -> ((Int, Int), Int)
-findWinner pairs thisMemory = head (filter winnerIs (mapOverPairs pairs thisMemory))
 
 main :: IO ()
 main =
