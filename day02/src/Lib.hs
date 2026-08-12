@@ -15,8 +15,10 @@ module Lib (IntCode (..), IntCodeAction (..), Memory, makeThisMemory, makeCandid
 
 import Control.Monad.Trans.State (State, execState, get, put)
 import qualified Data.Char as DC
+import qualified Data.List as DL
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
+import qualified Data.Maybe as DM
 import qualified Data.Vector as Vec
 
 type Instruction = Map.Map Char Int
@@ -192,4 +194,4 @@ winnerIs candidate =
    in calculation == 19690720
 
 findWinner :: CandidatePairList -> Memory -> PairAndWinner
-findWinner pairs thisMemory = head (filter winnerIs (mapOverPairs pairs thisMemory))
+findWinner pairs thisMemory = DM.fromJust (DL.find winnerIs (mapOverPairs pairs thisMemory))
