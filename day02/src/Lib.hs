@@ -178,15 +178,15 @@ makeCandidatePairs :: CandidatePairList
 makeCandidatePairs =
   [(noun, verb) | noun <- [0 .. (99 :: Int)], verb <- [0 .. (99 :: Int)]]
 
-runAcandidatePair :: Memory -> CandidatePair -> PairAndWinner
-runAcandidatePair thisMemory candidatePair =
+runACandidatePair :: Memory -> CandidatePair -> PairAndWinner
+runACandidatePair thisMemory candidatePair =
   let candidateIntCode =
         execState runOpCode (IntCode {pointer = 0, memory = uncurry updatedMemory candidatePair thisMemory, actions = []})
    in (candidatePair, memory candidateIntCode Vec.! 0)
 
 mapOverPairs :: CandidatePairList -> Memory -> PairAndWinnerList
 mapOverPairs pairs thisMemory =
-  map (runAcandidatePair thisMemory) pairs
+  map (runACandidatePair thisMemory) pairs
 
 winnerIs :: PairAndWinner -> Bool
 winnerIs candidate =
