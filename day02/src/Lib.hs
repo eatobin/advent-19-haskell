@@ -49,7 +49,7 @@ type Winner = Int
 
 type PairAndWinner = (CandidatePair, Winner)
 
-type PairAndWinnerList = [(CandidatePair, Winner)]
+type PairAndWinnerList = [PairAndWinner]
 
 data IntCode
   = IntCode
