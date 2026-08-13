@@ -18,7 +18,6 @@ import qualified Data.Char as DC
 import qualified Data.List as DL
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
-import qualified Data.Maybe as DM
 import qualified Data.Vector as Vec
 
 type Instruction = Map.Map Char Int
@@ -194,4 +193,9 @@ winnerIs candidate =
    in calculation == 19690720
 
 findWinner :: CandidatePairList -> Memory -> PairAndWinner
-findWinner pairs thisMemory = DM.fromJust (DL.find winnerIs (mapOverPairs pairs thisMemory))
+findWinner pairs thisMemory =
+  let maybePW :: Maybe PairAndWinner
+      maybePW = DL.find winnerIs (mapOverPairs pairs thisMemory)
+   in case maybePW of
+        Just x -> x
+        Nothing -> error "Instruction runOpCode is not valid"
