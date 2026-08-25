@@ -197,5 +197,5 @@ findWinner pairs thisMemory =
   let maybePW :: Maybe PairAndWinner
       maybePW = DL.find winnerIs (mapOverPairs pairs thisMemory)
    in case maybePW of
-        Just x -> x
+        Just pAndw -> pAndw
         Nothing -> error "Instruction runOpCode is not valid"
