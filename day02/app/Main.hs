@@ -2,7 +2,6 @@ module Main (main) where
 
 import Control.Monad.Trans.State (execState)
 import qualified Data.Vector as Vec
-import Distribution.Simple.Utils (xargs)
 import Lib (IntCode (..), makeMemory, runOpCode, updatedMemory)
 import Text.Printf (printf)
 
@@ -23,25 +22,21 @@ main =
     printf "\nPart A answer = %u. Correct = 2890696.\n" (answer1 :: Int)
     print $ reverse (actions finalStateA)
 
-    let maybeAnswer2 :: Maybe (Int, IntCode)
-        maybeAnswer2 =
-          safeHead
-            [ ((100 * noun) + verb, candidateIntCode)
-            | noun <- [0 .. (99 :: Int)],
-              verb <- [0 .. (99 :: Int)],
-              let candidateIntCode = execState runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory, actions = []},
-              let candidate = memory candidateIntCode Vec.! 0,
-              candidate == 19690720
-            ]
     let answer2 :: (Int, IntCode)
-        answer2 = case maybeAnswer2 of
-          Just x -> x
-          Nothing -> error "Instruction runOpCode is not valid"
-
-    --     maybePW = DL.find winnerIs (mapOverPairs pairs thisMemory)
-    --  in case maybePW of
-    --       Just x -> x
-    --       Nothing -> error "Instruction runOpCode is not valid"
+        answer2 =
+          let maybeAnswer2 :: Maybe (Int, IntCode)
+              maybeAnswer2 =
+                safeHead
+                  [ ((100 * noun) + verb, candidateIntCode)
+                  | noun <- [0 .. (99 :: Int)],
+                    verb <- [0 .. (99 :: Int)],
+                    let candidateIntCode = execState runOpCode IntCode {pointer = 0, memory = updatedMemory noun verb firstMemory, actions = []},
+                    let candidate = memory candidateIntCode Vec.! 0,
+                    candidate == 19690720
+                  ]
+           in case maybeAnswer2 of
+                Just answer -> answer
+                Nothing -> error "Answer is not valid"
 
     printf "\nPart B answer = %u. Correct = 8226.\n" (fst answer2 :: Int)
     print $ reverse (actions (snd answer2))
