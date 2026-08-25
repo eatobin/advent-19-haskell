@@ -94,19 +94,19 @@ aParam :: Instruction -> IntCode -> Int
 aParam instruction intCode =
   case instruction Map.! 'a' of
     0 -> pw intCode pointerOffsetA -- a-p-w
-    _ -> error "Instruction is not valid"
+    _ -> error "aParam instruction is not valid"
 
 bParam :: Instruction -> IntCode -> Int
 bParam instruction intCode =
   case instruction Map.! 'b' of
     0 -> pr intCode pointerOffsetB -- b-p-r
-    _ -> error "Instruction is not valid"
+    _ -> error "bParam instruction is not valid"
 
 cParam :: Instruction -> IntCode -> Int
 cParam instruction intCode =
   case instruction Map.! 'c' of
     0 -> pr intCode pointerOffsetC -- c-p-r
-    _ -> error "Instruction is not valid"
+    _ -> error "cParam instruction is not valid"
 
 add :: Instruction -> IntCode -> IntCode
 add instruction intCode =
