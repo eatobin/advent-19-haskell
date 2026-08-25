@@ -1,4 +1,4 @@
-module Lib (IntCode (..), IntCodeAction (..), Memory, runOpCode, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, exit) where
+module Lib (IntCode (..), IntCodeAction (..), Memory, makeThisMemory, makeCandidatePairs, findWinner, runOpCode, makeInstruction, makeMemory, updatedMemory, pw, pr, aParam, bParam, cParam, add, multiply, exit) where
 
 -- Instruction:
 -- ABCDE
@@ -13,8 +13,9 @@ module Lib (IntCode (..), IntCodeAction (..), Memory, runOpCode, makeInstruction
 -- p i or r - position, immediate or relative mode
 -- r or w - read or write
 
-import Control.Monad.Trans.State (State, get, put)
+import Control.Monad.Trans.State (State, execState, get, put)
 import qualified Data.Char as DC
+import qualified Data.List as DL
 import qualified Data.List.Split as Split
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector as Vec
@@ -36,6 +37,18 @@ type PointerOffset = Int
 type IntCodeState a = State IntCode a
 
 type Actions = [IntCodeAction]
+
+type Candidate = Int
+
+type CandidatePair = (Candidate, Candidate)
+
+type CandidatePairList = [CandidatePair]
+
+type Winner = Int
+
+type PairAndWinner = (CandidatePair, Winner)
+
+type PairAndWinnerList = [PairAndWinner]
 
 data IntCode
   = IntCode
@@ -90,23 +103,23 @@ pr :: IntCode -> PointerOffset -> Value
 pr intCode pointerOffsetParam =
   memory intCode Vec.! keyToKey intCode pointerOffsetParam
 
-aParam :: Instruction -> IntCode -> Int
+aParam :: Instruction -> IntCode -> Key
 aParam instruction intCode =
   case instruction Map.! 'a' of
     0 -> pw intCode pointerOffsetA -- a-p-w
-    _ -> error "aParam instruction is not valid"
+    _ -> error "Instruction A is not valid"
 
-bParam :: Instruction -> IntCode -> Int
+bParam :: Instruction -> IntCode -> Value
 bParam instruction intCode =
   case instruction Map.! 'b' of
     0 -> pr intCode pointerOffsetB -- b-p-r
-    _ -> error "bParam instruction is not valid"
+    _ -> error "Instruction B is not valid"
 
-cParam :: Instruction -> IntCode -> Int
+cParam :: Instruction -> IntCode -> Value
 cParam instruction intCode =
   case instruction Map.! 'c' of
     0 -> pr intCode pointerOffsetC -- c-p-r
-    _ -> error "cParam instruction is not valid"
+    _ -> error "Instruction C is not valid"
 
 add :: Instruction -> IntCode -> IntCode
 add instruction intCode =
@@ -155,4 +168,34 @@ runOpCode = do
       runOpCode
     9 -> do
       put (exit currentState)
-    _ -> error "Instruction is not valid"
+    _ -> error "Instruction runOpCode is not valid"
+
+makeThisMemory :: String -> Memory
+makeThisMemory = makeMemory
+
+makeCandidatePairs :: CandidatePairList
+makeCandidatePairs =
+  [(noun, verb) | noun <- [0 .. (99 :: Int)], verb <- [0 .. (99 :: Int)]]
+
+runACandidatePair :: Memory -> CandidatePair -> PairAndWinner
+runACandidatePair thisMemory candidatePair =
+  let candidateIntCode =
+        execState runOpCode (IntCode {pointer = 0, memory = uncurry updatedMemory candidatePair thisMemory, actions = []})
+   in (candidatePair, memory candidateIntCode Vec.! 0)
+
+mapOverPairs :: CandidatePairList -> Memory -> PairAndWinnerList
+mapOverPairs pairs thisMemory =
+  map (runACandidatePair thisMemory) pairs
+
+winnerIs :: PairAndWinner -> Bool
+winnerIs candidate =
+  let ((_, _), calculation) = candidate
+   in calculation == 19690720
+
+findWinner :: CandidatePairList -> Memory -> PairAndWinner
+findWinner pairs thisMemory =
+  let maybePW :: Maybe PairAndWinner
+      maybePW = DL.find winnerIs (mapOverPairs pairs thisMemory)
+   in case maybePW of
+        Just pAndw -> pAndw
+        Nothing -> error "Instruction runOpCode is not valid"
