@@ -37,3 +37,13 @@ main =
 -- -- This function is 100% total and cannot crash
 -- safeHead :: NonEmpty a -> a
 -- safeHead = Data.List.NonEmpty.head
+
+-- import Data.List.NonEmpty (NonEmpty(..), head)
+-- import Prelude hiding (head)
+
+-- -- This guarantees at least one element exists via the (:|) constructor
+-- myList :: NonEmpty Int
+-- myList = 1 :| [2, 3]
+
+-- main :: IO ()
+-- main = print (head myList) -- Output: 1 (Safe, returns an Int directly)
