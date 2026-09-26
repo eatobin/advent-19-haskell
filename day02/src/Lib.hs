@@ -24,8 +24,6 @@ type Instruction = Map.Map Char Int
 
 type Pointer = Int
 
-newtype Pointer = Pointer Int
-
 type Key = Int
 
 type Value = Int

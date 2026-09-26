@@ -19,7 +19,7 @@ import qualified Data.Map.Strict as Map
 
 type Instruction = Map.Map Char Int
 
-newtype Pointer = Pointer Int
+type Pointer = Int
 
 type Key = Int
 
