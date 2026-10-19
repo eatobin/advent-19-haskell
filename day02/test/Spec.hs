@@ -4,6 +4,9 @@ import qualified Data.Vector as Vec
 import Lib (IntCode (..), IntCodeAction (..), Memory, aParam, add, bParam, cParam, exit, makeInstruction, makeMemory, multiply, pr, pw)
 import Test.Hspec (anyErrorCall, describe, hspec, it, shouldBe, shouldThrow)
 
+-- >>> makeInstruction 7
+-- fromList [('a',0),('b',0),('c',0),('d',0),('e',7)]
+
 main :: IO ()
 main = hspec $ do
   let instruction1 = Map.fromList [('a', 0), ('b', 0), ('c', 0), ('d', 0), ('e', 6 :: Int)]

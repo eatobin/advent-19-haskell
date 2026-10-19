@@ -42,6 +42,11 @@ type Candidate = Int
 
 type CandidatePair = (Candidate, Candidate)
 
+-- >>> :i CandidatePair
+-- type CandidatePair :: *
+-- type CandidatePair = (Candidate, Candidate)
+--   	-- Defined at /home/eric/haskell-projects/advent-2019/day02/src/Lib.hs:43:1
+
 type CandidatePairList = [CandidatePair]
 
 type Winner = Int
@@ -79,6 +84,9 @@ makeInstruction op =
     paddedOp = replicate (5 - length opAsString) '0' ++ opAsString
     values = map DC.digitToInt paddedOp
     instructionAsKVTupleList = zip keys values
+
+-- >>> makeInstruction 456
+-- fromList [('a',0),('b',0),('c',4),('d',5),('e',6)]
 
 makeMemory :: MemoryAsCSVString -> Memory
 makeMemory memoryAsCSVStringParam =
