@@ -88,6 +88,9 @@ makeInstruction op =
 -- >>> makeInstruction 456
 -- fromList [('a',0),('b',0),('c',4),('d',5),('e',6)]
 
+-- >>> makeInstruction 123456
+-- fromList [('a',1),('b',2),('c',3),('d',4),('e',5)]
+
 makeMemory :: MemoryAsCSVString -> Memory
 makeMemory memoryAsCSVStringParam =
   let memoryAsIntList = map read (Split.splitOn "," memoryAsCSVStringParam)
