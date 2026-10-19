@@ -1,1 +1,2 @@
 haskell-language-server-wrapper --version
+haskell-language-server-wrapper typecheck
